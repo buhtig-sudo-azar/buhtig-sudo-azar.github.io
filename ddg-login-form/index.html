@@ -18,47 +18,49 @@
 
   <body>
     <section class="login">
-      <div class="login__wrapper">
-        <div class="login__logo">
-          <img src="./img/logo.svg" alt="Логотип сервиса" />
+      <div class="login__card">
+        <div class="login__img">
+          <img src="./img/logo.svg" alt="Логотип сервиса" class="login__logo" />
         </div>
 
-        <h1 class="login__title">Вход в систему</h1>
-        <p class="login__subtitle">
-          Используйте корпоративный аккаунт, чтобы попасть в панель управления.
-        </p>
+        <div class="login__inner">
+          <h1>Вход в систему</h1>
+          <p>
+            Используйте корпоративный аккаунт, чтобы попасть в панель управления.
+          </p>
 
-        <form class="login__form" action="#" method="post">
-          <label class="login__field">
-            <span class="login__label-text">E‑mail</span>
-            <input
-              type="email"
-              name="email"
-              placeholder="you@example.com"
-              required
-            />
-          </label>
+          <form class="login__form" action="#" method="post">
+            <div class="login__item">
+              <input
+                type="email"
+                name="email"
+                placeholder="you@example.com"
+                required
+              />
+              <label>E‑mail</label>
+            </div>
 
-          <label class="login__field">
-            <span class="login__label-text">Пароль</span>
-            <input
-              type="password"
-              name="password"
-              placeholder="••••••••"
-              required
-            />
-          </label>
+            <div class="login__item">
+              <input
+                type="password"
+                name="password"
+                placeholder="••••••••"
+                required
+              />
+              <label>Пароль</label>
+            </div>
 
-          <button class="login__submit" type="submit">
-            Войти
-          </button>
+            <div class="login__btn">
+              <button class="btn" type="submit">
+                Войти
+              </button>
+            </div>
 
-          <div class="login__footer">
-            <a href="#" class="login__link">Забыли пароль?</a>
-            <span class="login__divider">•</span>
-            <a href="#" class="login__link">Создать аккаунт</a>
-          </div>
-        </form>
+            <a href="#" class="login__register">
+              Забыли пароль или нет доступа к аккаунту?
+            </a>
+          </form>
+        </div>
       </div>
     </section>
 
