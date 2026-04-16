@@ -1,9 +1,9 @@
 <!doctype html>
-<html lang="ру">
+<html lang="ru">
 <head>
-  <meta charset="utf-8">
+  <meta charset="utf-8" />
   <title>Личный кабинет | Авторизация</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <style>
     /* Базовая раскладка: всегда центр по вертикали и горизонтали */
@@ -14,7 +14,7 @@
       color: #e5e7eb;
       display: flex;
       justify-content: center;
-      align-items: center;      /* центрируем по вертикали */
+      align-items: center; /* центрируем по вертикали */
       min-height: 100vh;
       perspective: 1000px;
       padding: 16px;
@@ -42,7 +42,7 @@
       background: #020617;
       border: 1px solid #1f2937;
       border-radius: 12px;
-      padding: 26px 20px 24px;  /* немного больше снизу */
+      padding: 26px 20px 24px; /* немного больше снизу */
       box-shadow: 0 24px 60px rgba(0,0,0,0.8);
       backface-visibility: hidden;
       box-sizing: border-box;
@@ -249,13 +249,23 @@
       <form id="login-form">
         <div class="field">
           <label for="email">E‑mail</label>
-          <input id="email" type="email" required placeholder="demo@example.com">
+          <input
+            id="email"
+            type="email"
+            required
+            placeholder="demo@example.com"
+          />
           <div class="hint">Подсказка: demo@example.com</div>
         </div>
 
         <div class="field">
           <label for="password">Пароль</label>
-          <input id="password" type="password" required placeholder="demo1234">
+          <input
+            id="password"
+            type="password"
+            required
+            placeholder="demo1234"
+          />
           <div class="hint">Подсказка: demo1234</div>
         </div>
 
@@ -264,7 +274,9 @@
         </div>
 
         <button type="submit">Войти</button>
-        <div id="error" class="error">Доступ запрещён. Проверьте логин и пароль.</div>
+        <div id="error" class="error">
+          Доступ запрещён. Проверьте логин и пароль.
+        </div>
       </form>
     </div>
 
