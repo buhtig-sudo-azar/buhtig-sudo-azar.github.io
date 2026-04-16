@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <style>
-    /* Базовая раскладка: центрируем карточку, даём перспективу для 3D-флипа */
+    /* Базовая раскладка: центр карточки + перспектива для 3D-флипа */
     body {
       margin: 0;
       font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
@@ -16,30 +16,30 @@
       justify-content: center;
       align-items: center;
       min-height: 100vh;
-      perspective: 1000px;      /* чтобы поворот карты был с 3D-эффектом */
+      perspective: 1000px;
       padding: 16px;
       box-sizing: border-box;
     }
 
-    /* Контейнер карты: две стороны, которые переворачиваются */
+    /* Контейнер карты: две стороны, плавный флип и мягкие изменения размеров */
     .card {
       width: 100%;
       max-width: 360px;
       position: relative;
       transform-style: preserve-3d;
       transition:
-        transform 0.7s cubic-bezier(0.22, 0.61, 0.36, 1),  /* плавный флип */
+        transform 0.7s cubic-bezier(0.22, 0.61, 0.36, 1),
         padding 0.25s ease,
         margin 0.25s ease,
         box-shadow 0.25s ease;
     }
 
-    /* Класс, который добавляем при успешном логине — запускает флип */
+    /* Флаг переворота */
     .card--flipped {
       transform: rotateY(180deg);
     }
 
-    /* Общий стиль обеих сторон */
+    /* Общий стиль стороны */
     .card__side {
       position: absolute;
       inset: 0;
@@ -48,11 +48,11 @@
       border-radius: 12px;
       padding: 24px 20px;
       box-shadow: 0 24px 60px rgba(0,0,0,0.8);
-      backface-visibility: hidden; /* чтобы обратная сторона не просвечивала */
+      backface-visibility: hidden;
       box-sizing: border-box;
     }
 
-    /* Задняя сторона — развёрнута на 180deg, чтобы быть «изнанкой» */
+    /* Обратная сторона для состояния "Вы авторизованы" */
     .card__side--back {
       transform: rotateY(180deg);
       display: flex;
@@ -62,7 +62,6 @@
       text-align: center;
     }
 
-    /* Маленький логотип-сигнатура */
     .logo {
       width: 40px;
       height: 40px;
@@ -157,7 +156,7 @@
       font-size: 12px;
       color: #fecaca;
       margin-top: 6px;
-      display: none; /* покажем только при неверном логине */
+      display: none;
     }
 
     .success-title {
@@ -181,28 +180,28 @@
       text-decoration: underline;
     }
 
-    /* ---- Адаптив ---- */
+    /* ---- Адаптив по ширине и высоте ---- */
 
-    /* Очень узкие экраны по ширине (маленькие телефоны) */
+    /* Совсем узкие телефоны */
     @media (max-width: 360px) {
       body {
-        padding: 8px;
+        padding: 6px;
       }
 
       .card__side {
-        padding: 18px 14px;
+        padding: 16px 12px;
       }
 
       .logo {
-        width: 32px;
-        height: 32px;
-        font-size: 16px;
-        margin-bottom: 14px;
+        width: 30px;
+        height: 30px;
+        font-size: 15px;
+        margin-bottom: 12px;
       }
 
       h1,
       .success-title {
-        font-size: 19px;
+        font-size: 18px;
       }
 
       .subtitle,
@@ -213,14 +212,35 @@
       input,
       button {
         font-size: 13px;
-        padding: 8px 9px;
+        padding: 7px 8px;
       }
     }
 
-    /* Очень низкие экраны (маленькая высота, горизонталь) */
-    @media (max-height: 500px) {
+    /* Телефоны чуть шире (361–480) */
+    @media (min-width: 361px) and (max-width: 480px) {
       body {
-        align-items: flex-start;   /* прижимаем карту к верху, даём скролл вниз */
+        padding: 10px;
+      }
+
+      .card__side {
+        padding: 20px 16px;
+      }
+
+      h1,
+      .success-title {
+        font-size: 20px;
+      }
+
+      .subtitle,
+      .success-text {
+        font-size: 13px;
+      }
+    }
+
+    /* Низкие по высоте экраны (до 600) */
+    @media (max-height: 600px) {
+      body {
+        align-items: flex-start;
       }
 
       .card {
@@ -233,7 +253,33 @@
       }
     }
 
-    /* Широкие экраны (планшет/десктоп) — чуть больше воздуха и шрифт */
+    /* Очень низкие по высоте (до 450) */
+    @media (max-height: 450px) {
+      body {
+        align-items: flex-start;
+      }
+
+      .card {
+        margin-top: 8px;
+        margin-bottom: 8px;
+      }
+
+      .card__side {
+        padding: 14px 12px;
+      }
+
+      h1,
+      .success-title {
+        font-size: 18px;
+      }
+
+      .subtitle,
+      .success-text {
+        font-size: 12px;
+      }
+    }
+
+    /* Планшеты и шире (>= 768) */
     @media (min-width: 768px) {
       .card__side {
         padding: 28px 24px;
@@ -249,10 +295,25 @@
         font-size: 14px;
       }
     }
+
+    /* Очень широкие (>= 1200) */
+    @media (min-width: 1200px) {
+      .card {
+        max-width: 400px;
+      }
+
+      .card__side {
+        padding: 32px 28px;
+      }
+
+      h1,
+      .success-title {
+        font-size: 26px;
+      }
+    }
   </style>
 </head>
 <body>
-  <!-- Обёртка карты, на неё вешаем класс card--flipped при успешном логине -->
   <div class="card" id="card">
     <!-- Передняя сторона: форма входа -->
     <div class="card__side card__side--front">
@@ -285,7 +346,7 @@
       </form>
     </div>
 
-    <!-- Задняя сторона: состояние "Вы авторизованы" -->
+    <!-- Задняя сторона: "Вы авторизованы" -->
     <div class="card__side card__side--back">
       <div class="logo" aria-label="Логотип сервиса">DG</div>
       <h1 class="success-title">Вы авторизованы</h1>
@@ -297,28 +358,23 @@
   </div>
 
   <script>
-    // Берём элементы формы и контейнер карты
     const form = document.getElementById('login-form');
     const card = document.getElementById('card');
     const errorEl = document.getElementById('error');
 
-    // Демо-учётка, по которой будет считаться "успешный вход"
     const DEMO_EMAIL = 'demo@example.com';
     const DEMO_PASS = 'demo1234';
 
-    // Обработчик сабмита формы
     form.addEventListener('submit', function (e) {
-      e.preventDefault(); // блокируем реальную отправку формы и перезагрузку
+      e.preventDefault();
 
       const email = document.getElementById('email').value.trim();
       const password = document.getElementById('password').value.trim();
 
       if (email === DEMO_EMAIL && password === DEMO_PASS) {
-        // Если данные верные — скрываем ошибку и переворачиваем карточку
         errorEl.style.display = 'none';
         card.classList.add('card--flipped');
       } else {
-        // Если неверные — показываем сообщение об ошибке под кнопкой
         errorEl.style.display = 'block';
       }
     });
