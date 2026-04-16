@@ -1,12 +1,12 @@
 <!doctype html>
-<html lang="ru">
+<html lang="ру">
 <head>
   <meta charset="utf-8">
   <title>Личный кабинет | Авторизация</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <style>
-    /* Базовая раскладка: центр карточки + перспектива для 3D-флипа */
+    /* Базовая раскладка: всегда центр по вертикали и горизонтали */
     body {
       margin: 0;
       font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
@@ -14,14 +14,14 @@
       color: #e5e7eb;
       display: flex;
       justify-content: center;
-      align-items: center;
+      align-items: center;      /* центрируем по вертикали */
       min-height: 100vh;
       perspective: 1000px;
-      padding: 24px 16px;           /* увеличен нижний отступ через padding */
+      padding: 16px;
       box-sizing: border-box;
     }
 
-    /* Контейнер карты: две стороны, плавный флип и мягкие изменения размеров */
+    /* Карточка: без внешних margin, центр держит body */
     .card {
       width: 100%;
       max-width: 360px;
@@ -29,31 +29,25 @@
       transform-style: preserve-3d;
       transition:
         transform 0.7s cubic-bezier(0.22, 0.61, 0.36, 1),
-        padding 0.25s ease,
-        margin 0.25s ease,
         box-shadow 0.25s ease;
-      margin-bottom: 12px;          /* дополнительный зазор снизу от края окна */
     }
 
-    /* Флаг переворота */
     .card--flipped {
       transform: rotateY(180deg);
     }
 
-    /* Общий стиль стороны */
     .card__side {
       position: absolute;
       inset: 0;
       background: #020617;
       border: 1px solid #1f2937;
       border-radius: 12px;
-      padding: 26px 20px 22px;      /* нижний паддинг больше, чтобы кнопка не липла */
+      padding: 26px 20px 24px;  /* немного больше снизу */
       box-shadow: 0 24px 60px rgba(0,0,0,0.8);
       backface-visibility: hidden;
       box-sizing: border-box;
     }
 
-    /* Обратная сторона для состояния "Вы авторизованы" */
     .card__side--back {
       transform: rotateY(180deg);
       display: flex;
@@ -146,7 +140,7 @@
       font-size: 14px;
       cursor: pointer;
       transition: background 0.2s ease, transform 0.1s ease;
-      margin-top: 4px;              /* небольшой зазор сверху от блока ссылки */
+      margin-top: 4px;
     }
 
     button:hover {
@@ -182,28 +176,28 @@
       text-decoration: underline;
     }
 
-    /* ---- Адаптив по ширине и высоте ---- */
+    /* ---- Минимальный адаптив ---- */
 
-    /* Совсем узкие телефоны */
-    @media (max-width: 360px) {
+    /* Узкие телефоны */
+    @media (max-width: 400px) {
       body {
-        padding: 10px 6px 18px;     /* больше нижний паддинг */
+        padding: 10px;
       }
 
       .card__side {
-        padding: 18px 12px 20px;
+        padding: 20px 14px 20px;
       }
 
       .logo {
-        width: 30px;
-        height: 30px;
-        font-size: 15px;
-        margin-bottom: 12px;
+        width: 32px;
+        height: 32px;
+        font-size: 16px;
+        margin-bottom: 14px;
       }
 
       h1,
       .success-title {
-        font-size: 18px;
+        font-size: 20px;
       }
 
       .subtitle,
@@ -214,74 +208,21 @@
       input,
       button {
         font-size: 13px;
-        padding: 7px 8px;
+        padding: 8px 9px;
       }
     }
 
-    /* Телефоны чуть шире (361–480) */
-    @media (min-width: 361px) and (max-width: 480px) {
-      body {
-        padding: 16px 10px 24px;
-      }
-
-      .card__side {
-        padding: 22px 16px 22px;
-      }
-
-      h1,
-      .success-title {
-        font-size: 20px;
-      }
-
-      .subtitle,
-      .success-text {
-        font-size: 13px;
-      }
-    }
-
-    /* Низкие по высоте экраны (до 600) */
-    @media (max-height: 600px) {
+    /* Очень низкие по высоте: позволяем скролл вместо слипания с краем */
+    @media (max-height: 500px) {
       body {
         align-items: flex-start;
       }
 
       .card {
         margin-top: 16px;
-        margin-bottom: 20px;       /* чуть больше зазор снизу */
-      }
-
-      .card__side {
-        padding: 20px 16px 22px;
       }
     }
 
-    /* Очень низкие по высоте (до 450) */
-    @media (max-height: 450px) {
-      body {
-        align-items: flex-start;
-      }
-
-      .card {
-        margin-top: 8px;
-        margin-bottom: 16px;
-      }
-
-      .card__side {
-        padding: 16px 12px 20px;
-      }
-
-      h1,
-      .success-title {
-        font-size: 18px;
-      }
-
-      .subtitle,
-      .success-text {
-        font-size: 12px;
-      }
-    }
-
-    /* Планшеты и шире (>= 768) */
     @media (min-width: 768px) {
       .card__side {
         padding: 30px 24px 26px;
@@ -290,28 +231,6 @@
       h1,
       .success-title {
         font-size: 24px;
-      }
-
-      .subtitle,
-      .success-text {
-        font-size: 14px;
-      }
-    }
-
-    /* Очень широкие (>= 1200) */
-    @media (min-width: 1200px) {
-      .card {
-        max-width: 400px;
-        margin-bottom: 16px;
-      }
-
-      .card__side {
-        padding: 34px 28px 28px;
-      }
-
-      h1,
-      .success-title {
-        font-size: 26px;
       }
     }
   </style>
