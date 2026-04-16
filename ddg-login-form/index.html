@@ -6,25 +6,27 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <style>
-    /* Базовая раскладка: всегда центр по вертикали и горизонтали */
+    /* Страница: обычный поток + скролл, без flex по высоте */
     body {
       margin: 0;
       font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       background: #0f172a;
       color: #e5e7eb;
-      display: flex;
-      justify-content: center;
-      align-items: center; /* центрируем по вертикали */
       min-height: 100vh;
-      perspective: 1000px;
-      padding: 16px;
+      padding: 40px 16px 40px; /* сверху и снизу по 40px — запас от краёв */
       box-sizing: border-box;
+      perspective: 1000px;
+      display: block;
     }
 
-    /* Карточка: без внешних margin, центр держит body */
+    /* Контейнер, который центрирует карточку по горизонтали */
+    .page-wrapper {
+      max-width: 360px;
+      margin: 0 auto;
+    }
+
     .card {
       width: 100%;
-      max-width: 360px;
       position: relative;
       transform-style: preserve-3d;
       transition:
@@ -42,7 +44,7 @@
       background: #020617;
       border: 1px solid #1f2937;
       border-radius: 12px;
-      padding: 26px 20px 24px; /* немного больше снизу */
+      padding: 26px 20px 28px; /* снизу 28px, чтобы кнопка не липла */
       box-shadow: 0 24px 60px rgba(0,0,0,0.8);
       backface-visibility: hidden;
       box-sizing: border-box;
@@ -176,16 +178,14 @@
       text-decoration: underline;
     }
 
-    /* ---- Минимальный адаптив ---- */
-
-    /* Узкие телефоны */
+    /* Узкие телефоны — просто чуть уменьшим паддинги и шрифты, но без липкости */
     @media (max-width: 400px) {
       body {
-        padding: 10px;
+        padding: 24px 10px 32px;
       }
 
       .card__side {
-        padding: 20px 14px 20px;
+        padding: 20px 14px 24px;
       }
 
       .logo {
@@ -211,83 +211,63 @@
         padding: 8px 9px;
       }
     }
-
-    /* Очень низкие по высоте: позволяем скролл вместо слипания с краем */
-    @media (max-height: 500px) {
-      body {
-        align-items: flex-start;
-      }
-
-      .card {
-        margin-top: 16px;
-      }
-    }
-
-    @media (min-width: 768px) {
-      .card__side {
-        padding: 30px 24px 26px;
-      }
-
-      h1,
-      .success-title {
-        font-size: 24px;
-      }
-    }
   </style>
 </head>
 <body>
-  <div class="card" id="card">
-    <!-- Передняя сторона: форма входа -->
-    <div class="card__side card__side--front">
-      <div class="logo" aria-label="Логотип сервиса">DG</div>
+  <div class="page-wrapper">
+    <div class="card" id="card">
+      <!-- Передняя сторона: форма входа -->
+      <div class="card__side card__side--front">
+        <div class="logo" aria-label="Логотип сервиса">DG</div>
 
-      <h1>Вход в систему</h1>
-      <p class="subtitle">
-        Используйте демо‑учётные данные, чтобы показать авторизацию.
-      </p>
+        <h1>Вход в систему</h1>
+        <p class="subtitle">
+          Используйте демо‑учётные данные, чтобы показать авторизацию.
+        </p>
 
-      <form id="login-form">
-        <div class="field">
-          <label for="email">E‑mail</label>
-          <input
-            id="email"
-            type="email"
-            required
-            placeholder="demo@example.com"
-          />
-          <div class="hint">Подсказка: demo@example.com</div>
-        </div>
+        <form id="login-form">
+          <div class="field">
+            <label for="email">E‑mail</label>
+            <input
+              id="email"
+              type="email"
+              required
+              placeholder="demo@example.com"
+            />
+            <div class="hint">Подсказка: demo@example.com</div>
+          </div>
 
-        <div class="field">
-          <label for="password">Пароль</label>
-          <input
-            id="password"
-            type="password"
-            required
-            placeholder="demo1234"
-          />
-          <div class="hint">Подсказка: demo1234</div>
-        </div>
+          <div class="field">
+            <label for="password">Пароль</label>
+            <input
+              id="password"
+              type="password"
+              required
+              placeholder="demo1234"
+            />
+            <div class="hint">Подсказка: demo1234</div>
+          </div>
 
-        <div class="link-row">
-          <a href="#" class="link">Забыли пароль или нет доступа к аккаунту?</a>
-        </div>
+          <div class="link-row">
+            <a href="#" class="link">Забыли пароль или нет доступа к аккаунту?</a>
+          </div>
 
-        <button type="submit">Войти</button>
-        <div id="error" class="error">
-          Доступ запрещён. Проверьте логин и пароль.
-        </div>
-      </form>
-    </div>
+          <button type="submit">Войти</button>
+          <div id="error" class="error">
+            Доступ запрещён. Проверьте логин и пароль.
+          </div>
+        </form>
+      </div>
 
-    <!-- Задняя сторона: "Вы авторизованы" -->
-    <div class="card__side card__side--back">
-      <div class="logo" aria-label="Логотип сервиса">DG</div>
-      <h1 class="success-title">Вы авторизованы</h1>
-      <p class="success-text">
-        Демо‑доступ к личному кабинету успешно подтверждён.
-      </p>
-      <a href="/landings/" class="success-link">Вернуться к списку лендингов</a>
+      <!-- Задняя сторона: "Вы авторизованы" -->
+      <div class="card__side card__side--back">
+        <div class="logo" aria-label="Логотип сервиса">DG</div>
+        <h1 class="success-title">Вы авторизованы</h1>
+        <p class="success-text">
+          Демо‑доступ к личному кабинету успешно подтверждён.
+        </p>
+        <a href="/landings/" class="success-link">Вернуться к списку лендингов</a>
+      </div>
     </div>
   </div>
 
