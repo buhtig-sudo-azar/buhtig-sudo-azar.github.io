@@ -1,0 +1,247 @@
+[1mdiff --git a/myasnoy-landing/app.js b/myasnoy-landing/app.js[m
+[1mdeleted file mode 100644[m
+[1mindex 78d6f41..0000000[m
+[1m--- a/myasnoy-landing/app.js[m
+[1m+++ /dev/null[m
+[36m@@ -1,168 +0,0 @@[m
+[31m-$(function () {[m
+[31m-  // Smooth scroll[m
+[31m-  $("[data-scroll]").on("click", function (event) {[m
+[31m-    event.preventDefault();[m
+[31m-[m
+[31m-    let elementId = $(this).data("scroll");[m
+[31m-    let elementOffset = $(elementId).offset().top;[m
+[31m-    let delta = elementId == "#contacts" ? 0 : 50;[m
+[31m-[m
+[31m-    $("html, body").animate([m
+[31m-      {[m
+[31m-        scrollTop: elementOffset - delta,[m
+[31m-      },[m
+[31m-      700[m
+[31m-    );[m
+[31m-  });[m
+[31m-[m
+[31m-  // Nav Toggle[m
+[31m-  let nav = $("#nav");[m
+[31m-  let navToggle = $("#navToggle");[m
+[31m-[m
+[31m-  navToggle.on("click", function (event) {[m
+[31m-    event.preventDefault();[m
+[31m-    nav.toggleClass("show");[m
+[31m-  });[m
+[31m-[m
+[31m-  // Buttons[m
+[31m-  $(".main__btn").on("click", function (event) {[m
+[31m-    event.preventDefault();[m
+[31m-[m
+[31m-    let elementOffset = $("#menu").offset().top;[m
+[31m-    $("html, body").animate([m
+[31m-      {[m
+[31m-        scrollTop: elementOffset - 50,[m
+[31m-      },[m
+[31m-      700[m
+[31m-    );[m
+[31m-  });[m
+[31m-[m
+[31m-  $("#callBtn-1").on("click", function (event) {[m
+[31m-    event.preventDefault();[m
+[31m-[m
+[31m-    let elementOffset = $("#contacts").offset().top;[m
+[31m-    $("html, body").animate([m
+[31m-      {[m
+[31m-        scrollTop: elementOffset - 50,[m
+[31m-      },[m
+[31m-      700[m
+[31m-    );[m
+[31m-  });[m
+[31m-[m
+[31m-  // Map button[m
+[31m-  function init() {[m
+[31m-    let myMap = new ymaps.Map("map", {[m
+[31m-      center: [47.138336, 39.744469], // Батайск[m
+[31m-      zoom: 12,[m
+[31m-      controls: [],[m
+[31m-    });[m
+[31m-[m
+[31m-    var searchControl = new ymaps.control.SearchControl({[m
+[31m-      options: {[m
+[31m-        provider: "yandex#search",[m
+[31m-      },[m
+[31m-    });[m
+[31m-[m
+[31m-    myMap.controls.add(searchControl);[m
+[31m-    searchControl.search("Мясной гастроном");[m
+[31m-[m
+[31m-    myMap.geoObjects.add([m
+[31m-      new ymaps.Placemark([m
+[31m-        [47.137889, 39.754761],[m
+[31m-        {[m
+[31m-          balloonContent: "Мясной гастроном | ул. Торговое Кольцо, 23",[m
+[31m-        },[m
+[31m-        { preset: "islands#blueCircleDotIconWithCaption" }[m
+[31m-      )[m
+[31m-    );[m
+[31m-    /*.add(new ymaps.Placemark([47.140706, 39.736132], {[m
+[31m-            balloonContent: 'Мясной гастроном | ул. Луначарского, 110'[m
+[31m-        }, {iconColor: '#d33e23'}[m
+[31m-    ))[m
+[31m-    .add(new ymaps.Placemark([47.133197, 39.766028], {[m
+[31m-            balloonContent: 'Мясной гастроном | ул. Шмидта, 22'[m
+[31m-        }, {iconColor: '#d33e23'}[m
+[31m-    ))[m
+[31m-    .add(new ymaps.Placemark([47.126382, 39.734479], {[m
+[31m-            balloonContent: 'Мясной гастроном | ул. Октябрьская улица, 151/4'[m
+[31m-        }, {iconColor: '#d33e23'}[m
+[31m-    ))[m
+[31m-    .add(new ymaps.Placemark([47.155880, 39.745511], {[m
+[31m-            balloonContent: 'Мясной гастроном | ул. Северный Массив, 2/2'[m
+[31m-        }, {iconColor: '#d33e23'}[m
+[31m-    ))[m
+[31m-    .add(new ymaps.Placemark([47.112736, 39.747999], {[m
+[31m-            balloonContent: 'Мясной гастроном | ул.Ленина, 221'[m
+[31m-        }, {iconColor: '#d33e23'}[m
+[31m-    ))[m
+[31m-    .add(new ymaps.Placemark([47.129817, 39.696189], {[m
+[31m-            balloonContent: 'Мясной гастроном | ул. Максима Горького, 534/42'[m
+[31m-        }, {iconColor: '#d33e23'}[m
+[31m-    )) */[m
+[31m-  }[m
+[31m-[m
+[31m-  ymaps.ready(init);[m
+[31m-[m
+[31m-  // Statistic counter[m
+[31m-[m
+[31m-  let $element = $(".statistic");[m
+[31m-  let check = 0;[m
+[31m-  $(window).scroll(function () {[m
+[31m-    let scroll = $(window).scrollTop() + $(window).height();[m
+[31m-    let offset = $element.offset().top;[m
+[31m-[m
+[31m-    if (scroll > offset && check == 0) {[m
+[31m-      check = 1;[m
+[31m-      $(".counter").each(function () {[m
+[31m-        $(this)[m
+[31m-          .prop("statistic__stat", 0)[m
+[31m-          .animate([m
+[31m-            {[m
+[31m-              Counter: $(this).text(),[m
+[31m-            },[m
+[31m-            {[m
+[31m-              duration: 2000,[m
+[31m-              easing: "swing",[m
+[31m-              step: function (now) {[m
+[31m-                $(this).text(Math.ceil(now));[m
+[31m-              },[m
+[31m-            }[m
+[31m-          );[m
+[31m-      });[m
+[31m-    }[m
+[31m-  });[m
+[31m-[m
+[31m-  // Menu cards flipping[m
+[31m-  $(".menu__card").flip({[m
+[31m-    axis: "y",[m
+[31m-    trigger: "click",[m
+[31m-  });[m
+[31m-[m
+[31m-  // Gallery[m
+[31m-[m
+[31m-  $(".next").on("click", function (event) {[m
+[31m-    let currImg = $(".gallery__item.current");[m
+[31m-    let currImgIndex = currImg.index();[m
+[31m-    let nextImgIndex = currImgIndex + 1;[m
+[31m-    nextImgIndex =[m
+[31m-      nextImgIndex == $(".gallery__item:last").index() + 1 ? 0 : nextImgIndex;[m
+[31m-    let nextImg = $(".gallery__item").eq(nextImgIndex);[m
+[31m-    $("#gallerySlide").html(`${nextImgIndex + 1}/8`);[m
+[31m-    currImg.fadeOut(1000);[m
+[31m-    currImg.removeClass("current");[m
+[31m-    nextImg.fadeIn(1000);[m
+[31m-    nextImg.addClass("current");[m
+[31m-  });[m
+[31m-[m
+[31m-  $(".prev").on("click", function (event) {[m
+[31m-    let currImg = $(".gallery__item.current");[m
+[31m-    let currImgIndex = currImg.index();[m
+[31m-    let prevImgIndex = currImgIndex - 1;[m
+[31m-    let prevImg = $(".gallery__item").eq(prevImgIndex);[m
+[31m-    $("#gallerySlide").html(`${prevImgIndex == -1 ? 8 : prevImgIndex + 1}/8`);[m
+[31m-    currImg.fadeOut(1000);[m
+[31m-    currImg.removeClass("current");[m
+[31m-    prevImg.fadeIn(1000);[m
+[31m-    prevImg.addClass("current");[m
+[31m-  });[m
+[31m-});[m
+[1mdiff --git a/myasnoy-landing/css/styles.css b/myasnoy-landing/css/styles.css[m
+[1mdeleted file mode 100644[m
+[1mindex b510b7e..0000000[m
+[1m--- a/myasnoy-landing/css/styles.css[m
+[1m+++ /dev/null[m
+[36m@@ -1,1434 +0,0 @@[m
+[31m-*,[m
+[31m-*::before,[m
+[31m-*::after {[m
+[31m-	margin: 0;[m
+[31m-	padding: 0;[m
+[31m-	box-sizing: border-box;[m
+[31m-}[m
+[31m-[m
+[31m-body {[m
+[31m-	font-family: "Lobster", cursive;[m
+[31m-	font-family: "Nunito", sans-serif;[m
+[31m-	font-size: 16px;[m
+[31m-	color: #ffffff;[m
+[31m-	background-color: #333;[m
+[31m-	height: 100%;[m
+[31m-	width: 100%;[m
+[31m-	overflow-x: hidden;[m
+[31m-}[m
+[31m-[m
+[31m-.container {[m
+[31m-	width: 100%;[m
+[31m-	max-width: 1440px;[m
+[31m-	margin: 0 auto;[m
+[31m-	padding: 0 135px;[m
+[31m-}[m
+[31m-[m
+[31m-h1 {[m
+[31m-	font-family: Lobster;[m
+[31m-	font-style: normal;[m
+[31m-	font-weight: normal;[m
+[31m-	font-size: 72px;[m
+[31m-	line-height: 80px;[m
+[31m-	/* or 111% */[m
+[31m-[m
+[31m-	color: #ffffff;[m
+[31m-}[m
+[31m-[m
+[31m-h2 {[m
+[31m-	font-family: Lobster;[m
+[31m-	font-style: normal;[m
+[31m-	font-weight: normal;[m
+[31m-	font-size: 56px;[m
+[31m-	line-height: 64px;[m
+[31m-	/* identical to box height, or 114% */[m
+[31m-[m
+[31m-[m
+[31m-	color: #FFFFFF;[m
+[31m-	margin-top: 20px;[m
+[31m-}[m
+[31m-[m
+[31m-h3 {[m
+[31m-	font-family: Nunito;[m
+[31m-	font-style: normal;[m
+[31m-	font-weight: 900;[m
+[31m-	font-size: 20px;[m
+[31m-	line-height: 32px;[m
+[31m-	/* identical to box height, or 160% */[m
+[31m-[m
+[31m-	color: #D33E23;[m
+[31m-	margin-top: 20px;[m
+[31m-}[m
+[31m-[m
+[31m-.description {[m
+[31m-	font-family: Nunito;[m
+[31m-	font-style: normal;[m
+[31m-	font-weight: normal;[m
+[31m-	f
