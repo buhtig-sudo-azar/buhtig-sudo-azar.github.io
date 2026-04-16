@@ -6,57 +6,63 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <style>
-    /* Страница: обычный поток + скролл, без flex по высоте */
+    /* Страница: обычный поток, скролл по необходимости, без прилипания */
     body {
       margin: 0;
       font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       background: #0f172a;
       color: #e5e7eb;
-      min-height: 100vh;
-      padding: 40px 16px 40px; /* сверху и снизу по 40px — запас от краёв */
+      padding: 40px 16px 40px; /* сверху/снизу запас, чтобы ничего не липло к краям */
       box-sizing: border-box;
-      perspective: 1000px;
-      display: block;
     }
 
-    /* Контейнер, который центрирует карточку по горизонтали */
+    /* Центруем карточку по горизонтали */
     .page-wrapper {
       max-width: 360px;
       margin: 0 auto;
     }
 
+    /* Карточка: больше НЕ absolute, просто блочный элемент в потоке */
     .card {
       width: 100%;
-      position: relative;
-      transform-style: preserve-3d;
-      transition:
-        transform 0.7s cubic-bezier(0.22, 0.61, 0.36, 1),
-        box-shadow 0.25s ease;
+      background: #020617;
+      border: 1px solid #1f2937;
+      border-radius: 12px;
+      box-shadow: 0 24px 60px rgba(0,0,0,0.8);
+      padding: 26px 20px 28px; /* нижний паддинг даёт воздух под кнопкой */
+      box-sizing: border-box;
+      perspective: 1000px;
+      overflow: hidden; /* на всякий случай от 3D-эффектов */
     }
 
-    .card--flipped {
+    /* Внутренний контейнер для флип-эффекта */
+    .card-inner {
+      position: relative;
+      width: 100%;
+      transform-style: preserve-3d;
+      transition: transform 0.7s cubic-bezier(0.22, 0.61, 0.36, 1);
+    }
+
+    .card-inner--flipped {
       transform: rotateY(180deg);
     }
 
     .card__side {
-      position: absolute;
-      inset: 0;
-      background: #020617;
-      border: 1px solid #1f2937;
-      border-radius: 12px;
-      padding: 26px 20px 28px; /* снизу 28px, чтобы кнопка не липла */
-      box-shadow: 0 24px 60px rgba(0,0,0,0.8);
       backface-visibility: hidden;
       box-sizing: border-box;
+      width: 100%;
     }
 
     .card__side--back {
+      position: absolute;
+      top: 0;
+      left: 0;
       transform: rotateY(180deg);
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: center;
       text-align: center;
+      padding-top: 8px;
     }
 
     .logo {
@@ -178,14 +184,14 @@
       text-decoration: underline;
     }
 
-    /* Узкие телефоны — просто чуть уменьшим паддинги и шрифты, но без липкости */
+    /* Узкие телефоны — просто чуть уменьшаем всё, без прилипания */
     @media (max-width: 400px) {
       body {
         padding: 24px 10px 32px;
       }
 
-      .card__side {
-        padding: 20px 14px 24px;
+      .card {
+        padding: 22px 14px 26px;
       }
 
       .logo {
@@ -215,65 +221,67 @@
 </head>
 <body>
   <div class="page-wrapper">
-    <div class="card" id="card">
-      <!-- Передняя сторона: форма входа -->
-      <div class="card__side card__side--front">
-        <div class="logo" aria-label="Логотип сервиса">DG</div>
+    <div class="card">
+      <div class="card-inner" id="card-inner">
+        <!-- Передняя сторона: форма входа -->
+        <div class="card__side card__side--front">
+          <div class="logo" aria-label="Логотип сервиса">DG</div>
 
-        <h1>Вход в систему</h1>
-        <p class="subtitle">
-          Используйте демо‑учётные данные, чтобы показать авторизацию.
-        </p>
+          <h1>Вход в систему</h1>
+          <p class="subtitle">
+            Используйте демо‑учётные данные, чтобы показать авторизацию.
+          </p>
 
-        <form id="login-form">
-          <div class="field">
-            <label for="email">E‑mail</label>
-            <input
-              id="email"
-              type="email"
-              required
-              placeholder="demo@example.com"
-            />
-            <div class="hint">Подсказка: demo@example.com</div>
-          </div>
+          <form id="login-form">
+            <div class="field">
+              <label for="email">E‑mail</label>
+              <input
+                id="email"
+                type="email"
+                required
+                placeholder="demo@example.com"
+              />
+              <div class="hint">Подсказка: demo@example.com</div>
+            </div>
 
-          <div class="field">
-            <label for="password">Пароль</label>
-            <input
-              id="password"
-              type="password"
-              required
-              placeholder="demo1234"
-            />
-            <div class="hint">Подсказка: demo1234</div>
-          </div>
+            <div class="field">
+              <label for="password">Пароль</label>
+              <input
+                id="password"
+                type="password"
+                required
+                placeholder="demo1234"
+              />
+              <div class="hint">Подсказка: demo1234</div>
+            </div>
 
-          <div class="link-row">
-            <a href="#" class="link">Забыли пароль или нет доступа к аккаунту?</a>
-          </div>
+            <div class="link-row">
+              <a href="#" class="link">Забыли пароль или нет доступа к аккаунту?</a>
+            </div>
 
-          <button type="submit">Войти</button>
-          <div id="error" class="error">
-            Доступ запрещён. Проверьте логин и пароль.
-          </div>
-        </form>
-      </div>
+            <button type="submit">Войти</button>
+            <div id="error" class="error">
+              Доступ запрещён. Проверьте логин и пароль.
+            </div>
+          </form>
+        </div>
 
-      <!-- Задняя сторона: "Вы авторизованы" -->
-      <div class="card__side card__side--back">
-        <div class="logo" aria-label="Логотип сервиса">DG</div>
-        <h1 class="success-title">Вы авторизованы</h1>
-        <p class="success-text">
-          Демо‑доступ к личному кабинету успешно подтверждён.
-        </p>
-        <a href="/landings/" class="success-link">Вернуться к списку лендингов</a>
+        <!-- Задняя сторона: "Вы авторизованы" -->
+        <div class="card__side card__side--back">
+          <div class="logo" aria-label="Логотип сервиса">DG</div>
+          <h1 class="success-title">Вы авторизованы</h1>
+          <p class="success-text">
+            Демо‑доступ к личному кабинету успешно подтверждён.
+          </p>
+          <a href="/landings/" class="success-link">Вернуться к списку лендингов</a>
+        </div>
       </div>
     </div>
   </div>
 
   <script>
     const form = document.getElementById('login-form');
-    const card = document.getElementById('card');
+    const cardInner = document.getElementById('card-inner');
     const errorEl = document.getElementById('error');
 
     const DEMO_EMAIL = 'demo@example.com';
@@ -287,7 +295,7 @@
 
       if (email === DEMO_EMAIL && password === DEMO_PASS) {
         errorEl.style.display = 'none';
-        card.classList.add('card--flipped');
+        cardInner.classList.add('card-inner--flipped');
       } else {
         errorEl.style.display = 'block';
       }
