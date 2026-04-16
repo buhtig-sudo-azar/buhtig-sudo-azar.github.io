@@ -4,241 +4,255 @@
   <meta charset="utf-8">
   <title>Личный кабинет | Авторизация</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
- <style>
-  body {
-    margin: 0;
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    background: #0f172a;
-    color: #e5e7eb;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    perspective: 1000px;
-    padding: 16px;
-    box-sizing: border-box;
-  }
 
-  .card {
-    width: 100%;
-    max-width: 360px;
-    position: relative;
-    transform-style: preserve-3d;
-    transition: transform 0.7s ease;
-  }
-
-  .card--flipped {
-    transform: rotateY(180deg);
-  }
-
-  .card__side {
-    position: absolute;
-    inset: 0;
-    background: #020617;
-    border: 1px solid #1f2937;
-    border-radius: 12px;
-    padding: 24px 20px;
-    box-shadow: 0 24px 60px rgba(0,0,0,0.8);
-    backface-visibility: hidden;
-    box-sizing: border-box;
-  }
-
-  .card__side--back {
-    transform: rotateY(180deg);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-  }
-
-  .logo {
-    width: 40px;
-    height: 40px;
-    border-radius: 10px;
-    background: radial-gradient(circle at top, #22c55e, #16a34a 35%, #14532d 80%);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 700;
-    font-size: 18px;
-    margin-bottom: 18px;
-  }
-
-  h1 {
-    font-size: 22px;
-    margin: 0 0 6px;
-  }
-
-  .subtitle {
-    font-size: 13px;
-    color: #9ca3af;
-    margin-bottom: 20px;
-  }
-
-  .field {
-    margin-bottom: 14px;
-  }
-
-  label {
-    display: block;
-    font-size: 13px;
-    margin-bottom: 6px;
-  }
-
-  input {
-    width: 100%;
-    padding: 9px 10px;
-    border-radius: 8px;
-    border: 1px solid #374151;
-    background: #020617;
-    color: #e5e7eb;
-    font-size: 14px;
-    box-sizing: border-box;
-  }
-
-  input:focus {
-    outline: none;
-    border-color: #22c55e;
-    box-shadow: 0 0 0 1px #22c55e40;
-  }
-
-  .hint {
-    font-size: 11px;
-    color: #6b7280;
-    margin-top: 4px;
-  }
-
-  .link-row {
-    margin-top: 8px;
-    margin-bottom: 18px;
-    font-size: 13px;
-  }
-
-  .link {
-    color: #22c55e;
-    text-decoration: none;
-  }
-
-  .link:hover {
-    text-decoration: underline;
-  }
-
-  button {
-    width: 100%;
-    padding: 9px 12px;
-    border-radius: 8px;
-    border: none;
-    background: #22c55e;
-    color: #022c22;
-    font-weight: 600;
-    font-size: 14px;
-    cursor: pointer;
-  }
-
-  button:hover {
-    background: #16a34a;
-  }
-
-  .error {
-    font-size: 12px;
-    color: #fecaca;
-    margin-top: 6px;
-    display: none;
-  }
-
-  .success-title {
-    font-size: 22px;
-    margin-bottom: 8px;
-  }
-
-  .success-text {
-    font-size: 14px;
-    color: #9ca3af;
-    margin-bottom: 18px;
-  }
-
-  .success-link {
-    color: #22c55e;
-    text-decoration: none;
-    font-size: 13px;
-  }
-
-  .success-link:hover {
-    text-decoration: underline;
-  }
-
-  /* ---- Адаптив ---- */
-
-  /* Узкие экраны по ширине (маленькие телефоны) */
-  @media (max-width: 360px) {
+  <style>
+    /* Базовая раскладка: центрируем карточку, даём перспективу для 3D-флипа */
     body {
-      padding: 8px;
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #0f172a;
+      color: #e5e7eb;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      perspective: 1000px;      /* чтобы поворот карты был с 3D-эффектом */
+      padding: 16px;
+      box-sizing: border-box;
     }
 
+    /* Контейнер карты: две стороны, которые переворачиваются */
+    .card {
+      width: 100%;
+      max-width: 360px;
+      position: relative;
+      transform-style: preserve-3d;
+      transition:
+        transform 0.7s cubic-bezier(0.22, 0.61, 0.36, 1),  /* плавный флип */
+        padding 0.25s ease,
+        margin 0.25s ease,
+        box-shadow 0.25s ease;
+    }
+
+    /* Класс, который добавляем при успешном логине — запускает флип */
+    .card--flipped {
+      transform: rotateY(180deg);
+    }
+
+    /* Общий стиль обеих сторон */
     .card__side {
-      padding: 18px 14px;
+      position: absolute;
+      inset: 0;
+      background: #020617;
+      border: 1px solid #1f2937;
+      border-radius: 12px;
+      padding: 24px 20px;
+      box-shadow: 0 24px 60px rgba(0,0,0,0.8);
+      backface-visibility: hidden; /* чтобы обратная сторона не просвечивала */
+      box-sizing: border-box;
     }
 
+    /* Задняя сторона — развёрнута на 180deg, чтобы быть «изнанкой» */
+    .card__side--back {
+      transform: rotateY(180deg);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+
+    /* Маленький логотип-сигнатура */
     .logo {
-      width: 32px;
-      height: 32px;
-      font-size: 16px;
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      background: radial-gradient(circle at top, #22c55e, #16a34a 35%, #14532d 80%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 18px;
+      margin-bottom: 18px;
+    }
+
+    h1 {
+      font-size: 22px;
+      margin: 0 0 6px;
+    }
+
+    .subtitle {
+      font-size: 13px;
+      color: #9ca3af;
+      margin-bottom: 20px;
+    }
+
+    .field {
       margin-bottom: 14px;
     }
 
-    h1,
-    .success-title {
-      font-size: 19px;
-    }
-
-    .subtitle,
-    .success-text {
-      font-size: 12px;
-    }
-
-    input,
-    button {
+    label {
+      display: block;
       font-size: 13px;
-      padding: 8px 9px;
-    }
-  }
-
-  /* Очень низкие экраны (горизонталь, маленькая высота) */
-  @media (max-height: 500px) {
-    body {
-      align-items: flex-start;
+      margin-bottom: 6px;
     }
 
-    .card {
-      margin-top: 16px;
-      margin-bottom: 16px;
+    input {
+      width: 100%;
+      padding: 9px 10px;
+      border-radius: 8px;
+      border: 1px solid #374151;
+      background: #020617;
+      color: #e5e7eb;
+      font-size: 14px;
+      box-sizing: border-box;
     }
 
-    .card__side {
-      padding: 18px 16px;
-    }
-  }
-
-  /* Чуть крупнее экраны — можно дать больше воздуха */
-  @media (min-width: 768px) {
-    .card__side {
-      padding: 28px 24px;
+    input:focus {
+      outline: none;
+      border-color: #22c55e;
+      box-shadow: 0 0 0 1px #22c55e40;
     }
 
-    h1,
+    .hint {
+      font-size: 11px;
+      color: #6b7280;
+      margin-top: 4px;
+    }
+
+    .link-row {
+      margin-top: 8px;
+      margin-bottom: 18px;
+      font-size: 13px;
+    }
+
+    .link {
+      color: #22c55e;
+      text-decoration: none;
+    }
+
+    .link:hover {
+      text-decoration: underline;
+    }
+
+    button {
+      width: 100%;
+      padding: 9px 12px;
+      border-radius: 8px;
+      border: none;
+      background: #22c55e;
+      color: #022c22;
+      font-weight: 600;
+      font-size: 14px;
+      cursor: pointer;
+      transition: background 0.2s ease, transform 0.1s ease;
+    }
+
+    button:hover {
+      background: #16a34a;
+      transform: translateY(-1px);
+    }
+
+    .error {
+      font-size: 12px;
+      color: #fecaca;
+      margin-top: 6px;
+      display: none; /* покажем только при неверном логине */
+    }
+
     .success-title {
-      font-size: 24px;
+      font-size: 22px;
+      margin-bottom: 8px;
     }
 
-    .subtitle,
     .success-text {
       font-size: 14px;
+      color: #9ca3af;
+      margin-bottom: 18px;
     }
-  }
-</style>
+
+    .success-link {
+      color: #22c55e;
+      text-decoration: none;
+      font-size: 13px;
+    }
+
+    .success-link:hover {
+      text-decoration: underline;
+    }
+
+    /* ---- Адаптив ---- */
+
+    /* Очень узкие экраны по ширине (маленькие телефоны) */
+    @media (max-width: 360px) {
+      body {
+        padding: 8px;
+      }
+
+      .card__side {
+        padding: 18px 14px;
+      }
+
+      .logo {
+        width: 32px;
+        height: 32px;
+        font-size: 16px;
+        margin-bottom: 14px;
+      }
+
+      h1,
+      .success-title {
+        font-size: 19px;
+      }
+
+      .subtitle,
+      .success-text {
+        font-size: 12px;
+      }
+
+      input,
+      button {
+        font-size: 13px;
+        padding: 8px 9px;
+      }
+    }
+
+    /* Очень низкие экраны (маленькая высота, горизонталь) */
+    @media (max-height: 500px) {
+      body {
+        align-items: flex-start;   /* прижимаем карту к верху, даём скролл вниз */
+      }
+
+      .card {
+        margin-top: 16px;
+        margin-bottom: 16px;
+      }
+
+      .card__side {
+        padding: 18px 16px;
+      }
+    }
+
+    /* Широкие экраны (планшет/десктоп) — чуть больше воздуха и шрифт */
+    @media (min-width: 768px) {
+      .card__side {
+        padding: 28px 24px;
+      }
+
+      h1,
+      .success-title {
+        font-size: 24px;
+      }
+
+      .subtitle,
+      .success-text {
+        font-size: 14px;
+      }
+    }
+  </style>
 </head>
 <body>
+  <!-- Обёртка карты, на неё вешаем класс card--flipped при успешном логине -->
   <div class="card" id="card">
     <!-- Передняя сторона: форма входа -->
     <div class="card__side card__side--front">
@@ -271,7 +285,7 @@
       </form>
     </div>
 
-    <!-- Задняя сторона: Вы авторизованы -->
+    <!-- Задняя сторона: состояние "Вы авторизованы" -->
     <div class="card__side card__side--back">
       <div class="logo" aria-label="Логотип сервиса">DG</div>
       <h1 class="success-title">Вы авторизованы</h1>
@@ -283,24 +297,28 @@
   </div>
 
   <script>
+    // Берём элементы формы и контейнер карты
     const form = document.getElementById('login-form');
     const card = document.getElementById('card');
     const errorEl = document.getElementById('error');
 
+    // Демо-учётка, по которой будет считаться "успешный вход"
     const DEMO_EMAIL = 'demo@example.com';
     const DEMO_PASS = 'demo1234';
 
+    // Обработчик сабмита формы
     form.addEventListener('submit', function (e) {
-      e.preventDefault();
+      e.preventDefault(); // блокируем реальную отправку формы и перезагрузку
 
       const email = document.getElementById('email').value.trim();
       const password = document.getElementById('password').value.trim();
 
       if (email === DEMO_EMAIL && password === DEMO_PASS) {
-        // убираем сообщение об ошибке и переворачиваем карточку
+        // Если данные верные — скрываем ошибку и переворачиваем карточку
         errorEl.style.display = 'none';
         card.classList.add('card--flipped');
       } else {
+        // Если неверные — показываем сообщение об ошибке под кнопкой
         errorEl.style.display = 'block';
       }
     });
