@@ -14,16 +14,43 @@
       justify-content: center;
       align-items: center;
       min-height: 100vh;
+      perspective: 1000px;
     }
+
     .card {
+      width: 100%;
+      max-width: 360px;
+      height: 360px;
+      position: relative;
+      transform-style: preserve-3d;
+      transition: transform 0.7s ease;
+    }
+
+    .card--flipped {
+      transform: rotateY(180deg);
+    }
+
+    .card__side {
+      position: absolute;
+      inset: 0;
       background: #020617;
       border: 1px solid #1f2937;
       border-radius: 12px;
       padding: 28px 24px;
-      width: 100%;
-      max-width: 360px;
       box-shadow: 0 24px 60px rgba(0,0,0,0.8);
+      backface-visibility: hidden;
+      box-sizing: border-box;
     }
+
+    .card__side--back {
+      transform: rotateY(180deg);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+
     .logo {
       width: 40px;
       height: 40px;
@@ -36,24 +63,28 @@
       font-size: 18px;
       margin-bottom: 18px;
     }
+
     h1 {
       font-size: 22px;
       margin: 0 0 6px;
     }
+
     .subtitle {
       font-size: 13px;
       color: #9ca3af;
       margin-bottom: 20px;
     }
+
     .field {
       margin-bottom: 14px;
-      position: relative;
     }
+
     label {
       display: block;
       font-size: 13px;
       margin-bottom: 6px;
     }
+
     input {
       width: 100%;
       padding: 9px 10px;
@@ -64,28 +95,34 @@
       font-size: 14px;
       box-sizing: border-box;
     }
+
     input:focus {
       outline: none;
       border-color: #22c55e;
       box-shadow: 0 0 0 1px #22c55e40;
     }
+
     .hint {
       font-size: 11px;
       color: #6b7280;
       margin-top: 4px;
     }
+
     .link-row {
       margin-top: 8px;
       margin-bottom: 18px;
       font-size: 13px;
     }
+
     .link {
       color: #22c55e;
       text-decoration: none;
     }
+
     .link:hover {
       text-decoration: underline;
     }
+
     button {
       width: 100%;
       padding: 9px 12px;
@@ -97,76 +134,91 @@
       font-size: 14px;
       cursor: pointer;
     }
+
     button:hover {
       background: #16a34a;
     }
-    .toast {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      background: #111827;
-      border-radius: 8px;
-      padding: 10px 14px;
-      font-size: 13px;
-      display: none;
-      align-items: center;
-      gap: 8px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.7);
-    }
-    .toast--ok {
-      border-left: 3px solid #22c55e;
-      color: #bbf7d0;
-    }
-    .toast--err {
-      border-left: 3px solid #f97373;
+
+    .error {
+      font-size: 12px;
       color: #fecaca;
+      margin-top: 6px;
+      display: none;
+    }
+
+    .success-title {
+      font-size: 22px;
+      margin-bottom: 8px;
+    }
+
+    .success-text {
+      font-size: 14px;
+      color: #9ca3af;
+      margin-bottom: 18px;
+    }
+
+    .success-link {
+      color: #22c55e;
+      text-decoration: none;
+      font-size: 13px;
+    }
+
+    .success-link:hover {
+      text-decoration: underline;
     }
   </style>
 </head>
 <body>
-  <div class="card">
-    <div class="logo" aria-label="Логотип сервиса">DG</div>
+  <div class="card" id="card">
+    <!-- Передняя сторона: форма входа -->
+    <div class="card__side card__side--front">
+      <div class="logo" aria-label="Логотип сервиса">DG</div>
 
-    <h1>Вход в систему</h1>
-    <p class="subtitle">
-      Используйте демо‑учётные данные, чтобы показать авторизацию.
-    </p>
+      <h1>Вход в систему</h1>
+      <p class="subtitle">
+        Используйте демо‑учётные данные, чтобы показать авторизацию.
+      </p>
 
-    <form id="login-form">
-      <div class="field">
-        <label for="email">E‑mail</label>
-        <input id="email" type="email" required placeholder="demo@example.com">
-        <div class="hint">Подсказка: demo@example.com</div>
-      </div>
+      <form id="login-form">
+        <div class="field">
+          <label for="email">E‑mail</label>
+          <input id="email" type="email" required placeholder="demo@example.com">
+          <div class="hint">Подсказка: demo@example.com</div>
+        </div>
 
-      <div class="field">
-        <label for="password">Пароль</label>
-        <input id="password" type="password" required placeholder="demo1234">
-        <div class="hint">Подсказка: demo1234</div>
-      </div>
+        <div class="field">
+          <label for="password">Пароль</label>
+          <input id="password" type="password" required placeholder="demo1234">
+          <div class="hint">Подсказка: demo1234</div>
+        </div>
 
-      <div class="link-row">
-        <a href="#" class="link">Забыли пароль или нет доступа к аккаунту?</a>
-      </div>
+        <div class="link-row">
+          <a href="#" class="link">Забыли пароль или нет доступа к аккаунту?</a>
+        </div>
 
-      <button type="submit">Войти</button>
-    </form>
+        <button type="submit">Войти</button>
+        <div id="error" class="error">Доступ запрещён. Проверьте логин и пароль.</div>
+      </form>
+    </div>
+
+    <!-- Задняя сторона: Вы авторизованы -->
+    <div class="card__side card__side--back">
+      <div class="logo" aria-label="Логотип сервиса">DG</div>
+      <h1 class="success-title">Вы авторизованы</h1>
+      <p class="success-text">
+        Демо‑доступ к личному кабинету успешно подтверждён.
+      </p>
+      <a href="/landings/" class="success-link">Вернуться к списку лендингов</a>
+    </div>
   </div>
-
-  <div id="toast" class="toast"></div>
 
   <script>
     const form = document.getElementById('login-form');
-    const toast = document.getElementById('toast');
+    const card = document.getElementById('card');
+    const errorEl = document.getElementById('error');
 
-    function showToast(message, ok = true) {
-      toast.textContent = message;
-      toast.className = 'toast ' + (ok ? 'toast--ok' : 'toast--err');
-      toast.style.display = 'flex';
-      setTimeout(() => {
-        toast.style.display = 'none';
-      }, 2500);
-    }
+    const DEMO_EMAIL = 'demo@example.com';
+    const DEMO_PASS = 'demo1234';
 
     form.addEventListener('submit', function (e) {
       e.preventDefault();
@@ -174,14 +226,12 @@
       const email = document.getElementById('email').value.trim();
       const password = document.getElementById('password').value.trim();
 
-      // демо‑учётка
-      const DEMO_EMAIL = 'demo@example.com';
-      const DEMO_PASS = 'demo1234';
-
       if (email === DEMO_EMAIL && password === DEMO_PASS) {
-        showToast('Вы авторизованы', true);
+        // убираем сообщение об ошибке и переворачиваем карточку
+        errorEl.style.display = 'none';
+        card.classList.add('card--flipped');
       } else {
-        showToast('Доступ запрещён', false);
+        errorEl.style.display = 'block';
       }
     });
   </script>
