@@ -4,43 +4,31 @@
   <meta charset="utf-8">
   <title>Личный кабинет | Авторизация</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-
   <style>
-    :root {
-      color-scheme: dark;
-    }
-
-    * {
-      box-sizing: border-box;
-    }
-
     body {
       margin: 0;
       font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      background: #020617;
+      background: #0f172a;
       color: #e5e7eb;
-      min-height: 100vh;
       display: flex;
-      align-items: center;
       justify-content: center;
-      padding: 16px;
+      align-items: center;
+      min-height: 100vh;
     }
-
     .card {
-      width: 100%;
-      max-width: 380px;
       background: #020617;
-      border-radius: 16px;
       border: 1px solid #1f2937;
-      padding: 24px 20px 22px;
-      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.85);
+      border-radius: 12px;
+      padding: 28px 24px;
+      width: 100%;
+      max-width: 360px;
+      box-shadow: 0 24px 60px rgba(0,0,0,0.8);
     }
-
     .logo {
       width: 40px;
       height: 40px;
-      border-radius: 12px;
-      background: radial-gradient(circle at top, #22c55e, #16a34a 40%, #14532d 85%);
+      border-radius: 10px;
+      background: radial-gradient(circle at top, #22c55e, #16a34a 35%, #14532d 80%);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -48,67 +36,60 @@
       font-size: 18px;
       margin-bottom: 18px;
     }
-
     h1 {
-      margin: 0 0 6px;
       font-size: 22px;
+      margin: 0 0 6px;
     }
-
     .subtitle {
-      margin: 0 0 20px;
       font-size: 13px;
       color: #9ca3af;
+      margin-bottom: 20px;
     }
-
     .field {
       margin-bottom: 14px;
+      position: relative;
     }
-
     label {
       display: block;
-      margin-bottom: 6px;
       font-size: 13px;
+      margin-bottom: 6px;
     }
-
     input {
       width: 100%;
-      padding: 10px 11px;
-      border-radius: 9px;
+      padding: 9px 10px;
+      border-radius: 8px;
       border: 1px solid #374151;
       background: #020617;
       color: #e5e7eb;
       font-size: 14px;
+      box-sizing: border-box;
     }
-
-    input::placeholder {
-      color: #6b7280;
-    }
-
     input:focus {
       outline: none;
       border-color: #22c55e;
       box-shadow: 0 0 0 1px #22c55e40;
     }
-
+    .hint {
+      font-size: 11px;
+      color: #6b7280;
+      margin-top: 4px;
+    }
     .link-row {
-      margin-top: 6px;
+      margin-top: 8px;
       margin-bottom: 18px;
       font-size: 13px;
     }
-
     .link {
       color: #22c55e;
       text-decoration: none;
     }
-
     .link:hover {
       text-decoration: underline;
     }
-
     button {
       width: 100%;
-      padding: 10px 12px;
-      border-radius: 9px;
+      padding: 9px 12px;
+      border-radius: 8px;
       border: none;
       background: #22c55e;
       color: #022c22;
@@ -116,69 +97,93 @@
       font-size: 14px;
       cursor: pointer;
     }
-
-    button:active {
-      transform: translateY(1px);
-    }
-
     button:hover {
       background: #16a34a;
     }
-
-    /* Очень маленькие экраны */
-    @media (max-width: 360px) {
-      .card {
-        padding: 20px 16px 18px;
-        border-radius: 12px;
-      }
-      h1 {
-        font-size: 20px;
-      }
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: #111827;
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-size: 13px;
+      display: none;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.7);
     }
-
-    /* Чуть побольше, можно центрировать чуть выше */
-    @media (min-width: 768px) {
-      body {
-        padding: 24px;
-      }
+    .toast--ok {
+      border-left: 3px solid #22c55e;
+      color: #bbf7d0;
+    }
+    .toast--err {
+      border-left: 3px solid #f97373;
+      color: #fecaca;
     }
   </style>
 </head>
 <body>
-  <main class="card" aria-label="Форма входа в личный кабинет">
-    <div class="logo">DG</div>
+  <div class="card">
+    <div class="logo" aria-label="Логотип сервиса">DG</div>
 
     <h1>Вход в систему</h1>
     <p class="subtitle">
-      Используйте корпоративный аккаунт, чтобы попасть в панель управления.
+      Используйте демо‑учётные данные, чтобы показать авторизацию.
     </p>
 
-    <!-- Статичный муляж, без обработки -->
-    <div class="field">
-      <label for="email">E‑mail</label>
-      <input
-        id="email"
-        type="email"
-        value="azarovvvit@mail.ru"
-        aria-label="E‑mail"
-        placeholder="you@example.com">
-    </div>
+    <form id="login-form">
+      <div class="field">
+        <label for="email">E‑mail</label>
+        <input id="email" type="email" required placeholder="demo@example.com">
+        <div class="hint">Подсказка: demo@example.com</div>
+      </div>
 
-    <div class="field">
-      <label for="password">Пароль</label>
-      <input
-        id="password"
-        type="password"
-        value="••••••••••"
-        aria-label="Пароль"
-        placeholder="••••••••••">
-    </div>
+      <div class="field">
+        <label for="password">Пароль</label>
+        <input id="password" type="password" required placeholder="demo1234">
+        <div class="hint">Подсказка: demo1234</div>
+      </div>
 
-    <div class="link-row">
-      <a href="#" class="link">Забыли пароль или нет доступа к аккаунту?</a>
-    </div>
+      <div class="link-row">
+        <a href="#" class="link">Забыли пароль или нет доступа к аккаунту?</a>
+      </div>
 
-    <button type="button">Войти</button>
-  </main>
+      <button type="submit">Войти</button>
+    </form>
+  </div>
+
+  <div id="toast" class="toast"></div>
+
+  <script>
+    const form = document.getElementById('login-form');
+    const toast = document.getElementById('toast');
+
+    function showToast(message, ok = true) {
+      toast.textContent = message;
+      toast.className = 'toast ' + (ok ? 'toast--ok' : 'toast--err');
+      toast.style.display = 'flex';
+      setTimeout(() => {
+        toast.style.display = 'none';
+      }, 2500);
+    }
+
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value.trim();
+
+      // демо‑учётка
+      const DEMO_EMAIL = 'demo@example.com';
+      const DEMO_PASS = 'demo1234';
+
+      if (email === DEMO_EMAIL && password === DEMO_PASS) {
+        showToast('Вы авторизованы', true);
+      } else {
+        showToast('Доступ запрещён', false);
+      }
+    });
+  </script>
 </body>
 </html>
