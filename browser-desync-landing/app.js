@@ -1,122 +1,181 @@
 "use strict";
 
-$(function () {
+// Ждём загрузки DOM
+document.addEventListener("DOMContentLoaded", function () {
   // Универсальный плавный скролл к элементу
-  const scrollToElement = ($el, delta = 50) => {
-    if ($el.length === 0) return;
+  function scrollToElement(el, delta) {
+    if (!el) return;
+    var rect = el.getBoundingClientRect();
+    var offset = window.pageYOffset + rect.top - (delta || 50);
+    window.scrollTo({
+      top: offset,
+      behavior: "smooth"
+    });
+  }
 
-    const offset = $el.offset().top;
+  // Плавный скролл по data-scroll (и десктоп, и мобильное меню)
+  document.addEventListener("click", function (e) {
+    var link = e.target.closest("[data-scroll]");
+    if (!link) return;
 
-    $("html, body").animate(
-      {
-        scrollTop: offset - delta
-      },
-      700
-    );
-  };
+    e.preventDefault();
+    var targetSelector = link.getAttribute("data-scroll");
+    var target = document.querySelector(targetSelector);
 
-  // Плавный скролл по ссылкам с data-scroll
-  $("[data-scroll]").on("click", function (event) {
-    event.preventDefault();
-
-    const elementId = $(this).data("scroll");
-    const $target = $(elementId);
-    const delta = elementId === "#contacts" ? 0 : 50;
-
-    scrollToElement($target, delta);
+    var delta = targetSelector === "#contacts" ? 0 : 50;
+    scrollToElement(target, delta);
   });
 
-  // Burger / Nav Toggle
-  const $nav = $("#nav");
-  const $navToggle = $("#navToggle");
+  // Кнопки «К демо» (шапка) и «Запустить демо» (hero)
+  var scrollToDemoBtn = document.getElementById("scrollToDemoBtn");
+  var mainToDemo = document.getElementById("mainToDemo");
 
-  $navToggle.on("click", function (event) {
-    event.preventDefault();
-    $nav.toggleClass("show");
-  });
+  if (scrollToDemoBtn) {
+    scrollToDemoBtn.addEventListener("click", function (e) {
+      e.preventDefault();
+      var demo = document.getElementById("demo");
+      scrollToElement(demo, 50);
+    });
+  }
 
-  // Кнопки «К демо» и «Запустить демо»
-  $("#scrollToDemo, #mainGoToDemo").on("click", function (event) {
-    event.preventDefault();
-    scrollToElement($("#demo"), 50);
-  });
+  if (mainToDemo) {
+    mainToDemo.addEventListener("click", function (e) {
+      e.preventDefault();
+      var demo = document.getElementById("demo");
+      scrollToElement(demo, 50);
+    });
+  }
 
-  // Обработка демо-формы (симуляция Browser Desync)
-  $("#demoForm").on("submit", function (event) {
-    event.preventDefault();
+  // Burger / mobile nav toggle
+  (function () {
+    var navToggle = document.getElementById("navToggle");
+    var navMobile = document.getElementById("navMobile");
+    if (!navToggle || !navMobile) return;
 
-    const $form = $(this);
-    const header = $.trim($form.find("input[name='header']").val());
-    const body = $.trim($form.find("textarea[name='body']").val());
-    const $submitBtn = $form.find(".demo__submit");
+    navToggle.addEventListener("click", function (e) {
+      e.preventDefault();
+      if (navMobile.style.display === "none" || navMobile.style.display === "") {
+        navMobile.style.display = "flex";
+      } else {
+        navMobile.style.display = "none";
+      }
+    });
 
-    const $result = $("#demoResult");
-    const $text = $result.find(".demo__result-text");
-    const $error = $("#demoError");
+    navMobile.addEventListener("click", function (e) {
+      if (e.target.matches(".nav__link")) {
+        navMobile.style.display = "none";
+      }
+    });
+  })();
 
-    // Сбрасываем сообщение об ошибке
-    $error.hide();
+  // Обработка демо‑формы (симуляция Browser Desync)
+  (function () {
+    var form = document.getElementById("demoForm");
+    var errorEl = document.getElementById("demoError");
+    var emptyEl = document.getElementById("demoResultEmpty");
+    var contentEl = document.getElementById("demoResultContent");
+    if (!form || !errorEl || !emptyEl || !contentEl) return;
 
-    // Если оба поля пустые — показываем подсказку под формой
-    if (!header && !body) {
-      $error.show();
-      return;
-    }
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
 
-    // Визуально показываем отправку
-    const originalBtnText = $submitBtn.text();
-    $submitBtn.text("Отправка…").prop("disabled", true);
+      var headerInput = form.querySelector("input[name='header']");
+      var bodyTextarea = form.querySelector("textarea[name='body']");
+      var submitBtn = form.querySelector("button[type='submit']");
 
-    let browserView = "";
-    let backendView = "";
-    let extraHint = "";
+      var header = (headerInput && headerInput.value ? headerInput.value : "").trim();
+      var body = (bodyTextarea && bodyTextarea.value ? bodyTextarea.value : "").trim();
 
-    const headerLower = header.toLowerCase();
-    const bodyLower = body.toLowerCase();
+      // Сбрасываем ошибку
+      errorEl.style.display = "none";
 
-    if (headerLower.includes("content-length")) {
-      browserView =
-        "Браузер полагается на вычисленную длину тела ответа и может «отрезать» часть контента.";
-      backendView =
-        "Бэкенд может принять тело целиком или, наоборот, добавить лишние байты — возникает рассинхрон.";
-    } else if (headerLower.includes("transfer-encoding")) {
-      browserView =
-        "Браузер обрабатывает ответ как chunked-поток и завершает документ по первому корректному окончанию.";
-      backendView =
-        "Прокси/сервер может трактовать границы чанков иначе, что открывает путь к внедрению содержимого следующего ответа.";
-    } else {
-      browserView =
-        "Браузер интерпретирует ответ как обычный документ без явных аномалий.";
-      backendView =
-        "Но при специфическом сочетании заголовков и тела прокси/сервер могут разбирать поток иначе, создавая почву для Browser Desync.";
-    }
+      // Если оба поля пустые — показываем подсказку под формой
+      if (!header && !body) {
+        errorEl.style.display = "block";
+        return;
+      }
 
-    if (bodyLower.includes("<script") || bodyLower.includes("</html")) {
-      extraHint =
-        "Вы добавили HTML/JS-фрагмент, который в случае успешного Browser Desync может быть внедрён в ответ страницы.";
-    }
+      // Визуально показываем «отправку»
+      var originalBtnText = submitBtn.textContent;
+      submitBtn.textContent = "Отправка…";
+      submitBtn.disabled = true;
 
-    const payloadPreview = body
-      ? body.slice(0, 120) + (body.length > 120 ? "…" : "")
-      : "пустое тело запроса";
+      var browserView = "";
+      var backendView = "";
+      var extraHint = "";
 
-    const safePayload = $("<div>").text(payloadPreview).html();
+      var headerLower = header.toLowerCase();
+      var bodyLower = body.toLowerCase();
 
-    $text.html(
-      `
-<strong>Краткое резюме:</strong><br>
-Сервер интерпретировал ответ так: ${backendView}<br>
-Браузер интерпретировал ответ так: ${browserView}<br><br>
-<strong>Фрагмент полезной нагрузки (потенциальный «лишний» блок):</strong><br>
-<code>${safePayload}</code><br><br>
-${extraHint ? `<strong>Дополнительно:</strong> ${extraHint}<br><br>` : ""}
-<strong>Комментарий:</strong> Это упрощённая текстовая симуляция. В реальном стенде
-можно визуально разделить байтовый поток на части «А» (видит сервер) и «Б» (видит браузер).
-      `
-    );
+      if (headerLower.indexOf("content-length") !== -1) {
+        browserView =
+          "Браузер полагается на вычисленную длину тела ответа и может «отрезать» часть контента.";
+        backendView =
+          "Бэкенд может принять тело целиком или, наоборот, добавить лишние байты — возникает рассинхрон.";
+      } else if (headerLower.indexOf("transfer-encoding") !== -1) {
+        browserView =
+          "Браузер обрабатывает ответ как chunked-поток и завершает документ по первому корректному окончанию.";
+        backendView =
+          "Прокси/сервер может трактовать границы чанков иначе, что открывает путь к внедрению содержимого следующего ответа.";
+      } else {
+        browserView =
+          "Браузер интерпретирует ответ как обычный документ без явных аномалий.";
+        backendView =
+          "Но при специфическом сочетании заголовков и тела прокси/сервер могут разбирать поток иначе, создавая почву для Browser Desync.";
+      }
 
-    setTimeout(() => {
-      $submitBtn.text(originalBtnText).prop("disabled", false);
-    }, 400);
-  });
+      if (bodyLower.indexOf("<script") !== -1 || bodyLower.indexOf("</html") !== -1) {
+        extraHint =
+          "Вы добавили HTML/JS-фрагмент, который в случае успешного Browser Desync может быть внедрён в ответ страницы.";
+      }
+
+      var payloadPreview;
+      if (body) {
+        payloadPreview = body.slice(0, 120);
+        if (body.length > 120) {
+          payloadPreview += "…";
+        }
+      } else {
+        payloadPreview = "пустое тело запроса";
+      }
+
+      // Экранируем, чтобы не исполнялся HTML
+      function escapeHtml(str) {
+        return str
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;")
+          .replace(/'/g, "&#39;");
+      }
+
+      var safePayload = escapeHtml(payloadPreview);
+
+      var html =
+        "<strong>Краткое резюме:</strong><br>" +
+        "Сервер интерпретировал ответ так: " + escapeHtml(backendView) + "<br><br>" +
+        "Браузер интерпретировал ответ так: " + escapeHtml(browserView) + "<br><br>" +
+        "<strong>Фрагмент полезной нагрузки (потенциальный «лишний» блок):</strong><br>" +
+        "<code>" + safePayload + "</code><br><br>";
+
+      if (extraHint) {
+        html += "<strong>Дополнительно:</strong> " + escapeHtml(extraHint) + "<br><br>";
+      }
+
+      html +=
+        "<strong>Комментарий:</strong> Это упрощённая текстовая симуляция. " +
+        "В реальном стенде можно визуально разделить байтовый поток на части «А» (видит сервер) " +
+        "и «Б» (видит браузер).";
+
+      // Показываем результат в новой карточке
+      emptyEl.style.display = "none";
+      contentEl.style.display = "block";
+      contentEl.innerHTML = html;
+
+      setTimeout(function () {
+        submitBtn.textContent = originalBtnText;
+        submitBtn.disabled = false;
+      }, 400);
+    });
+  })();
 });
