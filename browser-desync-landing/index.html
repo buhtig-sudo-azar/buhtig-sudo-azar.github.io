@@ -3,106 +3,655 @@
 <head>
   <meta charset="UTF-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  />
   <title>Browser Desync — демо-лендинг</title>
-
   <meta
     name="description"
-    content="Демонстрационный лендинг, посвящённый уязвимости Browser Desync: краткое объяснение, сценарии атак и демо-зона для экспериментов."
-  />
-  <meta name="robots" content="index,follow" />
-  <meta
-    name="keywords"
-    content="browser desync, desync, http desync, request smuggling, безопасность, web security, demo"
+    content="Демонстрационный лендинг по уязвимости Browser Desync: краткое объяснение, сценарии атак и демо-зона."
   />
 
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link
-    href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;700;900&display=swap"
-    rel="stylesheet"
-  />
+  <style>
+    :root {
+      --bg-main: #050814;
+      --bg-elevated: rgba(15, 23, 42, 0.9);
+      --bg-panel: #020617;
+      --border-subtle: rgba(148, 163, 184, 0.3);
+      --border-dashed: #334155;
+      --accent: #22d3ee;
+      --accent-alt: #4f46e5;
+      --text-main: #e5e7eb;
+      --text-muted: #94a3b8;
+      --radius-lg: 16px;
+      --radius-md: 12px;
+      --shadow-strong: 0 18px 45px rgba(15, 23, 42, 0.9);
+      --shadow-soft: 0 12px 30px rgba(34, 211, 238, 0.35);
+    }
 
-  <link rel="stylesheet" href="css/styles.min.css" />
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      background: radial-gradient(circle at top, #0b1020 0, #050814 45%, #020617 100%);
+      color: var(--text-main);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.6;
+    }
+
+    body {
+      min-height: 100vh;
+    }
+
+    a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    code {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+        "Liberation Mono", "Courier New", monospace;
+      font-size: 0.85rem;
+      background: rgba(15, 23, 42, 0.9);
+      padding: 1px 4px;
+      border-radius: 4px;
+    }
+
+    .container {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 0 16px;
+    }
+
+    section {
+      padding: 40px 0;
+    }
+
+    @media (min-width: 1024px) {
+      section {
+        padding: 64px 0;
+      }
+    }
+
+    /* Header / nav */
+
+    .header {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      backdrop-filter: blur(12px);
+      background: rgba(15, 23, 42, 0.9);
+      border-bottom: 1px solid rgba(15, 23, 42, 0.9);
+    }
+
+    .header__inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 16px;
+      max-width: 960px;
+      margin: 0 auto;
+    }
+
+    .header__logo {
+      font-weight: 800;
+      font-size: 1.1rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--accent);
+      display: flex;
+      flex-direction: column;
+      line-height: 1.2;
+    }
+
+    .nav {
+      display: none;
+      gap: 20px;
+    }
+
+    .nav__link {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+    }
+
+    .nav__link:hover {
+      color: var(--accent);
+    }
+
+    .call__btn {
+      display: none;
+    }
+
+    /* Burger */
+
+    .burger {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-size: 0.8rem;
+      background: none;
+      border: none;
+      padding: 4px;
+    }
+
+    .burger__circle {
+      width: 24px;
+      height: 24px;
+      border-radius: 999px;
+      border: 1px solid var(--border-subtle);
+      position: relative;
+    }
+
+    .burger__circle::before,
+    .burger__circle::after {
+      content: "";
+      position: absolute;
+      left: 6px;
+      right: 6px;
+      height: 2px;
+      border-radius: 999px;
+      background: var(--accent);
+    }
+
+    .burger__circle::before {
+      top: 8px;
+    }
+
+    .burger__circle::after {
+      bottom: 8px;
+    }
+
+    .burger__label {
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+    }
+
+    /* Desktop nav */
+
+    @media (min-width: 768px) {
+      .nav {
+        display: flex;
+        align-items: center;
+      }
+
+      .call__btn {
+        display: inline-flex;
+        margin-left: 16px;
+      }
+
+      .burger {
+        display: none;
+      }
+    }
+
+    /* Mobile nav dropdown */
+
+    .nav--mobile {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      padding: 8px 16px 12px;
+      border-top: 1px solid rgba(15, 23, 42, 0.9);
+      background: rgba(15, 23, 42, 0.97);
+    }
+
+    .nav--mobile .nav__link {
+      padding: 4px 0;
+    }
+
+    /* Buttons */
+
+    .btn-primary,
+    .main__btn,
+    .call__btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 10px 18px;
+      border-radius: 999px;
+      border: none;
+      cursor: pointer;
+      font-weight: 500;
+      font-size: 0.95rem;
+      background: linear-gradient(135deg, var(--accent-alt), var(--accent));
+      color: #fff;
+      box-shadow: var(--shadow-soft);
+      transition: transform 0.1s ease, box-shadow 0.1s ease, opacity 0.15s ease;
+      white-space: nowrap;
+    }
+
+    .btn-primary:hover,
+    .main__btn:hover,
+    .call__btn:hover {
+      transform: translateY(-1px);
+    }
+
+    .btn-primary:active,
+    .main__btn:active,
+    .call__btn:active {
+      transform: translateY(0);
+      box-shadow: 0 6px 18px rgba(15, 23, 42, 0.9);
+    }
+
+    /* Hero */
+
+    .main {
+      padding-top: 48px;
+    }
+
+    .main__inner {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 32px;
+      align-items: center;
+    }
+
+    @media (min-width: 768px) {
+      .main__inner {
+        grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
+      }
+    }
+
+    .main h1 {
+      font-size: 1.75rem;
+      margin: 0 0 12px;
+    }
+
+    @media (min-width: 1024px) {
+      .main h1 {
+        font-size: 2.5rem;
+      }
+    }
+
+    .main__description {
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      margin-bottom: 20px;
+    }
+
+    .main__img--desync {
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border-subtle);
+      background:
+        radial-gradient(circle at top left, rgba(79, 70, 229, 0.5), transparent),
+        radial-gradient(circle at bottom right, rgba(34, 211, 238, 0.5), transparent);
+      min-height: 180px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      font-size: 0.9rem;
+      text-align: center;
+    }
+
+    /* Typography */
+
+    h2 {
+      font-size: 1.5rem;
+      margin-bottom: 10px;
+    }
+
+    @media (min-width: 1024px) {
+      h2 {
+        font-size: 1.8rem;
+      }
+    }
+
+    h3 {
+      font-size: 0.95rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--accent);
+      margin-bottom: 6px;
+    }
+
+    h4 {
+      font-size: 1rem;
+      margin: 0 0 6px;
+    }
+
+    .about__description,
+    .attack__card p,
+    .demo__text p,
+    .contacts__text p {
+      font-size: 0.95rem;
+      color: var(--text-muted);
+    }
+
+    /* Attack section */
+
+    .attack__grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 16px;
+      margin-top: 16px;
+    }
+
+    @media (min-width: 768px) {
+      .attack__grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    .attack__card {
+      background: rgba(15, 23, 42, 0.8);
+      border-radius: var(--radius-md);
+      border: 1px solid rgba(51, 65, 85, 0.8);
+      padding: 16px 18px;
+    }
+
+    /* Demo layout */
+
+    .demo__inner {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 32px;
+    }
+
+    @media (min-width: 768px) {
+      .demo__inner {
+        grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
+      }
+    }
+
+    /* Howto panel */
+
+    .demo-howto {
+      margin-top: 18px;
+      background: var(--bg-panel);
+      padding: 12px 14px;
+      border-radius: var(--radius-md);
+      border: 1px dashed var(--border-dashed);
+    }
+
+    .demo-howto__list {
+      margin: 10px 0 0;
+      padding-left: 0;
+      list-style: none;
+    }
+
+    .demo-howto__list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+    }
+
+    .step-badge {
+      flex-shrink: 0;
+      width: 20px;
+      height: 20px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid var(--accent);
+      color: var(--accent);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.7rem;
+    }
+
+    /* Demo side: form + result */
+
+    .demo__side {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .demo-card {
+      background: var(--bg-elevated);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border-subtle);
+      padding: 20px 24px;
+      box-shadow: var(--shadow-strong);
+    }
+
+    .demo-card__title {
+      margin-top: 0;
+      margin-bottom: 14px;
+      font-size: 1.05rem;
+    }
+
+    .demo-field {
+      display: block;
+      margin-bottom: 16px;
+    }
+
+    .demo-field__label {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    .demo-input,
+    .demo-textarea {
+      display: block;
+      width: 100%;
+      margin-top: 8px;
+      background: #020617;
+      border-radius: 10px;
+      border: 1px solid #334155;
+      padding: 10px 12px;
+      color: #e5e7eb;
+      font-size: 0.95rem;
+      outline: none;
+      resize: vertical;
+      transition: border-color 0.15s, box-shadow 0.15s, background 0.15s;
+    }
+
+    .demo-input:focus,
+    .demo-textarea:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 1px rgba(34, 211, 238, 0.4);
+      background: #020617;
+    }
+
+    .demo-error {
+      font-size: 0.85rem;
+      color: #f97373;
+      margin-bottom: 10px;
+    }
+
+    /* Demo result */
+
+    .demo-result {
+      background: #020617;
+      border-radius: var(--radius-lg);
+      border: 1px solid rgba(148, 163, 184, 0.6);
+      padding: 18px 20px;
+      box-shadow: 0 14px 36px rgba(15, 23, 42, 0.9);
+    }
+
+    .demo-result__header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .demo-result__icon {
+      width: 26px;
+      height: 26px;
+      border-radius: 999px;
+      background: rgba(34, 211, 238, 0.1);
+      border: 1px solid rgba(34, 211, 238, 0.7);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      color: var(--accent);
+    }
+
+    .demo-result__title {
+      font-size: 1rem;
+      margin: 0;
+    }
+
+    .demo-result__empty {
+      font-size: 0.85rem;
+      color: #0f172a;
+      background: rgba(59, 130, 246, 0.12);
+      border-radius: 10px;
+      padding: 10px 12px;
+      margin-bottom: 10px;
+    }
+
+    .demo-result__content {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+        "Liberation Mono", "Courier New", monospace;
+      font-size: 0.85rem;
+      color: var(--text-main);
+      white-space: pre-wrap;
+      background: rgba(15, 23, 42, 0.9);
+      border-radius: 10px;
+      padding: 10px 12px;
+      margin-bottom: 10px;
+    }
+
+    .demo-result__note {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    /* Contacts + footer */
+
+    .contacts__inner {
+      border-top: 1px solid rgba(30, 64, 175, 0.7);
+      padding-top: 32px;
+    }
+
+    .footer {
+      padding: 16px 0 24px;
+      margin-top: 16px;
+      border-top: 1px solid rgba(15, 23, 42, 0.9);
+    }
+
+    .footer__inner {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    .footer__brand {
+      font-weight: 600;
+    }
+
+    @media (min-width: 640px) {
+      .footer__inner {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+      }
+    }
+  </style>
 </head>
 <body>
-  <!-- Header -->
   <header class="header">
     <div class="header__inner">
       <div class="header__logo">
-        Browser<br />Desync
+        <span>Browser</span>
+        <span>Desync</span>
       </div>
-      <nav class="nav" id="nav">
+
+      <nav class="nav" id="navDesktop">
         <a href="#about" class="nav__link" data-scroll="#about">О уязвимости</a>
         <a href="#attack" class="nav__link" data-scroll="#attack">Сценарий атаки</a>
         <a href="#demo" class="nav__link" data-scroll="#demo">Демо-зона</a>
         <a href="#contacts" class="nav__link" data-scroll="#contacts">Контакты</a>
       </nav>
-      <button class="call__btn" id="scrollToDemo">К демо</button>
-      <div class="burger" id="navToggle">
-        <div class="burger__circle"></div>
-        <div class="burger__item">menu</div>
-      </div>
+
+      <button class="call__btn" id="scrollToDemoBtn">К демо</button>
+
+      <button class="burger" id="navToggle" aria-label="Меню">
+        <span class="burger__circle"></span>
+        <span class="burger__label">menu</span>
+      </button>
     </div>
+
+    <!-- mobile nav будет вставляться JS-ом -->
+    <nav class="nav nav--mobile" id="navMobile" style="display:none;">
+      <a href="#about" class="nav__link" data-scroll="#about">О уязвимости</a>
+      <a href="#attack" class="nav__link" data-scroll="#attack">Сценарий атаки</a>
+      <a href="#demo" class="nav__link" data-scroll="#demo">Демо-зона</a>
+      <a href="#contacts" class="nav__link" data-scroll="#contacts">Контакты</a>
+    </nav>
   </header>
 
-  <!-- Hero -->
   <section class="main" id="top">
     <div class="container">
       <div class="main__inner">
         <div class="main__text">
-          <h1>Browser Desync<br />Demo</h1>
+          <h1>Browser Desync Demo</h1>
           <div class="main__description">
-            Небольшой лендинг, который демонстрирует идею Browser Desync‑атак
-            и может использоваться как тестовый стенд при изучении веб‑безопасности.
+            Учебный лендинг про Browser Desync‑атаки: краткое объяснение, схема эксплуатации
+            и демо‑форма, имитирующая работу с «подозрительными» HTTP‑запросами.
           </div>
-          <button class="main__btn" id="mainGoToDemo">Запустить демо</button>
+          <button class="main__btn" id="mainToDemo">Запустить демо</button>
         </div>
+
         <div class="main__img main__img--desync">
-          <!-- можно позже заменить на SVG/картинку -->
           <span>HTTP<br />Desync</span>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- About -->
   <section class="about" id="about">
     <div class="container">
       <div class="about__inner">
         <div class="about__text">
           <h3>О уязвимости</h3>
           <h2>Что такое Browser Desync</h2>
+
           <div class="about__description">
-            Browser Desync — класс атак, при которых браузер и сервер начинают
-            по‑разному интерпретировать структуру HTTP‑ответа. Это позволяет
-            внедрять произвольный контент или подменять ответы для пользователя.
+            Browser Desync — это класс атак, при которых браузер и сервер по‑разному
+            интерпретируют структуру HTTP‑ответа. В результате часть байтов может быть
+            воспринята браузером как отдельный документ, что открывает окно для внедрения
+            произвольного HTML/JS‑кода.
           </div>
+
           <div class="about__description">
-            В отличие от классического HTTP Request Smuggling, фокус здесь
-            именно на несинхронности между браузером и цепочкой прокси/серверов,
-            что делает атаки более практичными против реальных приложений.
+            В отличие от классического HTTP Request Smuggling, фокус смещён на
+            несинхронность между браузером и цепочкой прокси/бэкендов. Это делает атаки
+            более практичными для реальных приложений и SaaS‑сервисов.
           </div>
+
           <div class="about__description">
-            Например, прокси может верить заголовку <code>Content-Length</code>,
-            а браузер — границам <code>Transfer-Encoding: chunked</code>.
-            Если злоумышленник подбирает такое сочетание длины и содержимого,
-            часть байтов ответа «выпадает» из нормального потока и браузер
-            интерпретирует её как отдельный HTML-документ. В эту «лишнюю» часть
-            и встраивается вредоносный JavaScript.
+            Типичный триггер — комбинация конфликтующих заголовков вроде
+            <code>Content-Length</code> и <code>Transfer-Encoding</code>, нестандартные
+            разделители или особенности кеширования и сжатия. Всё это может привести к тому,
+            что часть ответа выпадет из «нормального» потока и будет интерпретирована иначе.
           </div>
+
           <div class="about__description">
-            Демо-форма ниже упрощённо иллюстрирует идею: вы задаёте необычные
-            заголовки и/или тело, а симуляция показывает, как ответ может «поехать»
-            и где появляется окно для внедрения кода.
+            Ниже на демо‑форме можно поиграть с упрощённой моделью: вы задаёте
+            условные заголовки и тело, а симуляция показывает, как разные интерпретации
+            могут разбить ответ на несколько фрагментов.
           </div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- Attack -->
   <section class="attack" id="attack">
     <div class="container">
       <div class="attack__inner">
@@ -113,30 +662,34 @@
           <div class="attack__card">
             <h4>1. Подготовка среды</h4>
             <p>
-              Атакующий ищет пограничные кейсы обработки заголовков
-              и тела ответа: нестандартные разделители, некорректные длины,
-              особенности кэширования и проксирования.
+              Атакующий исследует связку браузер → прокси → сервер, ищет граничные
+              случаи обработки заголовков и тела: конфликтующие длины, нестандартные
+              разделители, особенности кеширования.
             </p>
           </div>
+
           <div class="attack__card">
             <h4>2. Несинхронность</h4>
             <p>
-              Браузер и сервер по‑разному разбирают поток байтов: для браузера
-              это один документ, для сервера — несколько ответов или наоборот.
+              Браузер и сервер расходятся в понимании границ ответа. Для одного это
+              единый документ, для другого — несколько ответов подряд или наоборот.
             </p>
           </div>
+
           <div class="attack__card">
             <h4>3. Встраивание полезной нагрузки</h4>
             <p>
-              Внутрь «лишней» части ответа внедряется HTML/JS‑код,
-              который получит жертва в рамках доверенного происхождения (origin).
+              В «лишний» фрагмент потока внедряется HTML/JS‑код, который браузер
+              интерпретирует в контексте доверенного сайта (origin), минуя привычные
+              проверки.
             </p>
           </div>
+
           <div class="attack__card">
             <h4>4. Эксплуатация</h4>
             <p>
-              Дальше возможны XSS‑атаки, кража данных, подмена контента страницы
-              и другие сценарии в зависимости от контекста приложения.
+              Далее возможны XSS‑атаки, подмена контента, кража данных из DOM,
+              обход CSP и другие техники — всё зависит от конкретного приложения.
             </p>
           </div>
         </div>
@@ -144,7 +697,6 @@
     </div>
   </section>
 
-  <!-- Demo -->
   <section class="demo" id="demo">
     <div class="container">
       <div class="demo__inner">
@@ -152,87 +704,101 @@
           <h3>Демо‑зона</h3>
           <h2>Тестовый запрос</h2>
           <p>
-            Ниже — упрощённая форма, имитирующая отправку «подозрительного» запроса.
-            В реальной лаборатории здесь могут быть свои эндпоинты, прокси, анализаторы
-            и визуализация смещения ответа.
+            Это безопасная учебная симуляция. Здесь не выполняются реальные HTTP‑запросы,
+            всё происходит в вашем браузере с фиктивными данными.
           </p>
           <p>
-            Заполните заголовок или тело запроса и нажмите «Отправить тест», чтобы
-            увидеть результат симуляции ниже.
+            Заполните заголовок или тело запроса и нажмите «Отправить тест».
+            Ниже появится разбор, как условный «браузер» и «сервер» могли бы
+            по‑разному интерпретировать такой ответ.
           </p>
 
-          <div class="demo__howto">
+          <div class="demo-howto">
             <h4>Как пользоваться демо</h4>
-            <ol>
+            <ol class="demo-howto__list">
               <li>
-                Шаг 1. Укажите подозрительный заголовок или тело запроса
+                <span class="step-badge">1</span>
+                Укажите подозрительный заголовок или тело запроса
                 (например, нестандартные X‑заголовки или странное JSON‑тело).
               </li>
               <li>
-                Шаг 2. Нажмите «Отправить тест» — ниже сымитируется, как сервер
-                и браузер могут по‑разному интерпретировать ответ.
+                <span class="step-badge">2</span>
+                Нажмите «Отправить тест» — будет сгенерирован учебный разбор
+                «браузер против сервера».
               </li>
               <li>
-                Шаг 3. Обратите внимание, какие части ответа считаются «лишними»
-                и могут быть использованы для внедрения HTML/JS.
+                <span class="step-badge">3</span>
+                Посмотрите, какие части считаются «лишними» и где теоретически
+                может появиться окно для внедрения кода.
               </li>
               <li>
-                Шаг 4. Меняйте заголовки и тело запроса, чтобы увидеть разные
-                варианты десинхронизации.
+                <span class="step-badge">4</span>
+                Меняйте заголовки и тело запроса, чтобы увидеть разные варианты
+                десинхронизации.
               </li>
             </ol>
           </div>
         </div>
 
-        <form class="demo__form" id="demoForm">
-          <label class="demo__label">
-            Заголовок (Header):
-            <input
-              type="text"
-              name="header"
-              class="demo__input"
-              placeholder="Пример: X-Test: desync=1"
-            />
-          </label>
+        <div class="demo__side">
+          <form class="demo-card" id="demoForm">
+            <h3 class="demo-card__title">Учебная форма запроса</h3>
 
-          <label class="demo__label">
-            Тело запроса (Body):
-            <textarea
-              name="body"
-              class="demo__textarea"
-              placeholder='Пример: {"action": "probe", "id": 123}'
-            ></textarea>
-          </label>
+            <label class="demo-field">
+              <span class="demo-field__label">Заголовок (Header)</span>
+              <input
+                type="text"
+                name="header"
+                class="demo-input"
+                placeholder="Пример: X-Test: desync=1"
+              />
+            </label>
 
-          <button type="submit" class="demo__submit">Отправить тест</button>
+            <label class="demo-field">
+              <span class="demo-field__label">Тело запроса (Body)</span>
+              <textarea
+                name="body"
+                class="demo-textarea"
+                placeholder='Пример: {"action": "probe", "id": 123}'
+                rows="4"
+              ></textarea>
+            </label>
 
-          <p
-            class="demo__error"
-            id="demoError"
-            style="display: none; color: #e53e3e; margin-top: 8px;"
-          >
-            Чтобы запустить симуляцию, заполните хотя бы одно поле (Header или Body).
-          </p>
-        </form>
+            <div id="demoError" class="demo-error" style="display: none;">
+              Чтобы запустить симуляцию, заполните хотя бы одно поле (Header или Body).
+            </div>
 
-        <div class="demo__result" id="demoResult">
-          <h4>Результат симуляции</h4>
-          <p class="demo__result-text">
-            Заполните хотя бы одно из полей (Header или Body), чтобы запустить
-            симуляцию. Здесь появится разбивка, как браузер и сервер могут
-            «разойтись» в понимании ответа.
-          </p>
+            <button type="submit" class="btn-primary">
+              Отправить тест
+            </button>
+          </form>
+
+          <div class="demo-result">
+            <div class="demo-result__header">
+              <span class="demo-result__icon">&lt;/&gt;</span>
+              <h3 class="demo-result__title">Результат симуляции</h3>
+            </div>
+
+            <div id="demoResultEmpty" class="demo-result__empty">
+              Заполните хотя бы одно из полей (Header или Body), чтобы запустить
+              симуляцию. Здесь появится разбивка условного ответа на части:
+              что «видит» сервер и что «видит» браузер.
+            </div>
+
+            <div id="demoResultContent" class="demo-result__content" style="display: none;">
+            </div>
+
+            <p class="demo-result__note">
+              В реальном пентесте на этом месте был бы живой HTTP‑трафик,
+              прокси и баг‑баунти отчёты. Здесь же — только безопасная имитация
+              для тренировки мышления.
+            </p>
+          </div>
         </div>
-
-        <p class="demo__disclaimer">
-          Это безопасная учебная симуляция. Здесь не выполняются реальные HTTP‑запросы
-          к внешним серверам, всё происходит в вашем браузере.
-        </p>
       </div>
     </div>
   </section>
 
-  <!-- Contacts / Footer -->
   <section class="contacts" id="contacts">
     <div class="container">
       <div class="contacts__inner">
@@ -240,9 +806,8 @@
           <h3>Контакты</h3>
           <h2>Автор лендинга</h2>
           <p>
-            Лендинг создан в учебных целях для отработки вёрстки и демонстрации
-            концепции Browser Desync. Если нужен исходный код или дополнительная
-            информация — можно связаться со мной.
+            Лендинг создан в учебных целях: отработка вёрстки, адаптива и
+            базовой презентации сложных технических идей человеческим языком.
           </p>
           <p>
             GitHub:
@@ -257,23 +822,112 @@
         </div>
       </div>
     </div>
+
+    <footer class="footer">
+      <div class="container footer__inner">
+        <div class="footer__brand">Browser Desync Demo</div>
+        <div class="footer__copy">
+          © 2026, учебный демо‑проект. Используйте любые техники
+          только в легальных тестовых окружениях.
+        </div>
+      </div>
+    </footer>
   </section>
 
-  <footer class="footer">
-    <div class="container">
-      <div class="footer__inner">
-        <div class="footer__title">
-          Browser Desync Demo
-        </div>
-        <span class="copyright">
-          © 2026, учебный демо‑проект. Все действия проводите только
-          в легальном тестовом окружении.
-        </span>
-      </div>
-    </div>
-  </footer>
+  <script>
+    // плавный скролл
+    function smoothScrollTo(selector) {
+      var el = document.querySelector(selector);
+      if (!el) return;
+      el.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
 
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-  <script src="app.js"></script>
+    document.addEventListener("click", function (e) {
+      var link = e.target.closest("[data-scroll]");
+      if (link) {
+        e.preventDefault();
+        var target = link.getAttribute("data-scroll");
+        smoothScrollTo(target);
+      }
+    });
+
+    var scrollToDemoBtn = document.getElementById("scrollToDemoBtn");
+    var mainToDemo = document.getElementById("mainToDemo");
+    if (scrollToDemoBtn) {
+      scrollToDemoBtn.addEventListener("click", function () {
+        smoothScrollTo("#demo");
+      });
+    }
+    if (mainToDemo) {
+      mainToDemo.addEventListener("click", function () {
+        smoothScrollTo("#demo");
+      });
+    }
+
+    // mobile nav toggle
+    (function () {
+      var navToggle = document.getElementById("navToggle");
+      var navMobile = document.getElementById("navMobile");
+      if (!navToggle || !navMobile) return;
+
+      navToggle.addEventListener("click", function () {
+        if (navMobile.style.display === "none" || navMobile.style.display === "") {
+          navMobile.style.display = "flex";
+        } else {
+          navMobile.style.display = "none";
+        }
+      });
+
+      // при клике по ссылке в мобильном меню закрываем его
+      navMobile.addEventListener("click", function (e) {
+        if (e.target.matches(".nav__link")) {
+          navMobile.style.display = "none";
+        }
+      });
+    })();
+
+    // простая "симуляция" результата
+    (function () {
+      var form = document.getElementById("demoForm");
+      var error = document.getElementById("demoError");
+      var empty = document.getElementById("demoResultEmpty");
+      var content = document.getElementById("demoResultContent");
+
+      if (!form || !error || !empty || !content) return;
+
+      form.addEventListener("submit", function (e) {
+        e.preventDefault();
+        var header = form.header.value.trim();
+        var body = form.body.value.trim();
+
+        if (!header && !body) {
+          error.style.display = "block";
+          return;
+        }
+
+        error.style.display = "none";
+        empty.style.display = "none";
+        content.style.display = "block";
+
+        var headerView = header || "(нет заголовков)";
+        var bodyView = body || "(пустое тело)";
+
+        var resultText =
+          "Серверная интерпретация:\n" +
+          "  • Принятые заголовки: " + headerView + "\n" +
+          "  • Тело запроса: " + bodyView + "\n\n" +
+          "Браузерная интерпретация:\n" +
+          "  • Браузер доверяет части ответа, подсунутой через десинхрон.\n" +
+          "  • Потенциальная зона внедрения HTML/JS — байты, которые сервер\n" +
+          "    считает \"лишними\" или относящимися к следующему ответу.\n\n" +
+          "Комментарий:\n" +
+          "  Это упрощённая модель. В реальной атаке точный эффект зависит\n" +
+          "  от комбинации заголовков (Content-Length, Transfer-Encoding,\n" +
+          "  кеширующих слоёв, сжатия и поведения конкретного сервера/прокси).";
+
+        content.textContent = resultText;
+      });
+    })();
+  </script>
 </body>
 </html>
