@@ -7,11 +7,15 @@
 
   <title>Browser Desync — демо-лендинг</title>
 
-  <meta name="description"
-        content="Демонстрационный лендинг, посвящённый уязвимости Browser Desync: краткое объяснение, сценарии атак и демо-зона для экспериментов." />
+  <meta
+    name="description"
+    content="Демонстрационный лендинг, посвящённый уязвимости Browser Desync: краткое объяснение, сценарии атак и демо-зона для экспериментов."
+  />
   <meta name="robots" content="index,follow" />
-  <meta name="keywords"
-        content="browser desync, desync, http desync, request smuggling, безопасность, web security, demo" />
+  <meta
+    name="keywords"
+    content="browser desync, desync, http desync, request smuggling, безопасность, web security, demo"
+  />
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -27,7 +31,7 @@
   <header class="header">
     <div class="header__inner">
       <div class="header__logo">
-        Browser<br>Desync
+        Browser<br />Desync
       </div>
       <nav class="nav" id="nav">
         <a href="#about" class="nav__link" data-scroll="#about">О уязвимости</a>
@@ -48,7 +52,7 @@
     <div class="container">
       <div class="main__inner">
         <div class="main__text">
-          <h1>Browser Desync<br>Demo</h1>
+          <h1>Browser Desync<br />Demo</h1>
           <div class="main__description">
             Небольшой лендинг, который демонстрирует идею Browser Desync‑атак
             и может использоваться как тестовый стенд при изучении веб‑безопасности.
@@ -57,7 +61,7 @@
         </div>
         <div class="main__img main__img--desync">
           <!-- можно позже заменить на SVG/картинку -->
-          <span>HTTP<br>Desync</span>
+          <span>HTTP<br />Desync</span>
         </div>
       </div>
     </div>
@@ -79,6 +83,19 @@
             В отличие от классического HTTP Request Smuggling, фокус здесь
             именно на несинхронности между браузером и цепочкой прокси/серверов,
             что делает атаки более практичными против реальных приложений.
+          </div>
+          <div class="about__description">
+            Например, прокси может верить заголовку <code>Content-Length</code>,
+            а браузер — границам <code>Transfer-Encoding: chunked</code>.
+            Если злоумышленник подбирает такое сочетание длины и содержимого,
+            часть байтов ответа «выпадает» из нормального потока и браузер
+            интерпретирует её как отдельный HTML-документ. В эту «лишнюю» часть
+            и встраивается вредоносный JavaScript.
+          </div>
+          <div class="about__description">
+            Демо-форма ниже упрощённо иллюстрирует идею: вы задаёте необычные
+            заголовки и/или тело, а симуляция показывает, как ответ может «поехать»
+            и где появляется окно для внедрения кода.
           </div>
         </div>
       </div>
@@ -139,31 +156,78 @@
             В реальной лаборатории здесь могут быть свои эндпоинты, прокси, анализаторы
             и визуализация смещения ответа.
           </p>
+          <p>
+            Заполните заголовок или тело запроса и нажмите «Отправить тест», чтобы
+            увидеть результат симуляции ниже.
+          </p>
+
+          <div class="demo__howto">
+            <h4>Как пользоваться демо</h4>
+            <ol>
+              <li>
+                Шаг 1. Укажите подозрительный заголовок или тело запроса
+                (например, нестандартные X‑заголовки или странное JSON‑тело).
+              </li>
+              <li>
+                Шаг 2. Нажмите «Отправить тест» — ниже сымитируется, как сервер
+                и браузер могут по‑разному интерпретировать ответ.
+              </li>
+              <li>
+                Шаг 3. Обратите внимание, какие части ответа считаются «лишними»
+                и могут быть использованы для внедрения HTML/JS.
+              </li>
+              <li>
+                Шаг 4. Меняйте заголовки и тело запроса, чтобы увидеть разные
+                варианты десинхронизации.
+              </li>
+            </ol>
+          </div>
         </div>
 
         <form class="demo__form" id="demoForm">
           <label class="demo__label">
             Заголовок (Header):
-            <input type="text" name="header" class="demo__input"
-                   placeholder="X-Test: desync" />
+            <input
+              type="text"
+              name="header"
+              class="demo__input"
+              placeholder="Пример: X-Test: desync=1"
+            />
           </label>
 
           <label class="demo__label">
             Тело запроса (Body):
-            <textarea name="body" class="demo__textarea"
-                      placeholder="payload=desync"></textarea>
+            <textarea
+              name="body"
+              class="demo__textarea"
+              placeholder='Пример: {"action": "probe", "id": 123}'
+            ></textarea>
           </label>
 
           <button type="submit" class="demo__submit">Отправить тест</button>
+
+          <p
+            class="demo__error"
+            id="demoError"
+            style="display: none; color: #e53e3e; margin-top: 8px;"
+          >
+            Чтобы запустить симуляцию, заполните хотя бы одно поле (Header или Body).
+          </p>
         </form>
 
         <div class="demo__result" id="demoResult">
           <h4>Результат симуляции</h4>
           <p class="demo__result-text">
-            Здесь будет отображаться условный результат обработки запроса
-            (например, как его «увидел» браузер и как — бэкенд).
+            Заполните хотя бы одно из полей (Header или Body), чтобы запустить
+            симуляцию. Здесь появится разбивка, как браузер и сервер могут
+            «разойтись» в понимании ответа.
           </p>
         </div>
+
+        <p class="demo__disclaimer">
+          Это безопасная учебная симуляция. Здесь не выполняются реальные HTTP‑запросы
+          к внешним серверам, всё происходит в вашем браузере.
+        </p>
       </div>
     </div>
   </section>
@@ -181,8 +245,12 @@
             информация — можно связаться со мной.
           </p>
           <p>
-            GitHub: <a href="https://github.com/buhtig-sudo-azar"
-                       target="_blank" rel="noopener noreferrer">
+            GitHub:
+            <a
+              href="https://github.com/buhtig-sudo-azar"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
               @buhtig-sudo-azar
             </a>
           </p>
