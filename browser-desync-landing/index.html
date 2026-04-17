@@ -1,45 +1,60 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
+  <!-- Базовая кодировка страницы -->
   <meta charset="UTF-8" />
+  <!-- Совместимость с старыми IE (почти не актуально, но формально ок) -->
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <!-- Адаптив: масштаб = ширине экрана -->
   <meta
     name="viewport"
     content="width=device-width, initial-scale=1.0"
   />
+
+  <!-- Заголовок вкладки -->
   <title>Browser Desync — демо-лендинг</title>
+
+  <!-- Краткое описание для SEO / предпросмотра -->
   <meta
     name="description"
     content="Демонстрационный лендинг по уязвимости Browser Desync: краткое объяснение, сценарии атак и демо-зона."
   />
 
+  <!-- Встраиваем весь CSS прямо в страницу (учебный одностраничник) -->
   <style>
+    /* ------------------------------
+       CSS‑переменные: цвета, тени и т.п.
+       Их удобно переиспользовать по всему файлу.
+    ------------------------------ */
     :root {
-      --bg-main: #050814;
-      --bg-elevated: rgba(15, 23, 42, 0.9);
-      --bg-panel: #020617;
+      --bg-main: #050814;                      /* основной фон страницы */
+      --bg-elevated: rgba(15, 23, 42, 0.9);   /* фон приподнятых карточек */
+      --bg-panel: #020617;                    /* фон небольших панелей */
       --border-subtle: rgba(148, 163, 184, 0.3);
       --border-dashed: #334155;
-      --accent: #22d3ee;
-      --accent-alt: #4f46e5;
+      --accent: #22d3ee;                      /* основной акцент (голубой) */
+      --accent-alt: #4f46e5;                  /* второй акцент (фиолетовый) */
       --text-main: #e5e7eb;
       --text-muted: #94a3b8;
-      --radius-lg: 16px;
-      --radius-md: 12px;
+      --radius-lg: 16px;                      /* большие скругления */
+      --radius-md: 12px;                      /* средние скругления */
       --shadow-strong: 0 18px 45px rgba(15, 23, 42, 0.9);
       --shadow-soft: 0 12px 30px rgba(34, 211, 238, 0.35);
     }
 
+    /* Сброс box-sizing, чтобы padding/бордеры входили в ширину блока */
     *,
     *::before,
     *::after {
       box-sizing: border-box;
     }
 
+    /* Базовые стили для html/body */
     html,
     body {
       margin: 0;
       padding: 0;
+      /* Тёмный фон с мягким радиальным градиентом */
       background: radial-gradient(circle at top, #0b1020 0, #050814 45%, #020617 100%);
       color: var(--text-main);
       font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
@@ -50,6 +65,7 @@
       min-height: 100vh;
     }
 
+    /* Ссылки: голубой цвет и подчёркивание только по hover */
     a {
       color: var(--accent);
       text-decoration: none;
@@ -59,6 +75,7 @@
       text-decoration: underline;
     }
 
+    /* Выделение кода/заголовков в тексте */
     code {
       font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
         "Liberation Mono", "Courier New", monospace;
@@ -68,12 +85,14 @@
       border-radius: 4px;
     }
 
+    /* Центровщик контента по ширине */
     .container {
-      max-width: 960px;
+      max-width: 960px;   /* ограничиваем ширину, чтобы текст не растягивался */
       margin: 0 auto;
       padding: 0 16px;
     }
 
+    /* Отступы между секциями */
     section {
       padding: 40px 0;
     }
@@ -84,14 +103,16 @@
       }
     }
 
-    /* Header / nav */
+    /* ------------------------------
+       HEADER / НАВИГАЦИЯ
+    ------------------------------ */
 
     .header {
-      position: sticky;
+      position: sticky;                     /* шапка липнет к верху при скролле */
       top: 0;
       z-index: 20;
-      backdrop-filter: blur(12px);
-      background: rgba(15, 23, 42, 0.9);
+      backdrop-filter: blur(12px);          /* лёгкий blur под шапкой */
+      background: rgba(15, 23, 42, 0.9);    /* полупрозрачный тёмный фон */
       border-bottom: 1px solid rgba(15, 23, 42, 0.9);
     }
 
@@ -104,6 +125,7 @@
       margin: 0 auto;
     }
 
+    /* Логотип в шапке: две строки "Browser" / "Desync" */
     .header__logo {
       font-weight: 800;
       font-size: 1.1rem;
@@ -115,8 +137,9 @@
       line-height: 1.2;
     }
 
+    /* Основное навигационное меню (десктоп) */
     .nav {
-      display: none;
+      display: none;       /* по умолчанию скрыто, на мобиле вместо него бургер */
       gap: 20px;
     }
 
@@ -129,12 +152,12 @@
       color: var(--accent);
     }
 
+    /* Кнопка в шапке "К демо" — только на десктопе */
     .call__btn {
       display: none;
     }
 
-    /* Burger */
-
+    /* Бургер для мобильного меню */
     .burger {
       display: flex;
       align-items: center;
@@ -179,8 +202,7 @@
       letter-spacing: 0.12em;
     }
 
-    /* Desktop nav */
-
+    /* На экранах ≥768px показываем навигацию и кнопку, скрываем бургер */
     @media (min-width: 768px) {
       .nav {
         display: flex;
@@ -197,8 +219,7 @@
       }
     }
 
-    /* Mobile nav dropdown */
-
+    /* Мобильное выпадающее меню */
     .nav--mobile {
       display: flex;
       flex-direction: column;
@@ -212,7 +233,9 @@
       padding: 4px 0;
     }
 
-    /* Buttons */
+    /* ------------------------------
+       КНОПКИ ОБЩЕГО НАЗНАЧЕНИЯ
+    ------------------------------ */
 
     .btn-primary,
     .main__btn,
@@ -246,21 +269,49 @@
       box-shadow: 0 6px 18px rgba(15, 23, 42, 0.9);
     }
 
-    /* Hero */
+    /* Вторая (спокойная) кнопка — используется как "Сбросить форму" */
+    .btn-secondary {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 9px 16px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.7);
+      background: #020617;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+    }
+
+    .btn-secondary:hover {
+      background: rgba(15, 23, 42, 0.9);
+      color: var(--text-main);
+      border-color: rgba(148, 163, 184, 1);
+    }
+
+    .btn-secondary:active {
+      background: #020617;
+    }
+
+    /* ------------------------------
+       HERO / ПЕРВЫЙ ЭКРАН
+    ------------------------------ */
 
     .main {
-      padding-top: 48px;
+      padding-top: 48px; /* чтобы отступить от шапки */
     }
 
     .main__inner {
       display: grid;
-      grid-template-columns: 1fr;
+      grid-template-columns: 1fr; /* на мобиле одна колонка */
       gap: 32px;
       align-items: center;
     }
 
     @media (min-width: 768px) {
       .main__inner {
+        /* на десктопе — текст шире, "картинка" уже */
         grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
       }
     }
@@ -282,6 +333,7 @@
       margin-bottom: 20px;
     }
 
+    /* Блок справа — декоративная карточка "HTTP Desync" */
     .main__img--desync {
       border-radius: var(--radius-lg);
       border: 1px solid var(--border-subtle);
@@ -299,7 +351,9 @@
       text-align: center;
     }
 
-    /* Typography */
+    /* ------------------------------
+       ОБЩАЯ ТИПОГРАФИКА ЗАГОЛОВКОВ
+    ------------------------------ */
 
     h2 {
       font-size: 1.5rem;
@@ -333,7 +387,9 @@
       color: var(--text-muted);
     }
 
-    /* Attack section */
+    /* ------------------------------
+       СЕКЦИЯ «Сценарий атаки»
+    ------------------------------ */
 
     .attack__grid {
       display: grid;
@@ -355,7 +411,9 @@
       padding: 16px 18px;
     }
 
-    /* Demo layout */
+    /* ------------------------------
+       ДЕМО-ЗОНА: Лэйаут
+    ------------------------------ */
 
     .demo__inner {
       display: grid;
@@ -369,8 +427,7 @@
       }
     }
 
-    /* Howto panel */
-
+    /* Панель «Как пользоваться демо» */
     .demo-howto {
       margin-top: 18px;
       background: var(--bg-panel);
@@ -408,13 +465,109 @@
       font-size: 0.7rem;
     }
 
-    /* Demo side: form + result */
-
+    /* Правая колонка демо (примеры + форма + результат) */
     .demo__side {
       display: flex;
       flex-direction: column;
       gap: 16px;
     }
+
+    /* ------------------------------
+       БЛОК «ГОТОВЫЕ ПРИМЕРЫ»
+    ------------------------------ */
+
+    .demo-presets {
+      margin-bottom: 20px; /* отступ от примеров до формы */
+      background: radial-gradient(
+        circle at top left,
+        rgba(79, 70, 229, 0.16),
+        transparent 55%
+      );
+      border-radius: var(--radius-lg);
+      padding: 14px 16px 12px;
+      border: 1px solid rgba(79, 70, 229, 0.5);
+    }
+
+    .demo-presets__title {
+      margin: 0 0 10px;
+      font-size: 0.9rem;
+      text-transform: none;
+      letter-spacing: 0.02em;
+      color: var(--text-main);
+    }
+
+    .demo-presets__list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+
+    /* Кнопки-примеры: "пилюли" с градиентной рамкой */
+    .demo-presets__item {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 6px 12px;
+      border-radius: 999px;
+      border: 1px solid transparent;
+      font-size: 0.8rem;
+      cursor: pointer;
+      background:
+        /* фон кнопки */
+        linear-gradient(var(--bg-panel), var(--bg-panel)) padding-box,
+        /* градиентная рамка */
+        linear-gradient(135deg, rgba(79, 70, 229, 0.9), rgba(34, 211, 238, 0.9)) border-box;
+      color: var(--text-main);
+      transition: transform 0.08s ease, box-shadow 0.1s ease, background 0.15s ease,
+        color 0.15s ease;
+      white-space: nowrap;
+    }
+
+    .demo-presets__item:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 8px 22px rgba(15, 23, 42, 0.9);
+    }
+
+    .demo-presets__item:active {
+      transform: translateY(0);
+      box-shadow: 0 4px 14px rgba(15, 23, 42, 0.9);
+    }
+
+    /* Активный пресет подсвечиваем чуть ярче */
+    .demo-presets__item--active {
+      background:
+        linear-gradient(135deg, rgba(79, 70, 229, 0.6), rgba(34, 211, 238, 0.6)) padding-box,
+        linear-gradient(135deg, rgba(79, 70, 229, 0.9), rgba(34, 211, 238, 0.9)) border-box;
+    }
+
+    .demo-presets__hint {
+      margin: 0;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    /* Адаптив для кнопок-примеров */
+    @media (max-width: 480px) {
+      /* На очень маленьких экранах каждая кнопка на всю ширину */
+      .demo-presets__item {
+        flex: 1 1 100%;
+        justify-content: center;
+      }
+    }
+
+    @media (min-width: 481px) and (max-width: 767px) {
+      /* На средних мобилках — по две в ряд */
+      .demo-presets__item {
+        flex: 1 1 calc(50% - 8px);
+        justify-content: center;
+      }
+    }
+
+    /* ------------------------------
+       ФОРМА ДЕМО (карточка)
+    ------------------------------ */
 
     .demo-card {
       background: var(--bg-elevated);
@@ -469,7 +622,23 @@
       margin-bottom: 10px;
     }
 
-    /* Demo result */
+    /* Подсказка под формой: про примеры и свой ввод */
+    .demo-form__hint {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+    }
+
+    /* Обёртка для кнопок в форме (Отправить + Сбросить) */
+    .demo-form__actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    /* ------------------------------
+       КАРТОЧКА РЕЗУЛЬТАТА
+    ------------------------------ */
 
     .demo-result {
       background: #020617;
@@ -530,7 +699,9 @@
       color: var(--text-muted);
     }
 
-    /* Contacts + footer */
+    /* ------------------------------
+       КОНТАКТЫ + ФУТЕР
+    ------------------------------ */
 
     .contacts__inner {
       border-top: 1px solid rgba(30, 64, 175, 0.7);
@@ -565,6 +736,10 @@
   </style>
 </head>
 <body>
+  <!--
+    Шапка: логотип, навигация (десктоп) и бургер + мобильное меню.
+    Навигация работает через атрибуты data-scroll (JS прокручивает к секциям).
+  -->
   <header class="header">
     <div class="header__inner">
       <div class="header__logo">
@@ -572,6 +747,7 @@
         <span>Desync</span>
       </div>
 
+      <!-- Десктоп-меню -->
       <nav class="nav" id="navDesktop">
         <a href="#about" class="nav__link" data-scroll="#about">О уязвимости</a>
         <a href="#attack" class="nav__link" data-scroll="#attack">Сценарий атаки</a>
@@ -579,15 +755,17 @@
         <a href="#contacts" class="nav__link" data-scroll="#contacts">Контакты</a>
       </nav>
 
+      <!-- Кнопка в шапке для быстрого скролла к демо -->
       <button class="call__btn" id="scrollToDemoBtn">К демо</button>
 
+      <!-- Бургер для мобильного меню -->
       <button class="burger" id="navToggle" aria-label="Меню">
         <span class="burger__circle"></span>
         <span class="burger__label">menu</span>
       </button>
     </div>
 
-    <!-- mobile nav будет вставляться JS-ом -->
+    <!-- Мобильное меню (по умолчанию скрыто, показывается JS) -->
     <nav class="nav nav--mobile" id="navMobile" style="display:none;">
       <a href="#about" class="nav__link" data-scroll="#about">О уязвимости</a>
       <a href="#attack" class="nav__link" data-scroll="#attack">Сценарий атаки</a>
@@ -596,6 +774,10 @@
     </nav>
   </header>
 
+  <!--
+    Первый экран (hero):
+    слева текст + кнопка "Запустить демо", справа декоративный блок "HTTP Desync".
+  -->
   <section class="main" id="top">
     <div class="container">
       <div class="main__inner">
@@ -615,6 +797,9 @@
     </div>
   </section>
 
+  <!--
+    Блок "О уязвимости": простое текстовое объяснение Browser Desync.
+  -->
   <section class="about" id="about">
     <div class="container">
       <div class="about__inner">
@@ -652,6 +837,9 @@
     </div>
   </section>
 
+  <!--
+    Блок "Сценарий атаки": 4 карточки, описывающие этапы.
+  -->
   <section class="attack" id="attack">
     <div class="container">
       <div class="attack__inner">
@@ -697,9 +885,14 @@
     </div>
   </section>
 
+  <!--
+    ДЕМО‑ЗОНА:
+    слева текст и "как пользоваться", справа — примеры, форма и результат.
+  -->
   <section class="demo" id="demo">
     <div class="container">
       <div class="demo__inner">
+        <!-- Левая колонка: объяснение -->
         <div class="demo__text">
           <h3>Демо‑зона</h3>
           <h2>Тестовый запрос</h2>
@@ -713,6 +906,7 @@
             по‑разному интерпретировать такой ответ.
           </p>
 
+          <!-- Панель "Как пользоваться демо" -->
           <div class="demo-howto">
             <h4>Как пользоваться демо</h4>
             <ol class="demo-howto__list">
@@ -740,7 +934,42 @@
           </div>
         </div>
 
+        <!-- Правая колонка: примеры + форма + результат -->
         <div class="demo__side">
+          <!-- Блок готовых примеров -->
+          <div class="demo-presets">
+            <h4 class="demo-presets__title">Быстрый старт: выберите пример запроса</h4>
+            <div class="demo-presets__list">
+              <!-- data-preset указывает, какой пример подставлять (ключ в JS) -->
+              <button
+                type="button"
+                class="demo-presets__item"
+                data-preset="simple-desync"
+              >
+                Простой десинхрон
+              </button>
+              <button
+                type="button"
+                class="demo-presets__item"
+                data-preset="length-conflict"
+              >
+                Конфликт длины
+              </button>
+              <button
+                type="button"
+                class="demo-presets__item"
+                data-preset="weird-json"
+              >
+                Странный JSON
+              </button>
+            </div>
+            <p class="demo-presets__hint">
+              Клик по примеру заполнит форму ниже. Вы можете изменить данные
+              перед запуском симуляции.
+            </p>
+          </div>
+
+          <!-- Основная форма демо -->
           <form class="demo-card" id="demoForm">
             <h3 class="demo-card__title">Учебная форма запроса</h3>
 
@@ -764,27 +993,43 @@
               ></textarea>
             </label>
 
+            <!-- Ошибка, если оба поля пустые -->
             <div id="demoError" class="demo-error" style="display: none;">
               Чтобы запустить симуляцию, заполните хотя бы одно поле (Header или Body).
             </div>
 
-            <button type="submit" class="btn-primary">
-              Отправить тест
-            </button>
+            <!-- Подсказка: можно выбирать пример или вводить своё -->
+            <div class="demo-form__hint">
+              Вы можете выбрать один из примеров выше или ввести свои заголовки
+              и тело запроса. Примеры нужны только для быстрого старта.
+            </div>
+
+            <!-- Кнопки формы: отправка + сброс -->
+            <div class="demo-form__actions">
+              <button type="submit" class="btn-primary">
+                Отправить тест
+              </button>
+              <button type="button" class="btn-secondary" id="demoReset">
+                Сбросить форму
+              </button>
+            </div>
           </form>
 
+          <!-- Карточка с результатом симуляции -->
           <div class="demo-result">
             <div class="demo-result__header">
               <span class="demo-result__icon">&lt;/&gt;</span>
               <h3 class="demo-result__title">Результат симуляции</h3>
             </div>
 
+            <!-- Пустое состояние (до запуска симуляции) -->
             <div id="demoResultEmpty" class="demo-result__empty">
               Заполните хотя бы одно из полей (Header или Body), чтобы запустить
               симуляцию. Здесь появится разбивка условного ответа на части:
               что «видит» сервер и что «видит» браузер.
             </div>
 
+            <!-- Содержимое результата (показывается после отправки формы) -->
             <div id="demoResultContent" class="demo-result__content" style="display: none;">
             </div>
 
@@ -799,6 +1044,9 @@
     </div>
   </section>
 
+  <!--
+    Контактный блок + футер.
+  -->
   <section class="contacts" id="contacts">
     <div class="container">
       <div class="contacts__inner">
@@ -834,100 +1082,7 @@
     </footer>
   </section>
 
-  <script>
-    // плавный скролл
-    function smoothScrollTo(selector) {
-      var el = document.querySelector(selector);
-      if (!el) return;
-      el.scrollIntoView({ behavior: "smooth", block: "start" });
-    }
-
-    document.addEventListener("click", function (e) {
-      var link = e.target.closest("[data-scroll]");
-      if (link) {
-        e.preventDefault();
-        var target = link.getAttribute("data-scroll");
-        smoothScrollTo(target);
-      }
-    });
-
-    var scrollToDemoBtn = document.getElementById("scrollToDemoBtn");
-    var mainToDemo = document.getElementById("mainToDemo");
-    if (scrollToDemoBtn) {
-      scrollToDemoBtn.addEventListener("click", function () {
-        smoothScrollTo("#demo");
-      });
-    }
-    if (mainToDemo) {
-      mainToDemo.addEventListener("click", function () {
-        smoothScrollTo("#demo");
-      });
-    }
-
-    // mobile nav toggle
-    (function () {
-      var navToggle = document.getElementById("navToggle");
-      var navMobile = document.getElementById("navMobile");
-      if (!navToggle || !navMobile) return;
-
-      navToggle.addEventListener("click", function () {
-        if (navMobile.style.display === "none" || navMobile.style.display === "") {
-          navMobile.style.display = "flex";
-        } else {
-          navMobile.style.display = "none";
-        }
-      });
-
-      // при клике по ссылке в мобильном меню закрываем его
-      navMobile.addEventListener("click", function (e) {
-        if (e.target.matches(".nav__link")) {
-          navMobile.style.display = "none";
-        }
-      });
-    })();
-
-    // простая "симуляция" результата
-    (function () {
-      var form = document.getElementById("demoForm");
-      var error = document.getElementById("demoError");
-      var empty = document.getElementById("demoResultEmpty");
-      var content = document.getElementById("demoResultContent");
-
-      if (!form || !error || !empty || !content) return;
-
-      form.addEventListener("submit", function (e) {
-        e.preventDefault();
-        var header = form.header.value.trim();
-        var body = form.body.value.trim();
-
-        if (!header && !body) {
-          error.style.display = "block";
-          return;
-        }
-
-        error.style.display = "none";
-        empty.style.display = "none";
-        content.style.display = "block";
-
-        var headerView = header || "(нет заголовков)";
-        var bodyView = body || "(пустое тело)";
-
-        var resultText =
-          "Серверная интерпретация:\n" +
-          "  • Принятые заголовки: " + headerView + "\n" +
-          "  • Тело запроса: " + bodyView + "\n\n" +
-          "Браузерная интерпретация:\n" +
-          "  • Браузер доверяет части ответа, подсунутой через десинхрон.\n" +
-          "  • Потенциальная зона внедрения HTML/JS — байты, которые сервер\n" +
-          "    считает \"лишними\" или относящимися к следующему ответу.\n\n" +
-          "Комментарий:\n" +
-          "  Это упрощённая модель. В реальной атаке точный эффект зависит\n" +
-          "  от комбинации заголовков (Content-Length, Transfer-Encoding,\n" +
-          "  кеширующих слоёв, сжатия и поведения конкретного сервера/прокси).";
-
-        content.textContent = resultText;
-      });
-    })();
-  </script>
+  <!-- Подключаем отдельный учебный JS с логикой навигации и демо -->
+  <script src="app.js"></script>
 </body>
 </html>
