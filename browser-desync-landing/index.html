@@ -15,17 +15,18 @@
 
   <style>
     :root {
-      --bg-main: #050814;
-      --bg-elevated: rgba(15, 23, 42, 0.9);
+      --bg-main: #020617;
+      --bg-elevated: #020617;
       --bg-panel: #020617;
-      --border-subtle: rgba(148, 163, 184, 0.3);
+      --border-subtle: rgba(148, 163, 184, 0.35);
+      --border-soft: rgba(51, 65, 85, 0.9);
       --border-dashed: #334155;
       --accent: #22d3ee;
       --accent-alt: #4f46e5;
       --danger: #f97373;
       --text-main: #e5e7eb;
       --text-muted: #94a3b8;
-      --radius-lg: 16px;
+      --radius-lg: 18px;
       --radius-md: 12px;
       --shadow-strong: 0 18px 45px rgba(15, 23, 42, 0.9);
       --shadow-soft: 0 12px 30px rgba(34, 211, 238, 0.35);
@@ -41,7 +42,9 @@
     body {
       margin: 0;
       padding: 0;
-      background: radial-gradient(circle at top, #0b1020 0, #050814 45%, #020617 100%);
+      background:
+        radial-gradient(circle at top, #020617 0, #020617 40%, #020617 100%),
+        radial-gradient(circle at top left, #0b1120 0, #020617 55%);
       color: var(--text-main);
       font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       line-height: 1.6;
@@ -92,18 +95,25 @@
       top: 0;
       z-index: 20;
       backdrop-filter: blur(12px);
-      background: rgba(15, 23, 42, 0.9);
-      border-bottom: 1px solid rgba(15, 23, 42, 0.9);
+      background: rgba(15, 23, 42, 0.95);
+      border-bottom: 1px solid rgba(30, 64, 175, 0.5);
     }
 
     .header__inner {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 8px 16px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 12px;
-      padding: 10px 16px;
-      max-width: 1000px;
-      margin: 0 auto;
+      gap: 8px;
+    }
+
+    .header__left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-shrink: 0;
     }
 
     .header__logo {
@@ -115,15 +125,13 @@
       display: flex;
       flex-direction: column;
       line-height: 1.2;
-      flex-shrink: 0;
     }
-
-    /* Центр — навигация (desktop) */
 
     .header__nav-wrap {
       flex: 1 1 auto;
       display: flex;
       justify-content: center;
+      min-width: 0;
     }
 
     .nav {
@@ -136,13 +144,12 @@
     .nav__link {
       font-size: 0.9rem;
       color: var(--text-muted);
+      white-space: nowrap;
     }
 
     .nav__link:hover {
       color: var(--accent);
     }
-
-    /* Правая часть шапки — кнопки BACK и К демо */
 
     .header__actions {
       display: flex;
@@ -151,10 +158,59 @@
       flex-shrink: 0;
     }
 
-    /* Бургер виден только на мобиле */
+    .btn-demo,
+    .btn-back {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 8px 14px;
+      border-radius: 999px;
+      font-size: 0.85rem;
+      cursor: pointer;
+      white-space: nowrap;
+      border: none;
+    }
+
+    .btn-demo {
+      font-weight: 500;
+      background: linear-gradient(135deg, var(--accent-alt), var(--accent));
+      color: #fff;
+      box-shadow: var(--shadow-soft);
+      transition: transform 0.1s ease, box-shadow 0.1s ease, opacity 0.15s ease;
+    }
+
+    .btn-demo:hover {
+      transform: translateY(-1px);
+    }
+
+    .btn-demo:active {
+      transform: translateY(0);
+      box-shadow: 0 6px 18px rgba(15, 23, 42, 0.9);
+    }
+
+    .btn-back {
+      border: 1px solid rgba(148, 163, 184, 0.8);
+      background: #020617;
+      color: #e5e7eb;
+      transition:
+        background 0.15s ease,
+        color 0.15s ease,
+        border-color 0.15s ease,
+        transform 0.1s ease;
+    }
+
+    .btn-back:hover {
+      background: rgba(15, 23, 42, 0.95);
+      border-color: rgba(148, 163, 184, 1);
+      transform: translateY(-1px);
+    }
+
+    .btn-back:active {
+      transform: translateY(0);
+    }
 
     .burger {
-      display: flex;
+      display: inline-flex;
       align-items: center;
       gap: 6px;
       color: var(--text-muted);
@@ -197,88 +253,15 @@
       letter-spacing: 0.12em;
     }
 
-    /* Кнопки */
-
-    .btn-primary,
-    .header__btn-demo {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      padding: 8px 14px;
-      border-radius: 999px;
-      border: none;
-      cursor: pointer;
-      font-weight: 500;
-      font-size: 0.85rem;
-      background: linear-gradient(135deg, var(--accent-alt), var(--accent));
-      color: #fff;
-      box-shadow: var(--shadow-soft);
-      transition: transform 0.1s ease, box-shadow 0.1s ease, opacity 0.15s ease;
-      white-space: nowrap;
-    }
-
-    .btn-primary:hover,
-    .header__btn-demo:hover {
-      transform: translateY(-1px);
-    }
-
-    .btn-primary:active,
-    .header__btn-demo:active {
-      transform: translateY(0);
-      box-shadow: 0 6px 18px rgba(15, 23, 42, 0.9);
-    }
-
-    .btn-secondary,
-    .header__btn-back {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      padding: 7px 14px;
-      border-radius: 999px;
-      border: 1px solid rgba(148, 163, 184, 0.7);
-      background: #020617;
-      color: var(--text-muted);
-      font-size: 0.8rem;
-      cursor: pointer;
-      transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
-      white-space: nowrap;
-    }
-
-    .btn-secondary:hover,
-    .header__btn-back:hover {
-      background: rgba(15, 23, 42, 0.9);
-      color: var(--text-main);
-      border-color: rgba(148, 163, 184, 1);
-    }
-
-    .btn-secondary:active,
-    .header__btn-back:active {
-      background: #020617;
-    }
-
-    .header__btn-demo {
-      display: none;
-    }
-
-    .header__btn-back {
-      display: inline-flex;
-    }
-
     @media (min-width: 768px) {
       .nav {
         display: flex;
-      }
-
-      .header__btn-demo {
-        display: inline-flex;
       }
 
       .burger {
         display: none;
       }
     }
-
-    /* Мобильное меню (включая BACK на мобиле для надёжности) */
 
     .nav--mobile {
       display: none;
@@ -300,10 +283,10 @@
       flex-wrap: wrap;
     }
 
-    /* MAIN / HERO */
+    /* HERO */
 
     .main {
-      padding-top: 48px;
+      padding-top: 40px;
     }
 
     .main__inner {
@@ -362,12 +345,12 @@
       box-shadow: 0 6px 18px rgba(15, 23, 42, 0.9);
     }
 
-    .main__img--desync {
-      border-radius: 16px;
+    .main__visual {
+      border-radius: var(--radius-lg);
       border: 1px solid var(--border-subtle);
       background:
-        radial-gradient(circle at top left, rgba(79, 70, 229, 0.5), transparent),
-        radial-gradient(circle at bottom right, rgba(34, 211, 238, 0.5), transparent);
+        radial-gradient(circle at top left, rgba(79, 70, 229, 0.55), transparent),
+        radial-gradient(circle at bottom right, rgba(34, 211, 238, 0.45), transparent);
       min-height: 180px;
       display: flex;
       align-items: center;
@@ -413,7 +396,13 @@
       color: var(--text-muted);
     }
 
-    /* ATTACK SECTION */
+    /* ABOUT */
+
+    .about__inner {
+      display: block;
+    }
+
+    /* ATTACK */
 
     .attack__grid {
       display: grid;
@@ -429,13 +418,13 @@
     }
 
     .attack__card {
-      background: rgba(15, 23, 42, 0.8);
-      border-radius: 12px;
-      border: 1px solid rgba(51, 65, 85, 0.8);
+      background: rgba(15, 23, 42, 0.9);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border-soft);
       padding: 16px 18px;
     }
 
-    /* DEMO LAYOUT */
+    /* DEMO */
 
     .demo__inner {
       display: grid;
@@ -453,7 +442,7 @@
       margin-top: 18px;
       background: var(--bg-panel);
       padding: 12px 14px;
-      border-radius: 12px;
+      border-radius: var(--radius-md);
       border: 1px dashed var(--border-dashed);
     }
 
@@ -492,8 +481,6 @@
       gap: 16px;
     }
 
-    /* PRESETS */
-
     .demo-presets {
       margin-bottom: 20px;
       background: radial-gradient(
@@ -501,7 +488,7 @@
         rgba(79, 70, 229, 0.16),
         transparent 55%
       );
-      border-radius: 16px;
+      border-radius: var(--radius-lg);
       padding: 14px 16px 12px;
       border: 1px solid rgba(79, 70, 229, 0.5);
     }
@@ -509,7 +496,6 @@
     .demo-presets__title {
       margin: 0 0 10px;
       font-size: 0.9rem;
-      text-transform: none;
       letter-spacing: 0.02em;
       color: var(--text-main);
     }
@@ -576,11 +562,9 @@
       }
     }
 
-    /* FORM CARD */
-
     .demo-card {
       background: var(--bg-elevated);
-      border-radius: 16px;
+      border-radius: var(--radius-lg);
       border: 1px solid var(--border-subtle);
       padding: 20px 24px;
       box-shadow: var(--shadow-strong);
@@ -630,7 +614,6 @@
     .demo-textarea:focus {
       border-color: var(--accent);
       box-shadow: 0 0 0 1px rgba(34, 211, 238, 0.4);
-      background: #020617;
     }
 
     .demo-error {
@@ -651,11 +634,58 @@
       gap: 10px;
     }
 
-    /* RESULT CARD */
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 8px 14px;
+      border-radius: 999px;
+      border: none;
+      cursor: pointer;
+      font-weight: 500;
+      font-size: 0.85rem;
+      background: linear-gradient(135deg, var(--accent-alt), var(--accent));
+      color: #fff;
+      box-shadow: var(--shadow-soft);
+      transition: transform 0.1s ease, box-shadow 0.1s ease, opacity 0.15s ease;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-1px);
+    }
+
+    .btn-primary:active {
+      transform: translateY(0);
+      box-shadow: 0 6px 18px rgba(15, 23, 42, 0.9);
+    }
+
+    .btn-secondary {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 7px 14px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.7);
+      background: #020617;
+      color: var(--text-muted);
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+    }
+
+    .btn-secondary:hover {
+      background: rgba(15, 23, 42, 0.9);
+      color: var(--text-main);
+      border-color: rgba(148, 163, 184, 1);
+    }
+
+    .btn-secondary:active {
+      background: #020617;
+    }
 
     .demo-result {
       background: #020617;
-      border-radius: 16px;
+      border-radius: var(--radius-lg);
       border: 1px solid rgba(148, 163, 184, 0.6);
       padding: 18px 20px;
       box-shadow: 0 14px 36px rgba(15, 23, 42, 0.9);
@@ -729,7 +759,7 @@
       color: #fee2e2;
     }
 
-    /* CONTACTS + FOOTER */
+    /* CONTACTS & FOOTER */
 
     .contacts__inner {
       border-top: 1px solid rgba(30, 64, 175, 0.7);
@@ -766,9 +796,11 @@
 <body>
   <header class="header">
     <div class="header__inner">
-      <div class="header__logo">
-        <span>Browser</span>
-        <span>Desync</span>
+      <div class="header__left">
+        <div class="header__logo">
+          <span>Browser</span>
+          <span>Desync</span>
+        </div>
       </div>
 
       <div class="header__nav-wrap">
@@ -781,8 +813,8 @@
       </div>
 
       <div class="header__actions">
-        <button class="header__btn-back" id="backBtn">BACK</button>
-        <button class="header__btn-demo" id="scrollToDemoBtn">К демо</button>
+        <button class="btn-back" id="backBtn">BACK</button>
+        <button class="btn-demo" id="scrollToDemoBtn">К демо</button>
         <button class="burger" id="navToggle" aria-label="Меню">
           <span class="burger__circle"></span>
           <span class="burger__label">menu</span>
@@ -797,8 +829,8 @@
       <a href="#contacts" class="nav__link" data-scroll="#contacts">Контакты</a>
 
       <div class="nav--mobile-actions">
-        <button class="header__btn-back" id="backBtnMobile">BACK</button>
-        <button class="header__btn-demo" id="scrollToDemoBtnMobile">К демо</button>
+        <button class="btn-back" id="backBtnMobile">BACK</button>
+        <button class="btn-demo" id="scrollToDemoBtnMobile">К демо</button>
       </div>
     </nav>
   </header>
@@ -809,13 +841,13 @@
         <div class="main__text">
           <h1>Browser Desync Demo</h1>
           <div class="main__description">
-            Учебный лендинг про Browser Desync‑атаки: краткое объяснение, схема эксплуатации
-            и безопасная демо‑симуляция, работающая полностью в вашем браузере.[web:6]
+            Учебный лендинг про Browser Desync‑атаки: короткое объяснение, схема эксплуатации
+            и безопасная демо‑симуляция, которая полностью работает в вашем браузере.[page:1]
           </div>
           <button class="main__btn-main" id="mainToDemo">Запустить демо</button>
         </div>
 
-        <div class="main__img main__img--desync">
+        <div class="main__visual">
           <span>HTTP<br />Desync</span>
         </div>
       </div>
@@ -830,29 +862,26 @@
           <h2>Что такое Browser Desync</h2>
 
           <div class="about__description">
-            Browser Desync — класс атак, при которых браузер и сервер по‑разному
-            интерпретируют структуру HTTP‑ответа. В результате часть байтов
-            может быть воспринята как отдельный документ и использоваться
-            для внедрения произвольного HTML/JS‑кода.[web:6]
+            Browser Desync — это класс атак, когда браузер и сервер по‑разному видят один и тот
+            же HTTP‑ответ. Из‑за этого часть байтов может восприниматься как отдельный документ
+            и использоваться для внедрения HTML/JS‑кода.[page:1]
           </div>
 
           <div class="about__description">
-            В отличие от классического HTTP Request Smuggling, здесь фокус
-            на рассинхроне между браузером и цепочкой прокси/бэкендов, что
-            делает атаки практичными для реальных приложений и облачных сервисов.[web:6][web:12]
+            В отличие от классического HTTP Request Smuggling, здесь упор на рассинхрон между
+            браузером и цепочкой прокси/бэкендов. Атака остаётся в рамках браузера, но опирается
+            на нюансы парсинга и кеширования на стороне инфраструктуры.[page:1]
           </div>
 
           <div class="about__description">
-            Типичный триггер — конфликт заголовков <code>Content-Length</code> и
-            <code>Transfer-Encoding</code>, нестандартные разделители, особенности
-            кеширования и сжатия. Всё это влияет на то, как участники цепочки
-            «режут» один и тот же поток байтов.[web:6][web:12]
+            Типичные триггеры: конфликтующие заголовки <code>Content-Length</code> и
+            <code>Transfer-Encoding</code>, нестандартные разделители, особенности компрессии и
+            кеширования. Всё это влияет на то, как участники цепочки «режут» один и тот же поток.[page:1]
           </div>
 
           <div class="about__description">
-            Ниже можно поэкспериментировать с упрощённой моделью: задать сырые
-            заголовки и тело и посмотреть, как условный «сервер» и «браузер»
-            могли бы по‑разному их интерпретировать.
+            Ниже — упрощённая учебная модель, где можно руками задать сырые заголовки и тело,
+            а затем посмотреть, как условный «сервер» и «браузер» могли бы их интерпретировать.
           </div>
         </div>
       </div>
@@ -867,36 +896,34 @@
 
         <div class="attack__grid">
           <div class="attack__card">
-            <h4>1. Подготовка среды</h4>
+            <h4>1. Подготовка</h4>
             <p>
-              Атакующий исследует связку браузер → прокси → сервер и ищет
-              граничные случаи: конфликтующие длины, особенности кеширования,
-              нестандартную обработку заголовков и тела.[web:6]
+              Атакующий исследует связку браузер → прокси → сервер и ищет граничные случаи:
+              конфликт длины, странные заголовки, особенности кешей и балансировщиков.[page:1]
             </p>
           </div>
 
           <div class="attack__card">
-            <h4>2. Несинхронность</h4>
+            <h4>2. Рассинхрон</h4>
             <p>
-              Браузер и сервер начинают по‑разному видеть границы ответа.
-              Для одного это целый документ, для другого — несколько ответов
-              подряд или начало следующего ответа.
+              Из‑за неодинакового парсинга один и тот же поток байтов может превращаться либо
+              в один ответ, либо в несколько ответов и начало нового документа.
             </p>
           </div>
 
           <div class="attack__card">
-            <h4>3. Встраивание полезной нагрузки</h4>
+            <h4>3. Внедрение нагрузки</h4>
             <p>
-              В «лишний» фрагмент потока внедряется HTML/JS‑код, который браузер
-              воспринимает как часть доверенной страницы и выполняет в её контексте.
+              В «лишний» фрагмент потока внедряется HTML/JS, который браузер видит как часть
+              доверенного ответа и выполняет в контексте целевого сайта.
             </p>
           </div>
 
           <div class="attack__card">
             <h4>4. Эксплуатация</h4>
             <p>
-              Далее возможны XSS‑атаки, подмена контента, кража данных, обход CSP
-              и другие техники — конкретный эффект зависит от приложения и защиты.[web:6][web:12]
+              Далее возможны XSS, подмена содержимого, обход CSP, кража данных и другие эффекты —
+              всё зависит от конфигурации стека и защиты приложения.[page:1]
             </p>
           </div>
         </div>
@@ -911,13 +938,12 @@
           <h3>Демо‑зона</h3>
           <h2>Тестовый запрос</h2>
           <p>
-            Это безопасная учебная симуляция. Все расчёты выполняются в вашем
-            браузере; настоящие HTTP‑запросы никуда не уходят.
+            Это безопасная учебная симуляция. Все расчёты происходят прямо в вашем браузере,
+            никакие реальные HTTP‑запросы с формы не отправляются наружу.[page:1]
           </p>
           <p>
-            Заполните сырые заголовки и/или тело запроса и нажмите «Отправить тест»,
-            чтобы увидеть, как условные «сервер» и «браузер» могли бы по‑разному
-            интерпретировать ответ.
+            Задайте сырые заголовки и/или тело, нажмите «Отправить тест» и посмотрите, как
+            условные «сервер» и «браузер» могли бы по‑разному интерпретировать ответ.
           </p>
 
           <div class="demo-howto">
@@ -925,7 +951,7 @@
             <ol class="demo-howto__list">
               <li>
                 <span class="step-badge">1</span>
-                Выберите готовый пример или введите свои заголовки и тело.
+                Выберите один из пресетов или введите свои заголовки и тело.
               </li>
               <li>
                 <span class="step-badge">2</span>
@@ -933,12 +959,12 @@
               </li>
               <li>
                 <span class="step-badge">3</span>
-                Посмотрите, какой фрагмент может оказаться «лишним» и интерпретироваться
-                как отдельный документ.
+                Обратите внимание, какой фрагмент может считаться «лишним» и стать
+                отдельным документом.
               </li>
               <li>
                 <span class="step-badge">4</span>
-                Меняйте заголовки и тело, чтобы увидеть, как меняется симуляция.
+                Меняйте заголовки и тело и смотрите, как меняется симуляция.
               </li>
             </ol>
           </div>
@@ -971,7 +997,7 @@
               </button>
             </div>
             <p class="demo-presets__hint">
-              Клик по примеру заполнит оба поля формы. Вы можете изменить данные
+              Клик по примеру заполнит оба поля формы. Значения можно отредактировать
               перед запуском симуляции.
             </p>
           </div>
@@ -984,7 +1010,7 @@
               <textarea
                 name="headers"
                 class="demo-textarea demo-textarea--headers"
-                placeholder="Пример:&#10;X-Test: desync=1&#10;Content-Length: 10"
+                placeholder="X-Test: desync=1&#10;Content-Length: 10"
                 rows="5"
               ></textarea>
             </label>
@@ -994,24 +1020,22 @@
               <textarea
                 name="body"
                 class="demo-textarea"
-                placeholder='Пример: {"action": "probe", "id": 123}'
+                placeholder='{"action": "probe", "id": 123}'
                 rows="4"
               ></textarea>
             </label>
 
-            <div id="demoError" class="demo-error" style="display: none;">
+            <div id="demoError" class="demo-error" style="display:none;">
               Чтобы запустить симуляцию, заполните хотя бы одно поле (Header или Body).
             </div>
 
             <div class="demo-form__hint">
-              Вы можете выбрать один из примеров выше или ввести свои сырые заголовки
-              и тело запроса. Примеры нужны только для быстрого старта.
+              Вы можете пользоваться готовыми примерами выше или полностью своими
+              заголовками и телом запроса.
             </div>
 
             <div class="demo-form__actions">
-              <button type="submit" class="btn-primary">
-                Отправить тест
-              </button>
+              <button type="submit" class="btn-primary">Отправить тест</button>
               <button type="button" class="btn-secondary" id="demoReset">
                 Сбросить форму
               </button>
@@ -1025,17 +1049,15 @@
             </div>
 
             <div id="demoResultEmpty" class="demo-result__empty">
-              Заполните хотя бы одно из полей (Header или Body), чтобы запустить
-              симуляцию. Здесь появится разбивка условного ответа на части:
-              что «видит» сервер и что «видит» браузер.
+              Заполните хотя бы одно из полей, чтобы увидеть разбор: как условный
+              «сервер» и «браузер» могли бы разделить один и тот же поток байтов.
             </div>
 
-            <div id="demoResultContent" class="demo-result__content" style="display: none;">
-            </div>
+            <div id="demoResultContent" class="demo-result__content" style="display:none;"></div>
 
             <p class="demo-result__note">
-              Это безопасная учебная симуляция: никаких настоящих HTTP‑запросов,
-              только текстовый разбор внутри вашего браузера.
+              Симуляция упрощена и не повторяет поведение конкретного сервера или браузера.
+              Её цель — показать идею рассинхронизации и появления «лишнего» ответа.[page:1]
             </p>
           </div>
         </div>
@@ -1050,7 +1072,7 @@
           <h3>Контакты</h3>
           <h2>Автор лендинга</h2>
           <p>
-            Лендинг создан в учебных целях: отработка вёрстки, адаптива и
+            Лендинг сделан в учебных целях: практика вёрстки, адаптива и
             объяснения технических идей понятным языком.
           </p>
           <p>
