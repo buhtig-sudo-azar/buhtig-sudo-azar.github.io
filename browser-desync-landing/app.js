@@ -12,7 +12,7 @@
  */
 
 // TODO: сюда я подставлю URL основного интерфейса
-const BACK_TARGET_URL = "https://example.com/app";
+const BACK_TARGET_URL = "https://buhtig-sudo-azar.github.io/landings/";
 
 document.addEventListener("DOMContentLoaded", () => {
   /* ========= ПЛАВНЫЙ СКРОЛЛ ========= */
