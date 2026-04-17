@@ -1,447 +1,211 @@
 <!DOCTYPE html>
 <html lang="ru">
-
 <head>
-	<meta charset="UTF-8" />
-	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-	<meta name="description"
-		content="Свежее и готовое мясо с доставкой в сети магазинов Мясной гастроном по приемлимым ценам. Шашлык, люля-кебаб, салаты и полуфабрикаты в Батайске." />
-	<meta name="robots" content="index,follow" />
-	<meta name="keywords" content="мясо, шашлык, батайск, курица, мясной, гастроном, кухня">
-	<link rel="preconnect" href="https://fonts.googleapis.com" />
-	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-	<link
-		href="https://fonts.googleapis.com/css2?family=Lobster&family=Nunito:ital,wght@0,300;0,400;0,900;1,700&display=swap"
-		rel="stylesheet" />
-	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
-	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css">
-	<link rel="icon" href="img/favicon.ico">
-	<link rel="stylesheet" href="css/styles.min.css" />
-	<title>Мясной гастроном | Купить мясо в Батайске</title>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Browser Desync — демо-лендинг</title>
+
+  <meta name="description"
+        content="Демонстрационный лендинг, посвящённый уязвимости Browser Desync: краткое объяснение, сценарии атак и демо-зона для экспериментов." />
+  <meta name="robots" content="index,follow" />
+  <meta name="keywords"
+        content="browser desync, desync, http desync, request smuggling, безопасность, web security, demo" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;700;900&display=swap"
+    rel="stylesheet"
+  />
+
+  <link rel="stylesheet" href="css/styles.min.css" />
 </head>
-
 <body>
-	<!-- Header -->
-	<header class="header">
-		<div class="header__inner">
-			<div class="header__logo">
-				<!-- <img src="img/logo/text1.png" alt="Мясной гастроном" /> -->
-				Мясной
-			</div>
-			<nav class="nav" id="nav">
-				<a href="#" class="nav__link" data-scroll="#about">О нас</a>
-				<a href="#" class="nav__link" data-scroll="#menu">Меню</a>
-				<a href="#" class="nav__link" data-scroll="#gallery">Галлерея</a>
-				<a href="#" class="nav__link" data-scroll="#review">Отзывы</a>
-				<a href="#" class="nav__link" data-scroll="#contacts">Контакты</a>
-			</nav>
-			<button class="call__btn" id="callBtn-1">Связаться</button>
-			<div class="burger" id="navToggle">
-				<div class="burger__circle"></div>
-				<div class="burger__item">menu</div>
-			</div>
-		</div>
-	</header>
-	<!-- Main -->
-	<section class="main">
-		<div class="container">
-			<div class="main__inner">
-				<div class="main__text">
-					<h1>Мясной<br />Гастроном</h1>
-					<div class="main__description">Качественные продукты. <br> Лучшее для Вас!</div>
-					<button class="main__btn">К асcортименту</button>
-				</div>
-				<img src="img/main/1.png" alt="Мясо" class="main__img" />
-			</div>
-		</div>
-	</section>
+  <!-- Header -->
+  <header class="header">
+    <div class="header__inner">
+      <div class="header__logo">
+        Browser<br>Desync
+      </div>
+      <nav class="nav" id="nav">
+        <a href="#about" class="nav__link" data-scroll="#about">О уязвимости</a>
+        <a href="#attack" class="nav__link" data-scroll="#attack">Сценарий атаки</a>
+        <a href="#demo" class="nav__link" data-scroll="#demo">Демо-зона</a>
+        <a href="#contacts" class="nav__link" data-scroll="#contacts">Контакты</a>
+      </nav>
+      <button class="call__btn" id="scrollToDemo">К демо</button>
+      <div class="burger" id="navToggle">
+        <div class="burger__circle"></div>
+        <div class="burger__item">menu</div>
+      </div>
+    </div>
+  </header>
 
-	<!-- Features -->
-	<div class="features" id="features">
-		<div class="container">
-			<div class="features__inner">
-				<div class="features__card card1">
-					<img src="img/features/MEAT.svg" alt="Лого" class="features__logo" />
-					<h3>Всегда свежее</h3>
-					<div class="features__text">
-						В нашем ассортименте свыше 200 различных видов разделки свежего мяса.
-						В «Мясных гастрономах» работают только профессионалы!
-					</div>
-					<a class="map__btn" href="#popup">Найти</a>
-				</div>
+  <!-- Hero -->
+  <section class="main" id="top">
+    <div class="container">
+      <div class="main__inner">
+        <div class="main__text">
+          <h1>Browser Desync<br>Demo</h1>
+          <div class="main__description">
+            Небольшой лендинг, который демонстрирует идею Browser Desync‑атак
+            и может использоваться как тестовый стенд при изучении веб‑безопасности.
+          </div>
+          <button class="main__btn" id="mainGoToDemo">Запустить демо</button>
+        </div>
+        <div class="main__img main__img--desync">
+          <!-- можно позже заменить на SVG/картинку -->
+          <span>HTTP<br>Desync</span>
+        </div>
+      </div>
+    </div>
+  </section>
 
-				<div class="features__card card2">
-					<img src="img/features/KEBAB.svg" alt="Лого" class="features__logo" />
-					<h3>Приготовим</h3>
-					<div class="features__text">
-						Мясные гастрономы - это не только мясо, но и домашняя кулинария. Готовим как дома, используя
-						качественные продукты
-						и выбирая лучшее специально для Вас!
-					</div>
-				</div>
-				<div class="features__card card3">
-					<img src="img/features/DELIVERY.png" alt="Лого" class="features__logo" />
-					<h3>Доставим</h3>
-					<div class="features__text">
-						Гости уже на подходе, а вы совсем ничего не успеваете? Доставка от мясного гастронома
-						решит проблему!
-						Обещаем, будет вкусно, качественно и быстро!
-					</div>
-					<a class="features__btn" href="tel:+7 (989) 635-97-27">Позвонить</a>
-				</div>
-			</div>
-			<!--/features inner-->
-		</div>
-	</div>
-	<!-- About -->
-	<section class="about" id="about">
-		<div class="container">
-			<div class="about__inner">
-				<img src="img/about/meat.png" alt="Мясо" class="about__img"></img>
-				<div class="about__text">
-					<h3>О нас</h3>
-					<h2>Сеть мясных магазинов в <br> г. Батайск</h2>
-					<div class="about__description">
-						
-						Мясной гастроном - это семейное предприятие. Начиная с 2003 года, мы с любовью трудимся для
-						того, чтобы наши покупатели наслаждались вкусом мяса высшего качества по доступной цене.
-						<br><br>
-						Мясные гастрономы - это не только мясо, но и огромная кулинария, в которой готовят
-						полуфабрикаты, основные блюда, салаты, гарниры, закуски.
-					</div>
-				</div>
-			</div>
-		</div>
-	</section>
-	<!-- Statistics -->
-	<div class="statistic" id="statistics">
-		<div class="container">
-			<div class="statistic__inner">
-				<div class="statistic__card">
-					<div class="statistic__stat"><span class="counter">19</span> лет</div>
-					<span class="statistic__header">На рынке</span>
-					<div class="description">Мы ценим каждого нашего клиента и очень увлечены своим делом. На протяжении
-						долгих лет мы
-						находимся на рынке и всегда в ответе за свой продукт. Совсем не важно, что Вы выберeте! Будь то
-						котлеты
-						по-киевски, замаринованное под шашлык мясо, вареники, салаты или блинчики. Это всегда будет
-						качественный
-						продукт!
-					</div>
-				</div>
-				<div class="statistic__card">
-					<div class="statistic__stat"><span class="counter">28</span></div>
-					<span class="statistic__header">Поставщиков</span>
-					<div class="description">Мы работаем с разными поставщиками, которые также следят за качеством, как
-						и мы. Семейные
-						фермерские хозяйства, крупные агрокомплексы. Мы готовы с радостью поделиться с вами секретами и
-						тонкостями
-						нашей продукции, а также ответить на любые вопросы!
-					</div>
-				</div>
-				<div class="statistic__card">
-					<div class="statistic__stat"><span class="counter">7</span></div>
-					<span class="statistic__header">Торговых точек</span>
-					<div class="description">Сегодня вам не придется далеко ходить, чтобы купить качественное
-						мясо. Теперь
-						его можно не только купить в 7-ми магазинах в г.Батайске, но и заказать с доставкой на дом.
-						Вы можете нам доверять, об этом говорят отзывы тысячи довольных клиентов за 19 лет.
-					</div>
-				</div>
-				<div class="statistic__card">
-					<div class="statistic__stat"><span class="counter">200</span>+</div>
-					<span class="statistic__header">Продуктов в ассортименте</span>
-					<div class="description">Вся продукция, представленная в мясном гастрономе заготавливается на нашем
-						собственном
-						производстве,
-						где внедрена и успешно применяется современная система менеджмента качества ХАССП (HACCP),
-						которая гарантирует
-						обеспечение контроля за безопасностью и качеством продукции на всех стадиях производства.
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-	<!-- Menu -->
-	<section class="menu" id="menu">
-		<div class="container">
-			<div class="menu__inner">
-				<div class="menu__text">
-					<h3>Асcортимент и меню</h3>
-					<h2>Большой выбор мяса и готовые блюда <br>
-						собственной кулинарии
-					</h2>
-				</div>
-				<div class="menu__cards">
-					<div class="menu__card">
-						<div class="front">
-							<img src="img/menu/meat.png" alt="Мясо" class="menu__img">
-							<h4 class="menu__h4">Свежее мясо</h4>
-							<div class="menu__card__description">
-								<ul>
-									<li>Свинина</li>
-									<li>Говядина</li>
-									<li>Баранина</li>
-									<li>Курица и перпелка</li>
-									<li>Утка и индейка</li>
-									<li>Кролик</li>
-									<li>Нутрия</li>
-								</ul>
-							</div>
-						</div>
-						<div class="back">
-							<span class="card__description">Вся продукция, предоставленная в сети магазинов «Мясной гастроном», отвечает действующим требованиям законодательства РФ, в области обеспечения качества и безопасности пищевой продукции  и проходит тщательный контроль на всех этапах производства. 
-Птица, говядина, баранина, свинина только высшего качества. 
-Мясной гастроном всегда думает о вас и качестве продуктов на вашем столе.</span>
-						</div>
-					</div>
-					<div class="menu__card">
-						<div class="front">
-							<img src="img/menu/kebab.png" alt="Мясо" class="menu__img">
-							<h4 class="menu__h4">Маринуем и готовим</h4>
-							<div class="menu__card__description">
-								<ul>
-									<li>Шашлык в ассортименте</li>
-									<li>Люля-кебаб</li>
-									<li>Печень в сетке</li>
-									<li>Рыба на мангале</li>
-									<li>Овощи на мангале</li>
-								</ul>
-							</div>
-						</div>
-						<div class="back"><span class="card__description">Если бы мы проводили слепую дегустацию
-								шашлыков, люля, да и
-								вообще всех наших фирменных блюд приготовленных на мангале, то наш маринад мы бы узнали
-								сразу!
-								На протяжении долгих лет мы не меняем рецепт.
-								Свинина, курица, говядина и конечно овощи на мангале - как раз то, чем мы поистине
-								гордимся.
-							</span>
-						</div>
-					</div>
-					<div class="menu__card">
-						<div class="front">
-							<img src="img/menu/naggets.png" alt="Мясо" class="menu__img">
-							<h4 class="menu__h4">Наша кухня</h4>
-							<div class="menu__card__description">
-								<ul style="column-count: 2">
-									<li>Отбивные</li>
-									<li>Пулярики</li>
-									<li>Котлеты</li>
-									<li>Рёбра</li>
-									<li>Картофель</li>
-									<li>Рулеты</li>
-									<li>Роллы из лаваша с начинкой</li>
-									<li>Салаты в ассортименте</li>
-									<li>Домашние соленья</li>
-								</ul>
-							</div>
-						</div>
-						<div class="back"><span class="card__description">Широкий выбор блюд, приготовленных с любовью.
-								Хочется, чтобы еду было удобно брать с собой? Она была без консервантов и приготовлена
-								из отборных
-								продуктов? Мы соблюдаем все эти качества когда готовим для вашего стола:
-								салаты на любой вкус, блинчики, рулеты, роллы и горячие блюда.</span>
-						</div>
-					</div>
-					<div class="menu__card">
-						<div class="front">
-							<img src="img/menu/bread.png" alt="Мясо" class="menu__img">
-							<h4 class="menu__h4">Выпечка и десерты "Анаис"</h4>
-							<div class="menu__card__description">
-								<ul style="column-count: 2">
-									<li>Свежий хлеб</li>
-									<li>Пироги</li>
-									<li>Самса</li>
-									<li>Хачапури</li>
-									<li>Запеканки</li>
-									<li>Курники</li>
-									<li>Пирожки</li>
-									<li>Печенье</li>
-									<li>Торты на заказ</li>
-								</ul>
-							</div>
-						</div>
-						<div class="back"><span class="card__description">Выпечка «Анаис» - тот хлеб, пироги, пирожные,
-								которые точно
-								стоит попробовать каждому. С семьей за большим столом или за ужином с друзьями.
-								Сладости и выпечка от
-								кондитеров «Анаис» всегда поднимут настроение. <span>Семейная кондитерская</span>,
-								которая знает, что Вы
-								любите! И сделает все, чтобы ваши встречи и семейные чаепития стали
-								вкуснее.</span>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</section>
-	<!-- Gallery -->
-	<section class="gallery" id="gallery">
-		<div class="container">
-			<div class="gallery__inner">
-				<div class="gallery__text">
-					<h2>Галерея</h2>
-					<div class="description">Все ещё думаете чем порадовать гостей и любимых?
-						Мясной гастроном поможет с выбором!
-						Широкий выбор блюд приготовленных с любовью.
-					</div>
-					<div class="gallery__btns">
-						<button class="gallery__btn prev">
-							<img src="img/gallery/Path.svg" alt="Лево" class="gallery__left"></button>
-						<span id="gallerySlide">1/8</span>
-						<button class="gallery__btn next"> <img src="img/gallery/Path.svg" alt="Право"
-								class="gallery__right"></button>
-					</div>
-				</div>
-				<div class="gallery__slider next">
-					<div class="gallery__item current">
-						<img src="img/gallery/1.png" alt="Мясо" class="gallery__img">
-					</div>
-					<div class="gallery__item">
-						<img src="img/gallery/2.png" alt="Блинчики" class="gallery__img">
-					</div>
-					<div class="gallery__item">
-						<img src="img/gallery/3.png" alt="Мясо" class="gallery__img">
-					</div>
-					<div class="gallery__item">
-						<img src="img/gallery/4.png" alt="Курица-гриль" class="gallery__img">
-					</div>
-					<div class="gallery__item">
-						<img src="img/gallery/5.png" alt="Готовые крылышки" class="gallery__img">
-					</div>
-					<div class="gallery__item">
-						<img src="img/gallery/6.png" alt="Мясо" class="gallery__img">
-					</div>
-					<div class="gallery__item">
-						<img src="img/gallery/7.png" alt="Магазин" class="gallery__img">
-					</div>
-					<div class="gallery__item">
-						<img src="img/gallery/8.png" alt="Рыба" class="gallery__img">
-					</div>
-				</div>
-			</div>
-		</div>
-	</section>
-	<!-- Review -->
-	<section class="review" id="review">
-		<div class="container">
-			<div class="review__inner">
-				<div class="review__text">
-					<h3>Отзывы</h3>
-					<h2>О нас говорят</h2>
-					<div class="description">Для нас важен каждый клиент, а для каждого клиента несомненно важен
-						качественный продукт -
-						именно поэтому мясной гастроном выбирают тысячи.
-					</div>
-				</div>
-				<div class="review__cards">
-					<div class="review__card">
-						<div class="review__description">Отличный магазин! И как мясной, и как магазин кулинарии очень
-							достойный: салаты,
-							шашлык (вкусный!), рыба жаренная, люля, куриные крылышки с мангала, ножки в панировке 👍.
-							Постоянно там
-							покупаю.</div>
-						<img src="img/review/card1.png" alt="Отзыв" class="review__bg">
-					</div>
-					<div class="review__card">
-						<div class="review__description">Мой любимый магазин. Удобное место, есть парковка. Всегда
-							большой
-							ассортимент мясной продукции. Есть готовое мясо, салаты, соленья, выпечка, так же и
-							колбасы,сыры,
-							полуфабрикаты, молочка, крупы и много всего. Цены доступные и доставка удобная.</div>
-						<img src="img/review/card2.png" alt="Отзыв" class="review__bg" />
-					</div>
-					<div class="review__card">
-						<div class="review__description">Всегда хороший выбор и вкусное мясо. Отличные булочки для
-							гамбургеров и белый
-							соус, от которого не оторваться)))</div>
-						<img src="img/review/card3.png" alt="Отзыв" class="review__bg">
-					</div>
-				</div>
-			</div>
-		</div>
-	</section>
-	<!-- Contacts -->
-	<section class="contacts" id="contacts">
-		<div class="container">
-			<div class="contacts__inner">
-				<div class="contacts__text">
-					<h3>Контакты</h3>
-					<h2>Свяжитесь с нами прямо сейчас!</h2>
-				</div>
-				<div class="contacts__block">
-					<div class="ico-wrap"> <i class="far fa-clock ico-contact"></i>
-					</div>
-					<div class="descript-wrapper">
-						<h4 class="aio-icon-title">Время работы магазинов и доставки:</h4>
-						<div class="aio-icon-description">
-							пн-сб 08:00–21:00 <br> вс 08:00–20:30</div>
-					</div>
+  <!-- About -->
+  <section class="about" id="about">
+    <div class="container">
+      <div class="about__inner">
+        <div class="about__text">
+          <h3>О уязвимости</h3>
+          <h2>Что такое Browser Desync</h2>
+          <div class="about__description">
+            Browser Desync — класс атак, при которых браузер и сервер начинают
+            по‑разному интерпретировать структуру HTTP‑ответа. Это позволяет
+            внедрять произвольный контент или подменять ответы для пользователя.
+          </div>
+          <div class="about__description">
+            В отличие от классического HTTP Request Smuggling, фокус здесь
+            именно на несинхронности между браузером и цепочкой прокси/серверов,
+            что делает атаки более практичными против реальных приложений.
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
 
-					<span class="clearfix"></span>
+  <!-- Attack -->
+  <section class="attack" id="attack">
+    <div class="container">
+      <div class="attack__inner">
+        <h3>Сценарий атаки</h3>
+        <h2>Высокоуровневая схема</h2>
 
-					<a href="https://www.instagram.com/myasnoy_gastronom_1/" class="ico-wrap">
-						<i class="fab fa-instagram ico-contact"></i>
-					</a>
-					<div class="descript-wrapper">
-						<h4 class="aio-icon-title">Наш инстаграм:</h4>
-						<div class="aio-icon-description"><a
-								href="https://www.instagram.com/myasnoy_gastronom_1/">@myasnoy_gastronom_1</a></div>
-					</div>
+        <div class="attack__grid">
+          <div class="attack__card">
+            <h4>1. Подготовка среды</h4>
+            <p>
+              Атакующий ищет пограничные кейсы обработки заголовков
+              и тела ответа: нестандартные разделители, некорректные длины,
+              особенности кэширования и проксирования.
+            </p>
+          </div>
+          <div class="attack__card">
+            <h4>2. Несинхронность</h4>
+            <p>
+              Браузер и сервер по‑разному разбирают поток байтов: для браузера
+              это один документ, для сервера — несколько ответов или наоборот.
+            </p>
+          </div>
+          <div class="attack__card">
+            <h4>3. Встраивание полезной нагрузки</h4>
+            <p>
+              Внутрь «лишней» части ответа внедряется HTML/JS‑код,
+              который получит жертва в рамках доверенного происхождения (origin).
+            </p>
+          </div>
+          <div class="attack__card">
+            <h4>4. Эксплуатация</h4>
+            <p>
+              Дальше возможны XSS‑атаки, кража данных, подмена контента страницы
+              и другие сценарии в зависимости от контекста приложения.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
 
-					<span class="clearfix"></span>
+  <!-- Demo -->
+  <section class="demo" id="demo">
+    <div class="container">
+      <div class="demo__inner">
+        <div class="demo__text">
+          <h3>Демо‑зона</h3>
+          <h2>Тестовый запрос</h2>
+          <p>
+            Ниже — упрощённая форма, имитирующая отправку «подозрительного» запроса.
+            В реальной лаборатории здесь могут быть свои эндпоинты, прокси, анализаторы
+            и визуализация смещения ответа.
+          </p>
+        </div>
 
-					<a href="tel:+7(989)6359727" class="ico-wrap">
-						<i class="fas fa-phone ico-contact"></i>
-					</a>
-					<div class="descript-wrapper">
-						<h4 class="aio-icon-title">Телефон доставки:</h4>
-						<div class="aio-icon-description"><a href="tel:+7(989)6359727">+7 (989) 635-97-27</a></div>
-					</div>
+        <form class="demo__form" id="demoForm">
+          <label class="demo__label">
+            Заголовок (Header):
+            <input type="text" name="header" class="demo__input"
+                   placeholder="X-Test: desync" />
+          </label>
 
-					<span class="clearfix"></span>
+          <label class="demo__label">
+            Тело запроса (Body):
+            <textarea name="body" class="demo__textarea"
+                      placeholder="payload=desync"></textarea>
+          </label>
 
-				</div>
-				<div class="contacts__btn">
-					<a href="tel:+7 (989) 635-97-27" class="call__btn">Позвонить</a>
-				</div>
-			</div>
-		</div>
-	</section>
-	<footer class="footer">
-		<div class="container">
-			<div class="footer__inner">
-				<div class="footer__title">
-					Мясной
-				</div>
-				<div class="footer__address">
-					Адреса магазинов: <br>
-					Ул Ленина 221, Шмидта 22а, Луначарского 110, Октябрьская 151/4,
-					Кольцо торговое 23, М. Горького 534/42, Северный 2/2
-				</div>
-				<a href="tel:+7 (989) 635-97-27" class="call__btn">Связаться</a>
-			</div>
-			<span class="copyright">© ООО “Мясной гастроном” 2022, Все права защищены.</span>
-		</div>
+          <button type="submit" class="demo__submit">Отправить тест</button>
+        </form>
 
-	</footer>
-	<div id="popup" class="overlay">
-		<div class="popup">
-			<h2>Здесь вы можете найти наши магазины</h2>
-			<a class="close" href="#features">&times;</a>
-			<div class="content">
-				<div id="map" style="width: 100%; height: 70vh; padding: 0;"></div>
-			</div>
-		</div>
-	</div>
+        <div class="demo__result" id="demoResult">
+          <h4>Результат симуляции</h4>
+          <p class="demo__result-text">
+            Здесь будет отображаться условный результат обработки запроса
+            (например, как его «увидел» браузер и как — бэкенд).
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contacts / Footer -->
+  <section class="contacts" id="contacts">
+    <div class="container">
+      <div class="contacts__inner">
+        <div class="contacts__text">
+          <h3>Контакты</h3>
+          <h2>Автор лендинга</h2>
+          <p>
+            Лендинг создан в учебных целях для отработки вёрстки и демонстрации
+            концепции Browser Desync. Если нужен исходный код или дополнительная
+            информация — можно связаться со мной.
+          </p>
+          <p>
+            GitHub: <a href="https://github.com/buhtig-sudo-azar"
+                       target="_blank" rel="noopener noreferrer">
+              @buhtig-sudo-azar
+            </a>
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__inner">
+        <div class="footer__title">
+          Browser Desync Demo
+        </div>
+        <span class="copyright">
+          © 2026, учебный демо‑проект. Все действия проводите только
+          в легальном тестовом окружении.
+        </span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <script src="app.js"></script>
 </body>
-
-<script src="https://api-maps.yandex.ru/2.1/?apikey=5dfaf9cd-4d97-4ce4-beba-b547ffe92948&lang=ru_RU"
-	type="text/javascript"></script>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-<script src="https://cdn.rawgit.com/nnattawat/flip/master/dist/jquery.flip.min.js"></script>
-<script src="app.js"></script>
-
 </html>
