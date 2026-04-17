@@ -1,20 +1,18 @@
 "use strict";
 
 /*
- * app.js для browser-desync-landing
+ * app.js для обновлённого browser-desync-landing
  *
  * Логика:
- * - плавный скролл по секциям (data-scroll, кнопки "К демо" и "Запустить демо");
+ * - плавный скролл по секциям;
  * - бургер-меню на мобиле;
- * - готовые примеры (пресеты) в демо-зоне;
- * - обработка отправки формы: генерация "разбора" сервер/браузер + опасный фрагмент;
- * - сброс формы и возврат демо в исходное состояние.
+ * - пресеты (3 примера) => подстановка в textarea заголовков и тела;
+ * - отправка формы: проверка пустых полей, текстовая симуляция;
+ * - сброс формы и демо-состояния.
  */
 
 document.addEventListener("DOMContentLoaded", function () {
-  /* ============================
-   *  ПЛАВНЫЙ СКРОЛЛ К СЕКЦИЯМ
-   * ============================ */
+  /* ===== ПЛАВНЫЙ СКРОЛЛ ===== */
 
   function scrollToElement(el, delta) {
     if (!el) return;
@@ -26,7 +24,6 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
-  // Клики по ссылкам с data-scroll (в шапке и в мобильном меню)
   document.addEventListener("click", function (e) {
     var link = e.target.closest("[data-scroll]");
     if (!link) return;
@@ -38,7 +35,6 @@ document.addEventListener("DOMContentLoaded", function () {
     scrollToElement(target, delta);
   });
 
-  // Кнопка "К демо" в шапке
   var scrollToDemoBtn = document.getElementById("scrollToDemoBtn");
   if (scrollToDemoBtn) {
     scrollToDemoBtn.addEventListener("click", function (e) {
@@ -47,7 +43,6 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
-  // Кнопка "Запустить демо" в hero
   var mainToDemo = document.getElementById("mainToDemo");
   if (mainToDemo) {
     mainToDemo.addEventListener("click", function (e) {
@@ -56,14 +51,11 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
-  /* ============================
-   *  БУРГЕР-МЕНЮ (МОБИЛЬНОЕ)
-   * ============================ */
+  /* ===== BURGER / МОБИЛЬНОЕ МЕНЮ ===== */
 
   (function () {
     var navToggle = document.getElementById("navToggle");
     var navMobile = document.getElementById("navMobile");
-
     if (!navToggle || !navMobile) return;
 
     navToggle.addEventListener("click", function (e) {
@@ -75,7 +67,6 @@ document.addEventListener("DOMContentLoaded", function () {
       }
     });
 
-    // При клике по пункту меню в мобиле — закрываем меню
     navMobile.addEventListener("click", function (e) {
       if (e.target.matches(".nav__link")) {
         navMobile.style.display = "none";
@@ -83,14 +74,11 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   })();
 
-  /* ============================
-   *  ГОТОВЫЕ ПРИМЕРЫ (ПРЕСЕТЫ)
-   * ============================ */
+  /* ===== ПРЕСЕТЫ ===== */
 
-  // Набор примеров: ключи совпадают с data-preset в HTML
   var DEMO_PRESETS = {
     "simple-desync": {
-      header:
+      headers:
         "X-Debug-Mode: desync\n" +
         "X-Client-ID: demo-user\n" +
         "Content-Length: 48\n" +
@@ -103,24 +91,20 @@ document.addEventListener("DOMContentLoaded", function () {
         "Host: vulnerable.example"
     },
     "length-conflict": {
-      header:
+      headers:
         "Content-Length: 10\n" +
         "X-Desync-Test: length-mismatch",
       body: '{"ok":true,"padding":"AAAAAA"}'
     },
     "weird-json": {
-      header:
+      headers:
         "X-Desync-Vector: json-weird\n" +
         "Content-Type: application/json",
       body:
-        '{"action":"probe","next":"GET /evil HTTP/1.1\\\\r\\\\nHost: demo"}'
+        '{"action":"probe","next":"GET /evil HTTP/1.1\\r\\nHost: demo"}'
     }
   };
 
-  /**
-   * Подставляет выбранный пресет в форму.
-   * @param {string} presetKey - ключ из DEMO_PRESETS.
-   */
   function applyPresetToForm(presetKey) {
     var preset = DEMO_PRESETS[presetKey];
     if (!preset) return;
@@ -128,15 +112,13 @@ document.addEventListener("DOMContentLoaded", function () {
     var form = document.getElementById("demoForm");
     if (!form) return;
 
-    var headerInput = form.querySelector("input[name='header']");
-    var bodyTextarea = form.querySelector("textarea[name='body']");
-    if (!headerInput || !bodyTextarea) return;
+    var headersField = form.querySelector("textarea[name='headers']");
+    var bodyField = form.querySelector("textarea[name='body']");
+    if (!headersField || !bodyField) return;
 
-    // Подставляем текст примера в поля (они остаются редактируемыми)
-    headerInput.value = preset.header;
-    bodyTextarea.value = preset.body;
+    headersField.value = preset.headers;
+    bodyField.value = preset.body;
 
-    // Сбрасываем возможную ошибку и возвращаем "пустое" состояние результата
     var errorEl = document.getElementById("demoError");
     var emptyEl = document.getElementById("demoResultEmpty");
     var contentEl = document.getElementById("demoResultContent");
@@ -148,7 +130,6 @@ document.addEventListener("DOMContentLoaded", function () {
       contentEl.innerHTML = "";
     }
 
-    // Подсветка активного пресета
     var allPresetButtons = document.querySelectorAll(".demo-presets__item");
     allPresetButtons.forEach(function (btn) {
       btn.classList.remove("demo-presets__item--active");
@@ -161,7 +142,6 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
 
-  // Вешаем обработчики на кнопки-пресеты
   (function () {
     var presetButtons = document.querySelectorAll(".demo-presets__item");
     if (!presetButtons.length) return;
@@ -174,9 +154,7 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   })();
 
-  /* ==================================
-   *  ДЕМО-ФОРМА: СИМУЛЯЦИЯ + СБРОС
-   * ================================== */
+  /* ===== ДЕМО-ФОРМА: СИМУЛЯЦИЯ + СБРОС ===== */
 
   (function () {
     var form = document.getElementById("demoForm");
@@ -187,39 +165,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
     if (!form || !errorEl || !emptyEl || !contentEl) return;
 
-    /**
-     * Полный сброс формы и результата к начальному состоянию.
-     */
-    function resetDemoForm() {
-      var headerInput = form.querySelector("input[name='header']");
-      var bodyTextarea = form.querySelector("textarea[name='body']");
-
-      if (headerInput) headerInput.value = "";
-      if (bodyTextarea) bodyTextarea.value = "";
-
-      errorEl.style.display = "none";
-      emptyEl.style.display = "block";
-      contentEl.style.display = "none";
-      contentEl.innerHTML = "";
-
-      // Снимаем подсветку активных пресетов
-      var presetButtons = document.querySelectorAll(".demo-presets__item");
-      presetButtons.forEach(function (btn) {
-        btn.classList.remove("demo-presets__item--active");
-      });
-    }
-
-    // Кнопка "Сбросить форму"
-    if (resetBtn) {
-      resetBtn.addEventListener("click", function () {
-        resetDemoForm();
-      });
-    }
-
-    /**
-     * Простая экранизация HTML, чтобы не ломать разметку,
-     * когда мы вставляем куски пользовательского ввода в innerHTML.
-     */
     function escapeHtml(str) {
       return str
         .replace(/&/g, "&amp;")
@@ -229,99 +174,131 @@ document.addEventListener("DOMContentLoaded", function () {
         .replace(/'/g, "&#39;");
     }
 
+    function resetDemoForm() {
+      var headersField = form.querySelector("textarea[name='headers']");
+      var bodyField = form.querySelector("textarea[name='body']");
+
+      if (headersField) headersField.value = "";
+      if (bodyField) bodyField.value = "";
+
+      errorEl.style.display = "none";
+      emptyEl.style.display = "block";
+      contentEl.style.display = "none";
+      contentEl.innerHTML = "";
+
+      var presetButtons = document.querySelectorAll(".demo-presets__item");
+      presetButtons.forEach(function (btn) {
+        btn.classList.remove("demo-presets__item--active");
+      });
+    }
+
+    if (resetBtn) {
+      resetBtn.addEventListener("click", function () {
+        resetDemoForm();
+      });
+    }
+
     form.addEventListener("submit", function (e) {
       e.preventDefault();
 
-      var headerInput = form.querySelector("input[name='header']");
-      var bodyTextarea = form.querySelector("textarea[name='body']");
+      var headersField = form.querySelector("textarea[name='headers']");
+      var bodyField = form.querySelector("textarea[name='body']");
       var submitBtn = form.querySelector("button[type='submit']");
 
-      var header = (headerInput && headerInput.value ? headerInput.value : "").trim();
-      var body = (bodyTextarea && bodyTextarea.value ? bodyTextarea.value : "").trim();
+      var rawHeaders = (headersField && headersField.value ? headersField.value : "").trim();
+      var rawBody = (bodyField && bodyField.value ? bodyField.value : "").trim();
 
-      // Снимаем старую ошибку
       errorEl.style.display = "none";
 
-      // Если оба поля пустые — не симулируем, только ошибка
-      if (!header && !body) {
+      if (!rawHeaders && !rawBody) {
         errorEl.style.display = "block";
         return;
       }
 
-      // Небольшая имитация "отправки"
       var originalBtnText = submitBtn.textContent;
       submitBtn.textContent = "Отправка…";
       submitBtn.disabled = true;
 
-      // Простейший анализ, как "сервер" и "браузер" могли бы видеть ответ
-      var browserView = "";
+      var headersLower = rawHeaders.toLowerCase();
+      var bodyLower = rawBody.toLowerCase();
+
       var backendView = "";
+      var browserView = "";
       var extraHint = "";
 
-      var headerLower = header.toLowerCase();
-      var bodyLower = body.toLowerCase();
+      var contentLengthMatch = rawHeaders.match(/content-length:\s*(\d+)/i);
+      var contentLengthDeclared = contentLengthMatch
+        ? parseInt(contentLengthMatch[1], 10)
+        : null;
+      var bodyByteLength = rawBody ? rawBody.length : 0;
 
-      if (headerLower.indexOf("content-length") !== -1 &&
-          headerLower.indexOf("transfer-encoding") !== -1) {
+      var hasChunked = /transfer-encoding:\s*chunked/i.test(rawHeaders);
+      var hasJson = /content-type:\s*application\/json/i.test(rawHeaders);
+
+      if (contentLengthDeclared !== null && hasChunked) {
         backendView =
-          "Бэкенд использует конфликт заголовков Content-Length и Transfer-Encoding " +
-          "и может нарезать поток так, что часть следующего ответа станет хвостом текущего.";
+          "Сервер получает конфликтующие указания: и Content-Length, и Transfer-Encoding: chunked. " +
+          "Разные узлы цепочки могут по-разному решить, какой заголовок важнее.";
         browserView =
-          "Браузер ориентируется на одну интерпретацию границ, поэтому принимает " +
-          "лишний фрагмент как часть доверенного документа.";
-      } else if (headerLower.indexOf("content-length") !== -1) {
+          "Браузер ориентируется на одну интерпретацию границ ответа, поэтому «лишний» хвост потока " +
+          "может быть принят как начало нового документа.";
+      } else if (contentLengthDeclared !== null) {
         backendView =
-          "Сервер строго следует Content-Length и может считать тело завершённым " +
-          "раньше или позже, чем это ожидает браузер.";
-        browserView =
-          "Браузер исходит из целостного документа и не подозревает, что часть " +
-          "потока относится к следующему логическому ответу.";
-      } else if (headerLower.indexOf("transfer-encoding") !== -1) {
+          "Сервер строго следует Content-Length = " + contentLengthDeclared +
+          " и считает тело завершённым после указанного числа байт.";
+        if (bodyByteLength > contentLengthDeclared) {
+          browserView =
+            "Фактическое тело длиннее заявленного: браузер может обработать весь поток, тогда как сервер " +
+            "может «отрезать» часть и интерпретировать остаток как начало следующего ответа.";
+        } else if (bodyByteLength < contentLengthDeclared) {
+          browserView =
+            "Фактическое тело короче заявленного: браузер ждёт больше данных, чем фактически приходит, " +
+            "что создаёт окно для подмешивания фрагментов последующих ответов.";
+        } else {
+          browserView =
+            "Длина тела совпадает с Content-Length. Явного конфликта нет, но при нестандартном кешировании " +
+            "или прокси всё равно возможны пограничные кейсы.";
+        }
+      } else if (hasChunked) {
         backendView =
-          "Сервер/прокси разбирают поток как chunked и могут по-разному трактовать " +
-          "размеры чанков при пограничных значениях.";
+          "Сервер/прокси разбирают поток как chunked и полагаются на корректность размеров чанков.";
         browserView =
-          "Браузер закрывает документ по первому корректному завершению chunked-потока, " +
-          "оставляя остальное как потенциальный «лишний» хвост.";
+          "Браузер закрывает документ по первому корректному завершению chunked-потока; " +
+          "оставшийся хвост может стать «лишним» контентом.";
       } else {
         backendView =
-          "Сервер видит относительно обычный набор заголовков, но при специфическом " +
-          "сочетании с телом всё ещё возможна десинхронизация.";
+          "Сервер видит обычный набор заголовков без явного указания Content-Length/Transfer-Encoding.";
         browserView =
-          "Браузер просто рендерит полученный документ и не знает, что сервер " +
-          "мог «подмешать» сюда кусок другого ответа.";
+          "Браузер рендерит документ как есть, но при особых условиях на стороне прокси/кеша " +
+          "появляется пространство для десинхронизации.";
       }
 
-      // Доп. подсказка, если в body похоже на HTML/JS
-      if (bodyLower.indexOf("<script") !== -1 ||
-          bodyLower.indexOf("</html") !== -1 ||
-          bodyLower.indexOf("get /") !== -1) {
+      if (hasJson || bodyLower.indexOf("{") !== -1) {
         extraHint =
-          "В теле запроса присутствует фрагмент, который напоминает отдельный HTTP-запрос " +
-          "или HTML/JS. В случае успешного Browser Desync именно он мог бы быть " +
-          "интерпретирован как лишний самостоятельный документ.";
+          "Тело похоже на JSON. Если внутри него закодированы последовательности вроде " +
+          "\"GET /... HTTP/1.1\", они могут использоваться для построения вложенных HTTP-запросов.";
       }
 
-      // Небольшой превью «опасного» фрагмента
-      var payloadPreview;
-      if (body) {
-        payloadPreview = body.slice(0, 160);
-        if (body.length > 160) {
-          payloadPreview += "…";
-        }
-      } else if (header) {
-        // Если тело пустое, но заголовки есть — подсветим кусок заголовков
-        payloadPreview = header.slice(0, 160);
-        if (header.length > 160) {
-          payloadPreview += "…";
-        }
-      } else {
+      if (bodyLower.indexOf("get /") !== -1 ||
+          bodyLower.indexOf("post /") !== -1 ||
+          bodyLower.indexOf("<script") !== -1) {
+        extraHint =
+          (extraHint ? extraHint + " " : "") +
+          "В теле присутствуют фрагменты, похожие на отдельный HTTP-запрос или HTML/JS-код — " +
+          "в случае успешного Browser Desync именно они могут оказаться «лишним» документом.";
+      }
+
+      var payloadSource = rawBody || rawHeaders;
+      var payloadPreview = payloadSource.slice(0, 200);
+      if (payloadSource.length > 200) {
+        payloadPreview += "…";
+      }
+      if (!payloadSource) {
         payloadPreview = "нет данных для анализа";
       }
 
       var safePayload = escapeHtml(payloadPreview);
 
-      // Собираем HTML результата
       var rendered =
         "<div><strong>Серверная интерпретация:</strong><br>" +
         escapeHtml(backendView) +
@@ -341,20 +318,18 @@ document.addEventListener("DOMContentLoaded", function () {
       }
 
       rendered +=
-        "<br><div><strong>Комментарий:</strong> симуляция абстрактная и не " +
-        "эмулирует поведение конкретного сервера или браузера. Её цель — " +
-        "показать идею рассинхронизации и «лишнего» фрагмента.</div>";
+        "<br><div><strong>Комментарий:</strong> эта симуляция упрощена и не " +
+        "эмулирует точное поведение конкретных серверов, прокси и браузеров. " +
+        "Её задача — подсветить идею рассинхронизации и «лишнего» ответа.</div>";
 
-      // Показываем результат, прячем пустой текст
       emptyEl.style.display = "none";
       contentEl.style.display = "block";
       contentEl.innerHTML = rendered;
 
-      // Возвращаем кнопку в нормальное состояние
       setTimeout(function () {
         submitBtn.textContent = originalBtnText;
         submitBtn.disabled = false;
-      }, 300);
+      }, 350);
     });
   })();
 });
