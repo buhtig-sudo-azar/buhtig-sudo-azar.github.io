@@ -1,168 +1,136 @@
+"use strict"; // Включаем строгий режим JS (ловит часть ошибок на этапе выполнения)
+
 $(function () {
-  // Smooth scroll
+  // ----- Универсальная функция плавного скролла к элементу -----
+  const scrollToElement = ($el, delta = 50) => {
+    // Если элемента нет на странице — ничего не делаем
+    if ($el.length === 0) return;
+
+    // Берём координату элемента от верхнего края страницы
+    const offset = $el.offset().top;
+
+    // Плавно скроллим документ к нужной позиции
+    $("html, body").animate(
+      {
+        scrollTop: offset - delta // delta — небольшой отступ сверху, чтобы блок не прилипал к самому краю
+      },
+      700 // длительность анимации в миллисекундах
+    );
+  };
+
+  // ----- Плавный скролл по клику на ссылки с атрибутом data-scroll -----
+  // Пример в HTML: <a data-scroll="#about">О уязвимости</a>
   $("[data-scroll]").on("click", function (event) {
-    event.preventDefault();
+    event.preventDefault(); // Отменяем стандартный переход по ссылке
 
-    let elementId = $(this).data("scroll");
-    let elementOffset = $(elementId).offset().top;
-    let delta = elementId == "#contacts" ? 0 : 50;
+    const elementId = $(this).data("scroll"); // Берём значение data-scroll, например "#about"
+    const $target = $(elementId);             // Находим jQuery-объект по селектору
+    const delta = elementId === "#contacts" ? 0 : 50; // Для блока контактов можно не делать отступ
 
-    $("html, body").animate(
-      {
-        scrollTop: elementOffset - delta,
-      },
-      700
-    );
+    scrollToElement($target, delta);
   });
 
-  // Nav Toggle
-  let nav = $("#nav");
-  let navToggle = $("#navToggle");
+  // ----- Burger / Nav Toggle -----
+  // Навигация (меню) и кнопка-бургер для мобильной версии
+  const $nav = $("#nav");           // <nav id="nav">...</nav>
+  const $navToggle = $("#navToggle"); // Кнопка-бургер с id="navToggle"
 
-  navToggle.on("click", function (event) {
+  $navToggle.on("click", function (event) {
     event.preventDefault();
-    nav.toggleClass("show");
+    // Переключаем класс "show" у навигации.
+    // В CSS по этому классу ты можешь показывать/прятать меню.
+    $nav.toggleClass("show");
   });
 
-  // Buttons
-  $(".main__btn").on("click", function (event) {
+  // ----- Кнопки «К демо» и «Запустить демо» -----
+  // Они должны скроллить к секции с id="demo"
+  $("#scrollToDemo, #mainGoToDemo").on("click", function (event) {
     event.preventDefault();
-
-    let elementOffset = $("#menu").offset().top;
-    $("html, body").animate(
-      {
-        scrollTop: elementOffset - 50,
-      },
-      700
-    );
+    scrollToElement($("#demo"), 50);
   });
 
-  $("#callBtn-1").on("click", function (event) {
-    event.preventDefault();
+  // ----- Обработка демо-формы (симуляция Browser Desync) -----
+  // Форма с id="demoForm" и блок результата с id="demoResult"
+  $("#demoForm").on("submit", function (event) {
+    event.preventDefault(); // Не отправляем форму реально на сервер
 
-    let elementOffset = $("#contacts").offset().top;
-    $("html, body").animate(
-      {
-        scrollTop: elementOffset - 50,
-      },
-      700
-    );
-  });
+    const $form = $(this);
 
-  // Map button
-  function init() {
-    let myMap = new ymaps.Map("map", {
-      center: [47.138336, 39.744469], // Батайск
-      zoom: 12,
-      controls: [],
-    });
+    // Забираем значения полей формы
+    const header = $.trim($form.find("input[name='header']").val());    // Поле "Header"
+    const body = $.trim($form.find("textarea[name='body']").val());     // Поле "Body"
+    const $submitBtn = $form.find(".demo__submit");                     // Кнопка отправки
 
-    var searchControl = new ymaps.control.SearchControl({
-      options: {
-        provider: "yandex#search",
-      },
-    });
+    // Блок, куда выводим текст симуляции
+    const $result = $("#demoResult");
+    const $text = $result.find(".demo__result-text");
 
-    myMap.controls.add(searchControl);
-    searchControl.search("Мясной гастроном");
-
-    myMap.geoObjects.add(
-      new ymaps.Placemark(
-        [47.137889, 39.754761],
-        {
-          balloonContent: "Мясной гастроном | ул. Торговое Кольцо, 23",
-        },
-        { preset: "islands#blueCircleDotIconWithCaption" }
-      )
-    );
-    /*.add(new ymaps.Placemark([47.140706, 39.736132], {
-            balloonContent: 'Мясной гастроном | ул. Луначарского, 110'
-        }, {iconColor: '#d33e23'}
-    ))
-    .add(new ymaps.Placemark([47.133197, 39.766028], {
-            balloonContent: 'Мясной гастроном | ул. Шмидта, 22'
-        }, {iconColor: '#d33e23'}
-    ))
-    .add(new ymaps.Placemark([47.126382, 39.734479], {
-            balloonContent: 'Мясной гастроном | ул. Октябрьская улица, 151/4'
-        }, {iconColor: '#d33e23'}
-    ))
-    .add(new ymaps.Placemark([47.155880, 39.745511], {
-            balloonContent: 'Мясной гастроном | ул. Северный Массив, 2/2'
-        }, {iconColor: '#d33e23'}
-    ))
-    .add(new ymaps.Placemark([47.112736, 39.747999], {
-            balloonContent: 'Мясной гастроном | ул.Ленина, 221'
-        }, {iconColor: '#d33e23'}
-    ))
-    .add(new ymaps.Placemark([47.129817, 39.696189], {
-            balloonContent: 'Мясной гастроном | ул. Максима Горького, 534/42'
-        }, {iconColor: '#d33e23'}
-    )) */
-  }
-
-  ymaps.ready(init);
-
-  // Statistic counter
-
-  let $element = $(".statistic");
-  let check = 0;
-  $(window).scroll(function () {
-    let scroll = $(window).scrollTop() + $(window).height();
-    let offset = $element.offset().top;
-
-    if (scroll > offset && check == 0) {
-      check = 1;
-      $(".counter").each(function () {
-        $(this)
-          .prop("statistic__stat", 0)
-          .animate(
-            {
-              Counter: $(this).text(),
-            },
-            {
-              duration: 2000,
-              easing: "swing",
-              step: function (now) {
-                $(this).text(Math.ceil(now));
-              },
-            }
-          );
-      });
+    // Если оба поля пустые — подсказка пользователю и выходим
+    if (!header && !body) {
+      $text.text(
+        "Заполните хотя бы одно из полей (Header или Body), чтобы запустить симуляцию."
+      );
+      return;
     }
-  });
 
-  // Menu cards flipping
-  $(".menu__card").flip({
-    axis: "y",
-    trigger: "click",
-  });
+    // На время обработки блокируем кнопку, чтобы не спамили сабмиты
+    $submitBtn.prop("disabled", true);
 
-  // Gallery
+    let browserView = ""; // Как «видит» ситуацию браузер
+    let backendView = ""; // Как «видит» ситуацию бэкенд/прокси
+    let extraHint = "";   // Дополнительная подсказка, если payload похож на HTML/JS
 
-  $(".next").on("click", function (event) {
-    let currImg = $(".gallery__item.current");
-    let currImgIndex = currImg.index();
-    let nextImgIndex = currImgIndex + 1;
-    nextImgIndex =
-      nextImgIndex == $(".gallery__item:last").index() + 1 ? 0 : nextImgIndex;
-    let nextImg = $(".gallery__item").eq(nextImgIndex);
-    $("#gallerySlide").html(`${nextImgIndex + 1}/8`);
-    currImg.fadeOut(1000);
-    currImg.removeClass("current");
-    nextImg.fadeIn(1000);
-    nextImg.addClass("current");
-  });
+    const headerLower = header.toLowerCase();
+    const bodyLower = body.toLowerCase();
 
-  $(".prev").on("click", function (event) {
-    let currImg = $(".gallery__item.current");
-    let currImgIndex = currImg.index();
-    let prevImgIndex = currImgIndex - 1;
-    let prevImg = $(".gallery__item").eq(prevImgIndex);
-    $("#gallerySlide").html(`${prevImgIndex == -1 ? 8 : prevImgIndex + 1}/8`);
-    currImg.fadeOut(1000);
-    currImg.removeClass("current");
-    prevImg.fadeIn(1000);
-    prevImg.addClass("current");
+    // Примитивный анализ заголовков: Content-Length / Transfer-Encoding
+    if (headerLower.includes("content-length")) {
+      browserView =
+        "Браузер полагается на вычисленную длину тела ответа и может «отрезать» часть контента.";
+      backendView =
+        "Бэкенд может принять тело целиком или, наоборот, добавить лишние байты — возникает рассинхрон.";
+    } else if (headerLower.includes("transfer-encoding")) {
+      browserView =
+        "Браузер обрабатывает ответ как chunked-поток и завершает документ по первому корректному окончанию.";
+      backendView =
+        "Прокси/сервер может трактовать границы чанков иначе, что открывает путь к внедрению содержимого следующего ответа.";
+    } else {
+      // Общий случай — без специфичных заголовков
+      browserView =
+        "Браузер интерпретирует ответ как обычный документ без явных аномалий.";
+      backendView =
+        "Но при специфическом сочетании заголовков и тела прокси/сервер могут разбирать поток иначе, создавая почву для Browser Desync.";
+    }
+
+    // Если в теле запроса есть HTML/JS — даём дополнительную подсказку
+    if (bodyLower.includes("<script") || bodyLower.includes("</html")) {
+      extraHint =
+        "Вы добавили HTML/JS-фрагмент, который в случае успешного Browser Desync может быть внедрён в ответ страницы.";
+    }
+
+    // Небольшой превью полезной нагрузки (обрезаем до 120 символов)
+    const payloadPreview = body
+      ? body.slice(0, 120) + (body.length > 120 ? "…" : "")
+      : "пустое тело запроса";
+
+    // Экранируем payloadPreview, чтобы он не выполнялся как HTML/JS
+    const safePayload = $("<div>").text(payloadPreview).html();
+
+    // Собираем HTML для блока результата
+    $text.html(
+      `
+<strong>Браузер:</strong> ${browserView}<br><br>
+<strong>Бэкенд / прокси:</strong> ${backendView}<br><br>
+<strong>Фрагмент полезной нагрузки:</strong> <code>${safePayload}</code><br><br>
+${extraHint ? `<strong>Дополнительно:</strong> ${extraHint}<br><br>` : ""}
+<strong>Комментарий:</strong> В реальном тестовом стенде здесь можно визуализировать,
+как один и тот же поток байтов по-разному парсится на клиенте и на сервере.
+      `
+    );
+
+    // Через короткую задержку разблокируем кнопку
+    setTimeout(() => {
+      $submitBtn.prop("disabled", false);
+    }, 400);
   });
 });
