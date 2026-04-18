@@ -1,249 +1,599 @@
 <!DOCTYPE html>
 <html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <title>HTTP Request Handling Anomalies Lab</title>
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+    />
+    <meta
+      name="description"
+      content="Учебный лендинг с интерактивными демо по аномалиям обработки HTTP-запросов, включая First-request routing bypass и другие кейсы."
+    />
 
-<head>
-	<meta charset="UTF-8" />
-	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-	<link rel="preconnect" href="https://fonts.googleapis.com" />
-	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-	<link href="https://fonts.googleapis.com/css2?family=Russo+One&family=Ubuntu&display=swap" rel="stylesheet" />
-	<link rel="stylesheet" href="js/simple-adaptive-slider.min.css" />
-	<link rel="stylesheet" href="css/style.css" />
-	<title>Батарея</title>
-</head>
+    <link
+      rel="apple-touch-icon"
+      sizes="180x180"
+      href="./favicon/apple-touch-icon.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="./favicon/favicon-32x32.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="16x16"
+      href="./favicon/favicon-16x16.png"
+    />
+    <link rel="manifest" href="./favicon/site.webmanifest" />
 
-<body>
-	<!-- Header -->
-	<header class="header">
-		<div class="container">
-			<div class="header__inner">
-				<div class="header__logo">
-					<img src="img/logo.png" alt="Батарея" />
-				</div>
-				<div class="navigation">
-					<a class="navigation__link" data-scroll href="#about">О нас</a>
-					<a class="navigation__link" data-scroll href="#artists">Артисты</a>
-					<a class="navigation__link" href="#">Концерты</a>
-					<a class="navigation__link" data-scroll href="#form">Связаться</a>
-				</div>
-			</div>
-		</div>
-	</header>
+    <style>
+      :root {
+        color-scheme: dark;
+        --bg: #020617;
+        --bg-alt: #020617;
+        --accent: #38bdf8;
+        --accent-soft: rgba(56, 189, 248, 0.2);
+        --text-main: #e5e7eb;
+        --text-muted: #9ca3af;
+        --card-bg: rgba(15, 23, 42, 0.96);
+        --border-subtle: rgba(148, 163, 184, 0.35);
+        --radius-lg: 18px;
+        --shadow-lg: 0 30px 80px rgba(15, 23, 42, 0.95);
+        --transition: 220ms cubic-bezier(0.22, 0.61, 0.36, 1);
+      }
 
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+      }
 
-	<!-- Intro -->
-	<section class="intro">
-		<div class="container">
-			<div class="intro__inner">
-				<div class="intro__text">
-					<h3>
-						Сцена ждёт <br />
-						<span>Тебя!</span>
-					</h3>
-					<h1>
-						Организация <br />
-						<div class="intro__words words-slider">
-							<span>Концертов</span>
-							<span>Мероприятий</span>
-							<span>Туров</span>
-							<span>Фестивалей</span>
-						</div>
-					</h1>
-					<h3>
-						<span>Воплотим</span> <br />
-						идеи в жизнь!
-					</h3>
-				</div>
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+      }
 
-				<div class="intro__img">
-					<img src="img/main.png" alt="Нам нужен ты!" />
-				</div>
-			</div>
-			<!-- end intro inner -->
-		</div>
-		<div class="intro__btn">
-			<button class="btn special">Работать с нами</button>
-			<img src="img/mic.png" alt="microphone" class="microphone">
-			<img src="img/guit.png" alt="guitar" class="guitar">
-		</div>
+      body {
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text",
+          "Segoe UI", sans-serif;
+        background: radial-gradient(circle at top, #020617 0, #000 65%);
+        color: var(--text-main);
+        -webkit-font-smoothing: antialiased;
+      }
 
-		<!-- end container -->
-		</div>
-		<!-- End intro -->
-	</section>
+      main {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 3rem 1.5rem;
+      }
 
-	<!-- About -->
-	<section id="about" class="about">
-		<div class="container">
-			<h2>Почему именно мы?</h2>
-			<div class="about__inner">
-				<div class="about__row">
-					<div class="about__text _anim _from-left">
-						<h3>Богатый опыт</h3>
-						<p>
-							За нашей спиной более <span>15 лет</span> работы и больше 300
-							успешно проведённых концертов
-						</p>
-					</div>
-					<div class="about__count _anim _from-right">1</div>
-				</div>
-				<div class="about__row left">
-					<div class="about__count _anim _from-left">2</div>
-					<div class="about__text _anim _from-right">
-						<h3>Любые выступления</h3>
-						<p>
-							Мы не привязываемся к жанру и рады принять
-							<span>каждого</span> артиста, предоставляя весь список услуг
-						</p>
-					</div>
-				</div>
-				<div class="about__row">
-					<div class="about__text _anim _from-left">
-						<h3>Широкий спектр</h3>
-						<p>
-							От маленьких концертов, <span>до туров по всей России</span>. С
-							нами вы не найдёте границ возможностям
-						</p>
-					</div>
-					<div class="about__count _anim _from-right">3</div>
-				</div>
-			</div>
-		</div>
-	</section>
+      .frame {
+        position: relative;
+        width: 100%;
+        max-width: 1120px;
+        min-height: min(560px, 80vh);
+        border-radius: 28px;
+        overflow: hidden;
+        background: radial-gradient(
+            circle at top left,
+            rgba(56, 189, 248, 0.12),
+            transparent 55%
+          ),
+          radial-gradient(
+            circle at bottom right,
+            rgba(129, 140, 248, 0.14),
+            transparent 55%
+          ),
+          radial-gradient(circle at top, #020617 0, #020617 45%, #000 100%);
+        border: 1px solid rgba(148, 163, 184, 0.35);
+        box-shadow: 0 40px 120px rgba(15, 23, 42, 0.9);
+      }
 
+      .frame-inner {
+        position: relative;
+        z-index: 1;
+        display: grid;
+        grid-template-columns: minmax(0, 3fr) minmax(0, 2.6fr);
+        gap: 2.25rem;
+        padding: 2.4rem 2.7rem;
+      }
 
-	<!-- Artists -->
-	<section id="artists" class="artists">
-		<ul class="artists__slider">
-			<li class="artists__slide">
-				<img class="artists__slide-img" src="img/1.jpg" alt="ПОРНОФИЛЬМЫ" />
-			</li>
-			<li class="artists__slide">
-				<img class="artists__slide-img" src="img/2.jpg" alt="My Last Eclipse" />
-			</li>
-			<li class="artists__slide">
-				<img class="artists__slide-img" src="img/3.png" alt="Король и Шут" />
-			</li>
-			<li class="artists__slide">
-				<img class="artists__slide-img" src="img/4.jpg" alt="Горькая мята" />
-			</li>
-		</ul>
-		<ul class="artists__list">
-			<h2>Наши звёзды и их концерты</h2>
-			<li class="artists__item">ПОРНОФИЛЬМЫ</li>
-			<li class="artists__item">My Last Eclipse</li>
-			<li class="artists__item">Король и Шут</li>
-			<li class="artists__item">Горькая мята</li>
-		</ul>
-	</section>
+      @media (max-width: 900px) {
+        .frame-inner {
+          grid-template-columns: minmax(0, 1fr);
+          padding: 2rem 1.6rem;
+        }
+      }
 
-	<!-- Reviews -->
-	<section class="reviews">
-		<div class="container">
-			<h2>Отзывы наших довольных клиентов</h2>
-			<div class="reviews__slider">
-				<div class="slider__wrapper">
-					<div class="slider__items">
-						<div class="slider__item">
-							<div class="slider__item-inner">
-								<div class="slider__item-img">
-									<img src="img/photo-1.jpg" alt="Фото" />
-								</div>
-								<div class="slider__item-text">
-									<h3>Сергей Петров</h3>
-									<h4>Гитарист группы "Острые козырьки"</h4>
-									<p>
-										В своём стремлении повысить качество жизни, они забывают,
-										что граница обучения кадров говорит о возможностях
-										благоприятных перспектив. Имеется спорная точка.
-									</p>
-								</div>
-							</div>
-						</div>
+      .badge-row {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.25rem 0.65rem;
+        border-radius: 999px;
+        background: rgba(15, 23, 42, 0.8);
+        border: 1px solid rgba(148, 163, 184, 0.45);
+        margin-bottom: 1.1rem;
+      }
 
-						<div class="slider__item">
-							<div class="slider__item-inner">
-								<div class="slider__item-img">
-									<img src="img/photo-1.jpg" alt="Фото" />
-								</div>
-								<div class="slider__item-text">
-									<h3>Даниил Иванов</h3>
-									<h4>Любитель пива</h4>
-									<p>
-										В своём стремлении повысить качество жизни, они забывают,
-										что граница обучения кадров говорит о возможностях
-										благоприятных перспектив. Имеется спорная точка.
-									</p>
-								</div>
-							</div>
-						</div>
+      .badge-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 999px;
+        background: radial-gradient(circle at 30% 20%, #e0f2fe, #38bdf8);
+        box-shadow: 0 0 12px rgba(56, 189, 248, 0.8);
+      }
 
-						<!-- Reviews slider -->
-					</div>
-					<!-- Reviews inner -->
-				</div>
-				<!-- Container -->
-	</section>
+      .badge-text {
+        font-size: 0.75rem;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+        color: var(--text-muted);
+      }
 
-	<!-- form -->
-	<section id="form" class="form">
-		<div class="container">
-			<div class="form__inner">
-				<h2>Давайте работать?</h2>
-				<form class="form__form">
-					<div class="form__item">
-						<input id="name" type="text" placeholder=" " />
-						<label for="name">Как к вам обращаться?</label>
-					</div>
-					<div class="form__item">
-						<input id="tel" type="tel" placeholder=" " />
-						<label for="tel">Номерок дадите?</label>
-					</div>
-					<div class="form__item">
-						<input id="email" type="email" placeholder=" " />
-						<label for="email">Прислать вам email?</label>
-					</div>
-				</form>
-				<div class="form__btn">
-					<button class="btn">Начнём!</button>
-				</div>
+      .title {
+        font-size: clamp(1.9rem, 3.1vw, 2.4rem);
+        letter-spacing: 0.04em;
+        margin: 0 0 0.9rem;
+      }
 
-			</div>
-		</div>
-	</section>
+      .subtitle {
+        margin: 0 0 1.7rem;
+        max-width: 32rem;
+        font-size: 0.98rem;
+        line-height: 1.7;
+        color: var(--text-muted);
+      }
 
-	<section class="contacts">
-		<div class="container">
-			<div class="contacts__inner">
-				<h2>Мы в социальных сетях</h2>
-				<h3><span>Подписывайся</span>, чтобы оставаться в курсе!</h3>
+      .pill-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        margin-bottom: 2rem;
+      }
 
-				<div class="contacts__social _anim">
-					<a href="https://www.instagram.com" class="social__item">
-						<img src="img/inst.png" alt="instagram" />
-					</a>
-					<a href="https://www.vk.com" class="social__item">
-						<img src="img/vk.png" alt="vk" />
-					</a>
-					<a href="https://www.tiktok.com" class="social__item">
-						<img src="img/tt.png" alt="tik-tok" />
-					</a>
-				</div>
-			</div>
-		</div>
-	</section>
+      .pill {
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+          "Liberation Mono", "Courier New", monospace;
+        font-size: 0.75rem;
+        padding: 0.2rem 0.6rem;
+        border-radius: 999px;
+        border: 1px solid rgba(148, 163, 184, 0.4);
+        background: rgba(15, 23, 42, 0.8);
+        color: var(--text-muted);
+      }
 
-	<footer class="footer">
-		<div class="container">
-			<div class="footer__copyright">
-				© “Батарея” booking and promo 2022, все права защищены
-			</div>
-		</div>
-	</footer>
-	<script defer src="js/simple-adaptive-slider.min.js" type="text/javascript"></script>
-	<script src="js/smooth-scroll.polyfills.min.js" type="text/javascript"></script>
-	<script src="app.js" type="text/javascript"></script>
-</body>
+      .cta-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.75rem;
+        align-items: center;
+      }
 
+      .btn-primary {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0.65rem 1.4rem;
+        border-radius: 999px;
+        background: radial-gradient(circle at 20% 0%, #e0f2fe, #38bdf8);
+        color: #0b1120;
+        font-size: 0.9rem;
+        font-weight: 600;
+        text-decoration: none;
+        box-shadow: 0 12px 30px rgba(56, 189, 248, 0.4);
+        border: none;
+        cursor: pointer;
+        transition:
+          transform var(--transition),
+          box-shadow var(--transition),
+          filter var(--transition);
+      }
+
+      .btn-primary:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 18px 40px rgba(56, 189, 248, 0.55);
+        filter: brightness(1.03);
+      }
+
+      .btn-primary:active {
+        transform: translateY(0);
+        box-shadow: 0 8px 22px rgba(56, 189, 248, 0.4);
+        filter: brightness(0.98);
+      }
+
+      .cta-note {
+        font-size: 0.8rem;
+        color: var(--text-muted);
+      }
+
+      .hint {
+        margin-top: 1.3rem;
+        font-size: 0.78rem;
+        color: var(--text-muted);
+        max-width: 22rem;
+      }
+
+      .preview-card {
+        position: relative;
+        border-radius: 22px;
+        overflow: hidden;
+        background: radial-gradient(
+            circle at top,
+            rgba(15, 23, 42, 0.6),
+            transparent 55%
+          ),
+          linear-gradient(145deg, rgba(15, 23, 42, 1), #020617);
+        border: 1px solid rgba(148, 163, 184, 0.38);
+        box-shadow: var(--shadow-lg);
+        isolation: isolate;
+      }
+
+      .preview-header {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.6rem 0.9rem;
+        border-bottom: 1px solid rgba(30, 64, 175, 0.7);
+        background: radial-gradient(
+          circle at top left,
+          rgba(59, 130, 246, 0.3),
+          rgba(15, 23, 42, 0.95)
+        );
+      }
+
+      .preview-dots {
+        display: flex;
+        gap: 0.25rem;
+      }
+
+      .preview-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 999px;
+      }
+
+      .preview-dot.red {
+        background: #f97373;
+      }
+
+      .preview-dot.yellow {
+        background: #facc15;
+      }
+
+      .preview-dot.green {
+        background: #4ade80;
+      }
+
+      .preview-title {
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+          monospace;
+        font-size: 0.78rem;
+        color: #e5e7eb;
+        opacity: 0.85;
+      }
+
+      .preview-body {
+        padding: 1.1rem 1.1rem 1rem;
+      }
+
+      .preview-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1.15fr) minmax(0, 1.2fr);
+        gap: 1rem;
+      }
+
+      @media (max-width: 900px) {
+        .preview-grid {
+          grid-template-columns: minmax(0, 1fr);
+        }
+      }
+
+      .preview-request {
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+          monospace;
+        font-size: 0.78rem;
+        color: #e5e7eb;
+        background: radial-gradient(
+          circle at top left,
+          rgba(15, 23, 42, 0.9),
+          rgba(15, 23, 42, 1)
+        );
+        border-radius: 12px;
+        border: 1px solid rgba(30, 64, 175, 0.7);
+        padding: 0.75rem 0.8rem;
+        min-height: 120px;
+      }
+
+      .preview-request-line.muted {
+        color: #64748b;
+      }
+
+      .preview-request-line.highlight {
+        color: #22d3ee;
+      }
+
+      .preview-diagram {
+        position: relative;
+        border-radius: 12px;
+        border: 1px solid rgba(148, 163, 184, 0.4);
+        background: radial-gradient(
+          circle at top,
+          rgba(15, 23, 42, 0.9),
+          rgba(15, 23, 42, 1)
+        );
+        padding: 0.8rem 0.9rem 0.9rem;
+        font-size: 0.78rem;
+      }
+
+      .preview-diagram-title {
+        font-size: 0.76rem;
+        text-transform: uppercase;
+        letter-spacing: 0.12em;
+        color: #9ca3af;
+        margin-bottom: 0.6rem;
+      }
+
+      .preview-diagram-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 0.4rem;
+        font-size: 0.75rem;
+      }
+
+      .preview-node {
+        padding: 0.4rem 0.5rem;
+        border-radius: 0.375rem;
+        text-align: center;
+        background: rgba(15, 23, 42, 0.95);
+        border: 1px solid rgba(55, 65, 81, 0.9);
+        color: #e5e7eb;
+      }
+
+      .preview-node.muted {
+        opacity: 0.7;
+      }
+
+      .preview-diagram-arrow {
+        margin-top: 0.5rem;
+        font-size: 0.72rem;
+        color: #9ca3af;
+      }
+
+      canvas.preview-bg {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 0;
+        opacity: 0.7;
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        canvas.preview-bg {
+          display: none;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <main>
+      <div class="frame">
+        <canvas class="preview-bg"></canvas>
+
+        <div class="frame-inner">
+          <section>
+            <div class="badge-row">
+              <div class="badge-dot"></div>
+              <div class="badge-text">HTTP LAB · DEMO</div>
+            </div>
+
+            <h1 class="title">HTTP Request Handling Anomalies Lab</h1>
+
+            <p class="subtitle">
+              Учебный лендинг с интерактивными демо по аномалиям обработки
+              HTTP-запросов, включая обход маршрутизации первого запроса
+              (first-request routing bypass) и другие нетривиальные кейсы.
+            </p>
+
+            <div class="pill-row">
+              <span class="pill">GET /intranet HTTP/1.1</span>
+              <span class="pill">Host: example.com / intranet.example</span>
+              <span class="pill">X-Forwarded-Host</span>
+              <span class="pill">single TLS channel</span>
+            </div>
+
+            <div class="cta-row">
+              <a
+                class="btn-primary"
+                href="/http-request-handling-anomalies/"
+              >
+                Открыть лабораторию
+              </a>
+              <span class="cta-note">
+                Демки для разбора аномалий маршрутизации, заголовков и
+                балансировщиков.
+              </span>
+            </div>
+
+            <p class="hint">
+              Используйте эту лабораторию как песочницу для исследования
+              поведения прокси, балансировщиков и бэкендов при нестандартных
+              HTTP‑последовательностях.
+            </p>
+          </section>
+
+          <section class="preview-card">
+            <header class="preview-header">
+              <div class="preview-dots">
+                <span class="preview-dot red"></span>
+                <span class="preview-dot yellow"></span>
+                <span class="preview-dot green"></span>
+              </div>
+              <div class="preview-title">
+                curl -k https://example.com/intranet
+              </div>
+            </header>
+
+            <div class="preview-body">
+              <div class="preview-grid">
+                <div class="preview-request">
+                  <div class="preview-request-line">GET /intranet HTTP/1.1</div>
+                  <div class="preview-request-line">Host: example.com</div>
+                  <div class="preview-request-line muted">
+                    X-Forwarded-Host: intranet.example
+                  </div>
+                  <div class="preview-request-line muted">
+                    X-Original-Host: example.com
+                  </div>
+                  <div class="preview-request-line highlight">
+                    # first request: external host
+                  </div>
+                  <div class="preview-request-line highlight">
+                    # routing bypass: internal host
+                  </div>
+                </div>
+
+                <div class="preview-diagram">
+                  <div class="preview-diagram-title">
+                    Маршрут одного TLS‑соединения
+                  </div>
+                  <div class="preview-diagram-grid">
+                    <div class="preview-node">Клиент</div>
+                    <div class="preview-node">Прокси / балансировщик</div>
+                    <div class="preview-node">Бэкенд</div>
+                    <div class="preview-node muted">браузер</div>
+                    <div class="preview-node muted">
+                      проверка только<br />первого запроса
+                    </div>
+                    <div class="preview-node muted">
+                      example.com<br />/ intranet.example
+                    </div>
+                  </div>
+                  <div class="preview-diagram-arrow">
+                    Один TLS‑канал, разные значения Host — и разные последствия
+                    для безопасности.
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+        </div>
+      </div>
+    </main>
+
+    <script>
+      (function () {
+        const canvas = document.querySelector("canvas.preview-bg");
+        if (!canvas) return;
+        const ctx = canvas.getContext("2d");
+
+        const nodes = [];
+        const edges = [];
+
+        function resize() {
+          const rect = canvas.parentElement.getBoundingClientRect();
+          canvas.width = rect.width * window.devicePixelRatio;
+          canvas.height = rect.height * window.devicePixelRatio;
+          ctx.setTransform(window.devicePixelRatio, 0, 0, window.devicePixelRatio, 0, 0);
+          initGraph();
+        }
+
+        function initGraph() {
+          nodes.length = 0;
+          edges.length = 0;
+          const cols = 16;
+          const rows = 9;
+          const paddingX = 40;
+          const paddingY = 40;
+          const width = canvas.width / window.devicePixelRatio;
+          const height = canvas.height / window.devicePixelRatio;
+          const dx = (width - paddingX * 2) / (cols - 1 || 1);
+          const dy = (height - paddingY * 2) / (rows - 1 || 1);
+
+          for (let y = 0; y < rows; y++) {
+            for (let x = 0; x < cols; x++) {
+              const jitterX = (Math.random() - 0.5) * 10;
+              const jitterY = (Math.random() - 0.5) * 10;
+              nodes.push({
+                x: paddingX + x * dx + jitterX,
+                y: paddingY + y * dy + jitterY,
+                vx: 0,
+                vy: 0,
+              });
+            }
+          }
+
+          for (let i = 0; i < nodes.length; i++) {
+            for (let j = i + 1; j < nodes.length; j++) {
+              if (Math.random() < 0.06) {
+                edges.push({ a: i, b: j, w: Math.random() * 0.6 + 0.2 });
+              }
+            }
+          }
+        }
+
+        function step() {
+          const t = performance.now() / 1000;
+          for (const node of nodes) {
+            const noiseX = Math.sin(node.y * 0.03 + t * 0.6) * 0.2;
+            const noiseY = Math.cos(node.x * 0.03 + t * 0.6) * 0.2;
+            node.vx = noiseX;
+            node.vy = noiseY;
+            node.x += node.vx;
+            node.y += node.vy;
+          }
+        }
+
+        function draw() {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          ctx.save();
+          ctx.setTransform(window.devicePixelRatio, 0, 0, window.devicePixelRatio, 0, 0);
+
+          ctx.lineWidth = 0.7;
+          for (const edge of edges) {
+            const a = nodes[edge.a];
+            const b = nodes[edge.b];
+            const grad = ctx.createLinearGradient(a.x, a.y, b.x, b.y);
+            grad.addColorStop(0, "rgba(56,189,248,0.18)");
+            grad.addColorStop(1, "rgba(129,140,248,0.08)");
+            ctx.strokeStyle = grad;
+            ctx.beginPath();
+            ctx.moveTo(a.x, a.y);
+            ctx.lineTo(b.x, b.y);
+            ctx.stroke();
+          }
+
+          ctx.fillStyle = "rgba(15,23,42,0.9)";
+          for (const node of nodes) {
+            ctx.beginPath();
+            ctx.arc(node.x, node.y, 1.1, 0, Math.PI * 2);
+            ctx.fill();
+          }
+
+          ctx.restore();
+        }
+
+        function loop() {
+          step();
+          draw();
+          requestAnimationFrame(loop);
+        }
+
+        window.addEventListener("resize", resize);
+        resize();
+        loop();
+      })();
+    </script>
+  </body>
 </html>
