@@ -1,49 +1,62 @@
 # Лендинги и прочая вёрстка
 
-В этом репозитории собрана коллекция моих лендингов, дизайнов и просто вёрстки :sunglasses:
+В этом репозитории собрана коллекция моих лендингов, учебных демо и просто вёрстки.
 
-Галерея [здесь :floppy_disk:](https://buhtig-sudo-azar.github.io/landings/)
+Галерея: 👉 [https://buhtig-sudo-azar.github.io/landings/](https://buhtig-sudo-azar.github.io/landings/)
 
-## Landing page :star:
+---
 
-### Мясной гастроном :cut_of_meat:
+## Лендинги
 
-[myasnoy-bataysk.ru](https://myasnoy-bataysk.ru)
+### Demo: Browser Desync
 
-![Мясной](./preview/myasnoy.png)
+[Перейти к лендингу](https://buhtig-sudo-azar.github.io/browser-desync-landing/)
 
-Один из первых лендингов, который я сверстал на чистом html, css, js + jQuery. Также использовалась утилита textolite в качестве админки. Хостинг — [timeweb](https://timeweb.com/ru/services/hosting/).
+![Demo: Browser Desync](./preview/browser-desync-security.png)
 
-Также это мой дебют по дизайну в Figma — [посмотреть можно здесь](https://www.figma.com/file/hRNI1o1vn6hfEtl1N7Qdzq/Myasnoy?node-id=0%3A1).
+Демонстрационный лендинг, объясняющий browser-powered desync-атаки и их влияние на веб-приложения.  
+Реализован на чистых HTML, CSS и JS + jQuery.
 
-### Букинг агентство «Батарея» :guitar:
+---
 
-[Ссылка](https://buhtig-sudo-azar.github.io/rock-landing/)
+### HTTP Request Handling Anomalies Lab
 
-![Рок-лендинг](./preview/rock.png)
+[Перейти к лендингу](https://buhtig-sudo-azar.github.io/http-request-handling-anomalies/)
 
-html, scss, js + simple adaptive slider.
+![HTTP Request Handling Anomalies Lab](./preview/http-anomalies-preview.png)
 
-[Также мой дизайн](https://www.figma.com/file/QMZZ2pgkUuPhQaXEvOAI3j/Rock-landing?node-id=21%3A6).
+Учебный лендинг с интерактивными демо по аномалиям обработки HTTP-запросов, включая First-request routing bypass и другие кейсы.
 
-### Портфолио видеомонтажёра :movie_camera:
+---
 
-[Ссылка](https://buhtig-sudo-azar.github.io/video-portfolio/)
+### Портфолио видеомонтажёра
 
-![Портфолио](./preview/video.png)
+[Перейти к лендингу](https://buhtig-sudo-azar.github.io/video-portfolio/)
 
-Очень хотелось реализовать идею поэкранной прокрутки.  
-html, scss, js + swiper.
+![Портфолио видеомонтажёра](./preview/video.png)
 
-[Дизайн](https://www.figma.com/file/OzNw8ewKtChAarK6OUMheY/lihimovich_portfolio?node-id=0%3A1).
+Лендинг-портфолио с фуллскрин-слайдером для визитной карточки видеомонтажёра.  
+HTML, SCSS, JS + Swiper.
 
-## Прочее :closed_book:
+---
+
+### Букинг агентство «Батарея»
+
+[Перейти к лендингу](https://buhtig-sudo-azar.github.io/rock-landing/)
+
+![Букинг «Батарея»](./preview/rock.png)
+
+Лендинг для агентства, занимающегося организацией концертов и букингом артистов.  
+HTML, SCSS, JS + simple adaptive slider.
+
+---
+
+## Прочее
 
 ### Страница входа
 
-[Ссылка](https://buhtig-sudo-azar.github.io/ddg-login-form/)
+[Перейти к макету](https://buhtig-sudo-azar.github.io/ddg-login-form/)
 
 ![Страница входа](./preview/login.png)
 
-Реализовано в рамках хакатона, по кейсу ddos-guard.net — authetify.  
-[Дизайн](https://www.figma.com/file/pJd96Dxhr3euT0xjAvBHSL/dstu-hackathon-spring-2022).
+Небольшой UI-эксперимент с формой авторизации и аккуратной типографикой, сделанный в рамках хакатона.
