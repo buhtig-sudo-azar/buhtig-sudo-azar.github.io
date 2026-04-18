@@ -99,6 +99,753 @@
       }
 
       .hero-subtitle {
+        margin: 0 0 1.7rem;
+        max-width: 40rem;
+        font-size: 0.98rem;
+        line-height: 1.7;
+        color: var(--text-muted);
+      }
+
+      .hero-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.75rem;
+        align-items: center;
+      }
+
+      .btn-primary {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0.65rem 1.4rem;
+        border-radius: 999px;
+        background: radial-gradient(circle at 20% 0%, #e0f2fe, #38bdf8);
+        color: #0b1120;
+        font-size: 0.9rem;
+        font-weight: 600;
+        text-decoration: none;
+        box-shadow: 0 12px 30px rgba(56, 189, 248, 0.4);
+        border: none;
+        cursor: pointer;
+        transition:
+          transform var(--transition),
+          box-shadow var(--transition),
+          filter var(--transition);
+      }
+
+      .btn-primary:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 18px 40px rgba(56, 189, 248, 0.55);
+        filter: brightness(1.03);
+      }
+
+      .btn-primary:active {
+        transform: translateY(0);
+        box-shadow: 0 8px 22px rgba(56, 189, 248, 0.4);
+        filter: brightness(0.98);
+      }
+
+      .hero-actions-note {
+        font-size: 0.82rem;
+        color: var(--text-muted);
+      }
+
+      .section {
+        margin-bottom: 2.75rem;
+      }
+
+      .section-title {
+        font-size: 1.1rem;
+        margin-bottom: 0.9rem;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        color: #cbd5f5;
+      }
+
+      .section-body {
+        font-size: 0.95rem;
+        line-height: 1.7;
+        color: var(--text-muted);
+        margin-bottom: 1.1rem;
+      }
+
+      pre {
+        margin: 0;
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+          "Liberation Mono", "Courier New", monospace;
+        font-size: 0.86rem;
+        line-height: 1.5;
+        background: radial-gradient(
+          circle at top left,
+          rgba(15, 23, 42, 0.95),
+          rgba(15, 23, 42, 1)
+        );
+        border-radius: var(--radius-md);
+        border: 1px solid rgba(30, 64, 175, 0.8);
+        padding: 0.9rem 1rem;
+        color: #e5e7eb;
+        overflow-x: auto;
+      }
+
+      code {
+        font: inherit;
+      }
+
+      .http-lab-layout {
+        display: grid;
+        grid-template-columns: minmax(0, 1.35fr) minmax(0, 1.15fr);
+        gap: 2rem;
+      }
+
+      @media (max-width: 800px) {
+        .http-lab-layout {
+          grid-template-columns: minmax(0, 1fr);
+        }
+      }
+
+      .card {
+        border-radius: var(--radius-lg);
+        border: 1px solid var(--border-subtle);
+        background: radial-gradient(
+            circle at top left,
+            rgba(56, 189, 248, 0.16),
+            transparent 55%
+          ),
+          linear-gradient(145deg, var(--card-bg), #020617);
+        box-shadow: var(--shadow-lg);
+        padding: 1.35rem 1.4rem 1.4rem;
+      }
+
+      .card-title {
+        font-size: 0.95rem;
+        text-transform: uppercase;
+        letter-spacing: 0.12em;
+        color: #9ca3af;
+        margin: 0 0 0.75rem;
+      }
+
+      .card-body {
+        font-size: 0.9rem;
+        line-height: 1.7;
+        color: var(--text-muted);
+      }
+
+      .http-flow-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 0.6rem;
+        margin-top: 0.6rem;
+      }
+
+      .http-flow-node {
+        padding: 0.55rem 0.6rem;
+        border-radius: 0.5rem;
+        text-align: center;
+        background: rgba(15, 23, 42, 0.98);
+        border: 1px solid rgba(55, 65, 81, 0.9);
+        font-size: 0.8rem;
+      }
+
+      .http-flow-node-muted {
+        opacity: 0.75;
+      }
+
+      .http-flow-note {
+        margin-top: 0.6rem;
+        font-size: 0.8rem;
+        color: var(--text-muted);
+      }
+
+      .lab-list {
+        padding-left: 1.1rem;
+        margin: 0;
+        font-size: 0.93rem;
+        color: var(--text-muted);
+      }
+
+      .lab-list li {
+        margin-bottom: 0.35rem;
+      }
+
+      .interactive-card {
+        margin-top: 0.7rem;
+        border-radius: var(--radius-lg);
+        border: 1px solid rgba(148, 163, 184, 0.45);
+        background: radial-gradient(
+            circle at top right,
+            rgba(56, 189, 248, 0.16),
+            transparent 55%
+          ),
+          linear-gradient(145deg, rgba(15, 23, 42, 1), #020617);
+        box-shadow: var(--shadow-lg);
+        padding: 1.2rem 1.3rem 1.3rem;
+      }
+
+      .interactive-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1.05fr) minmax(0, 1.2fr);
+        gap: 1.2rem;
+      }
+
+      @media (max-width: 800px) {
+        .interactive-grid {
+          grid-template-columns: minmax(0, 1fr);
+        }
+      }
+
+      .field-group {
+        margin-bottom: 0.75rem;
+      }
+
+      .field-label {
+        display: block;
+        font-size: 0.82rem;
+        margin-bottom: 0.25rem;
+        color: var(--text-muted);
+      }
+
+      .field-input,
+      .field-select {
+        width: 100%;
+        border-radius: 0.55rem;
+        border: 1px solid rgba(148, 163, 184, 0.5);
+        padding: 0.45rem 0.6rem;
+        background: rgba(15, 23, 42, 0.96);
+        color: var(--text-main);
+        font-size: 0.86rem;
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+          "Liberation Mono", "Courier New", monospace;
+        outline: none;
+        transition:
+          border-color var(--transition),
+          box-shadow var(--transition),
+          background var(--transition);
+      }
+
+      .field-input:focus,
+      .field-select:focus {
+        border-color: var(--accent);
+        box-shadow: 0 0 0 1px rgba(56, 189, 248, 0.7);
+        background: rgba(15, 23, 42, 1);
+      }
+
+      .field-help {
+        font-size: 0.75rem;
+        color: var(--text-muted);
+        margin-top: 0.15rem;
+      }
+
+      .interactive-output-title {
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        letter-spacing: 0.12em;
+        color: #9ca3af;
+        margin-bottom: 0.4rem;
+      }
+
+      .route-indicator {
+        margin-top: 0.7rem;
+        padding: 0.65rem 0.7rem;
+        border-radius: 0.55rem;
+        background: rgba(15, 23, 42, 0.98);
+        border: 1px solid rgba(55, 65, 81, 0.95);
+        font-size: 0.8rem;
+        color: var(--text-muted);
+      }
+
+      .route-indicator-strong {
+        color: #e5e7eb;
+      }
+
+      .route-diagram {
+        margin-top: 0.6rem;
+        font-size: 0.78rem;
+        color: #9ca3af;
+      }
+
+      .route-diagram span {
+        display: inline-block;
+        padding: 0.1rem 0.3rem;
+        border-radius: 999px;
+        background: rgba(15, 23, 42, 0.96);
+        border: 1px solid rgba(55, 65, 81, 0.9);
+        margin-right: 0.15rem;
+      }
+
+      @media (max-width: 640px) {
+        .hero-actions {
+          align-items: flex-start;
+        }
+
+        .hero-actions-note {
+          max-width: 18rem;
+        }
+
+        .http-flow-grid {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <main>
+      <!-- HERO -->
+      <section class="hero">
+        <div class="hero-badge">
+          <span class="hero-badge-dot"></span>
+          <span class="hero-badge-text">HTTP LAB · DEMO</span>
+        </div>
+
+        <h1 class="hero-title">HTTP Request Handling Anomalies Lab</h1>
+
+        <p class="hero-subtitle">
+          Учебный лендинг с интерактивными демо по аномалиям обработки
+          HTTP‑запросов, включая обход маршрутизации первого запроса
+          (first‑request routing bypass) и другие нетривиальные кейсы.
+        </p>
+
+        <div class="hero-actions">
+          <a
+            class="btn-primary"
+            href="https://buhtig-sudo-azar.github.io/http-request-handling-anomalies/"
+          >
+            Открыть лабораторию
+          </a>
+          <span class="hero-actions-note">
+            Используйте эту страницу как вводный обзор и песочницу для
+            экспериментов с заголовками <code>Host</code> и
+            <code>X-Forwarded-Host</code>.
+          </span>
+        </div>
+      </section>
+
+      <!-- BASIC REQUEST + PURPOSE -->
+      <section class="section">
+        <div class="http-lab-layout">
+          <div>
+            <h2 class="section-title">Базовый HTTP‑запрос</h2>
+            <p class="section-body">
+              Классический пример: внешний клиент обращается к публичному
+              хосту, но где‑то по пути (на прокси или балансировщике) появляются
+              дополнительные заголовки, влияющие на маршрутизацию.
+            </p>
+
+            <pre><code>GET /intranet HTTP/1.1
+Host: example.com
+X-Forwarded-Host: intranet.example</code></pre>
+          </div>
+
+          <div>
+            <h2 class="section-title">Для чего нужна лаборатория</h2>
+            <p class="section-body">
+              Лаборатория помогает воспроизводить и исследовать ситуации, когда:
+            </p>
+            <ul class="lab-list">
+              <li>прокси проверяет только первый запрос в соединении;</li>
+              <li>
+                внутренние и внешние хосты смешиваются в одном TLS‑канале;
+              </li>
+              <li>
+                комбинации <code>Host</code> и <code>X-Forwarded-Host</code>
+                приводят к неожиданной маршрутизации.
+              </li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- ROUTE SECTION -->
+      <section class="section">
+        <h2 class="section-title">Маршрут одного TLS‑соединения</h2>
+
+        <div class="card">
+          <p class="card-body">
+            Один TCP/TLS‑канал может обслуживать несколько HTTP‑запросов с
+            разными заголовками <code>Host</code>. Если гейтвей доверяет только
+            первому значению или неправильно обрабатывает форвардинг, запросы
+            могут попасть на внутренние виртуальные хосты.
+          </p>
+
+          <div class="http-flow-grid">
+            <div class="http-flow-node">Клиент</div>
+            <div class="http-flow-node">Прокси / балансировщик</div>
+            <div class="http-flow-node">Бэкенд</div>
+
+            <div class="http-flow-node http-flow-node-muted">браузер</div>
+            <div class="http-flow-node http-flow-node-muted">
+              проверка только<br />первого запроса
+            </div>
+            <div class="http-flow-node http-flow-node-muted">
+              example.com<br />/ intranet.example
+            </div>
+          </div>
+
+          <p class="http-flow-note">
+            Лаборатория позволяет пошагово прокрутить такие сценарии и увидеть,
+            как изменится маршрут при разных сочетаниях заголовков.
+          </p>
+        </div>
+      </section>
+
+      <!-- INTERACTIVE EXAMPLE -->
+      <section class="section">
+        <h2 class="section-title">Интерактивный пример маршрутизации</h2>
+        <p class="section-body">
+          Ниже — упрощённый конструктор HTTP‑запроса. Меняйте значения
+          <code>Host</code> и <code>X-Forwarded-Host</code>, чтобы увидеть,
+          какой запрос уйдёт на бэкенд и как может измениться цель маршрута.
+        </p>
+
+        <div class="interactive-card">
+          <div class="interactive-grid">
+            <!-- Controls -->
+            <div>
+              <div class="field-group">
+                <label class="field-label" for="hostSelect">
+                  Host (внешний хост)
+                </label>
+                <select id="hostSelect" class="field-select">
+                  <option value="example.com">example.com (публичный)</option>
+                  <option value="intranet.example">
+                    intranet.example (внутренний)
+                  </option>
+                  <option value="admin.internal">
+                    admin.internal (админка)
+                  </option>
+                </select>
+                <div class="field-help">
+                  То, что видит браузер в адресной строке / DNS‑записи.
+                </div>
+              </div>
+
+              <div class="field-group">
+                <label class="field-label" for="xfhSelect">
+                  X-Forwarded-Host
+                </label>
+                <select id="xfhSelect" class="field-select">
+                  <option value="">— не установлен —</option>
+                  <option value="example.com">example.com</option>
+                  <option value="intranet.example">intranet.example</option>
+                  <option value="admin.internal">admin.internal</option>
+                </select>
+                <div class="field-help">
+                  Часто устанавливается прокси/балансировщиком, может влиять на
+                  выбор виртуального хоста на бэкенде.
+                </div>
+              </div>
+
+              <div class="field-group">
+                <label class="field-label" for="pathInput">
+                  Путь (Request‑URI)
+                </label>
+                <input
+                  id="pathInput"
+                  class="field-input"
+                  type="text"
+                  value="/intranet"
+                />
+                <div class="field-help">
+                  Например: <code>/</code>, <code>/admin</code>,
+                  <code>/intranet</code>.
+                </div>
+              </div>
+            </div>
+
+            <!-- Output -->
+            <div>
+              <div class="interactive-output-title">
+                Сформированный HTTP‑запрос
+              </div>
+              <pre><code id="requestPreview">GET /intranet HTTP/1.1
+Host: example.com
+
+# X-Forwarded-Host не установлен</code></pre>
+
+              <div class="route-indicator" id="routeIndicator">
+                <span class="route-indicator-strong">
+                  Маршрутизация: внешний хост <code>example.com</code>.
+                </span>
+                <br />
+                Прокси не меняет цель запроса, он идёт на публичный виртуальный
+                хост.
+              </div>
+
+              <div class="route-diagram" id="routeDiagram">
+                <span>клиент</span>
+                ➜
+                <span>прокси (первый Host: example.com)</span>
+                ➜
+                <span>backend: example.com</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <script>
+      (function () {
+        const hostSelect = document.getElementById("hostSelect");
+        const xfhSelect = document.getElementById("xfhSelect");
+        const pathInput = document.getElementById("pathInput");
+        const requestPreview = document.getElementById("requestPreview");
+        const routeIndicator = document.getElementById("routeIndicator");
+        const routeDiagram = document.getElementById("routeDiagram");
+
+        if (
+          !hostSelect ||
+          !xfhSelect ||
+          !pathInput ||
+          !requestPreview ||
+          !routeIndicator ||
+          !routeDiagram
+        ) {
+          return;
+        }
+
+        function buildRequest() {
+          const host = hostSelect.value || "example.com";
+          const xfh = xfhSelect.value;
+          const pathRaw = pathInput.value.trim() || "/";
+          const path = pathRaw.startsWith("/") ? pathRaw : "/" + pathRaw;
+
+          let lines = [];
+          lines.push("GET " + path + " HTTP/1.1");
+          lines.push("Host: " + host);
+
+          if (xfh) {
+            lines.push("X-Forwarded-Host: " + xfh);
+            lines.push("");
+            lines.push("# X-Forwarded-Host установлен прокси/балансировщиком");
+          } else {
+            lines.push("");
+            lines.push("# X-Forwarded-Host не установлен");
+          }
+
+          requestPreview.textContent = lines.join("\n");
+
+          const routeInfo = computeRoute(host, xfh);
+          routeIndicator.innerHTML =
+            '<span class="route-indicator-strong">' +
+            routeInfo.indicator +
+            "</span><br />" +
+            routeInfo.description;
+
+          routeDiagram.innerHTML = routeInfo.diagram;
+        }
+
+        function computeRoute(host, xfh) {
+          const esc = (s) =>
+            s ? s.replace(/&/g, "&amp;").replace(/</g, "&lt;") : "";
+
+          if (!xfh) {
+            return {
+              indicator:
+                "Маршрутизация: внешний хост <code>" +
+                esc(host) +
+                "</code>.",
+              description:
+                "Прокси не меняет цель запроса, он идёт на публичный виртуальный хост.",
+              diagram:
+                '<span>клиент</span> ➜ ' +
+                '<span>прокси (Host: ' +
+                esc(host) +
+                ")</span> ➜ " +
+                '<span>backend: ' +
+                esc(host) +
+                "</span>",
+            };
+          }
+
+          if (host === "example.com" && xfh === "intranet.example") {
+            return {
+              indicator:
+                "Маршрутизация: возможный обход — запрос уходит на внутренний хост <code>intranet.example</code>.",
+              description:
+                "Публичный фронт принимает соединение на example.com, но логика маршрутизации доверяет X-Forwarded-Host и передаёт запрос во внутренний виртуальный хост.",
+              diagram:
+                '<span>клиент</span> ➜ ' +
+                '<span>прокси (Host: example.com, XF-Host: intranet.example)</span> ➜ ' +
+                '<span>backend: intranet.example</span>',
+            };
+          }
+
+          if (host === "example.com" && xfh === "admin.internal") {
+            return {
+              indicator:
+                "Маршрутизация: рискованный сценарий — попытка попасть на админский виртуальный хост <code>admin.internal</code>.",
+              description:
+                "Если гейтвей доверяет XF-Host, запрос с внешнего хоста может быть переведён на административный бэкенд.",
+              diagram:
+                '<span>клиент</span> ➜ ' +
+                '<span>прокси (Host: example.com, XF-Host: admin.internal)</span> ➜ ' +
+                '<span>backend: admin.internal</span>',
+            };
+          }
+
+          if (host === xfh) {
+            return {
+              indicator:
+                "Маршрутизация: X-Forwarded-Host совпадает с Host (<code>" +
+                esc(host) +
+                "</code>).",
+              description:
+                "Типичный сценарий: форвард сохраняет исходный хост, маршрутизация предсказуема.",
+              diagram:
+                '<span>клиент</span> ➜ ' +
+                '<span>прокси (Host/XF-Host: ' +
+                esc(host) +
+                ")</span> ➜ " +
+                '<span>backend: ' +
+                esc(host) +
+                "</span>",
+            };
+          }
+
+          return {
+            indicator:
+              "Маршрутизация: прокси может использовать X-Forwarded-Host (<code>" +
+              esc(xfh) +
+              "</code>) для выбора бэкенда.",
+            description:
+              "Точное поведение зависит от реализации, но сам факт расхождения Host и XF-Host уже сигнализирует о потенциальной аномалии.",
+            diagram:
+              '<span>клиент</span> ➜ ' +
+              '<span>прокси (Host: ' +
+              esc(host) +
+              ", XF-Host: " +
+              esc(xfh) +
+              ")</span> ➜ " +
+              '<span>backend: зависит от логики гейтвея</span>',
+          };
+        }
+
+        hostSelect.addEventListener("change", buildRequest);
+        xfhSelect.addEventListener("change", buildRequest);
+        pathInput.addEventListener("input", buildRequest);
+
+        buildRequest();
+      })();
+    </script>
+  </body>
+</html>
+Этот файл:
+
+даёт hero‑блок с меткой HTTP LAB · DEMO, заголовком, описанием и кнопкой «Открыть лабораторию»;
+
+содержит секции «Базовый HTTP‑запрос», «Для чего нужна лаборатория», «Маршрут одного TLS‑соединения»;
+
+реализует интерактивный конструктор запроса на чистом JS: селекты для Host и X-Forwarded-Host, поле пути, живой <pre><code> и текст/«схема», которые меняются без перезагрузки.
+
+Кнопки не надо никакие туда, это уже целевая страница с лабораторией
+
+Убираю кнопку, всё остальное оставляем как целевую страницу с интерактивом.
+
+Вот обновлённый index.html без CTA‑кнопки «Открыть лабораторию`:
+
+xml
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <title>HTTP Request Handling Anomalies Lab</title>
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+    />
+    <meta
+      name="description"
+      content="Учебный лендинг с интерактивными демо по аномалиям обработки HTTP-запросов, включая First-request routing bypass и другие кейсы."
+    />
+
+    <style>
+      :root {
+        color-scheme: dark;
+        --bg: #020617;
+        --bg-elevated: #020617;
+        --card-bg: rgba(15, 23, 42, 0.96);
+        --border-subtle: rgba(148, 163, 184, 0.35);
+        --accent: #38bdf8;
+        --accent-soft: rgba(56, 189, 248, 0.2);
+        --text-main: #e5e7eb;
+        --text-muted: #9ca3af;
+        --radius-lg: 18px;
+        --radius-md: 12px;
+        --shadow-lg: 0 30px 80px rgba(15, 23, 42, 0.95);
+        --transition: 220ms cubic-bezier(0.22, 0.61, 0.36, 1);
+      }
+
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+      }
+
+      body {
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text",
+          "Segoe UI", sans-serif;
+        background: radial-gradient(circle at top, #020617 0, #000 70%);
+        color: var(--text-main);
+        -webkit-font-smoothing: antialiased;
+      }
+
+      main {
+        max-width: 960px;
+        margin: 0 auto;
+        padding: 2.5rem 1.5rem 3.5rem;
+      }
+
+      @media (max-width: 640px) {
+        main {
+          padding: 1.75rem 1rem 3rem;
+        }
+      }
+
+      .hero {
+        margin-bottom: 2.75rem;
+      }
+
+      .hero-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.3rem 0.8rem;
+        border-radius: 999px;
+        border: 1px solid rgba(148, 163, 184, 0.6);
+        background: rgba(15, 23, 42, 0.9);
+        margin-bottom: 1.1rem;
+      }
+
+      .hero-badge-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 999px;
+        background: radial-gradient(circle at 30% 20%, #e0f2fe, #38bdf8);
+        box-shadow: 0 0 14px rgba(56, 189, 248, 0.85);
+      }
+
+      .hero-badge-text {
+        font-size: 0.78rem;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+        color: var(--text-muted);
+      }
+
+      .hero-title {
+        margin: 0 0 0.9rem;
+        font-size: clamp(1.9rem, 3.1vw, 2.4rem);
+        letter-spacing: 0.04em;
+      }
+
+      .hero-subtitle {
         margin: 0;
         max-width: 40rem;
         font-size: 0.98rem;
