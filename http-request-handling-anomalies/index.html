@@ -3,597 +3,254 @@
   <head>
     <meta charset="UTF-8" />
     <title>HTTP Request Handling Anomalies Lab</title>
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1, viewport-fit=cover"
-    />
-    <meta
-      name="description"
-      content="Учебный лендинг с интерактивными демо по аномалиям обработки HTTP-запросов, включая First-request routing bypass и другие кейсы."
-    />
-
-    <link
-      rel="apple-touch-icon"
-      sizes="180x180"
-      href="./favicon/apple-touch-icon.png"
-    />
-    <link
-      rel="icon"
-      type="image/png"
-      sizes="32x32"
-      href="./favicon/favicon-32x32.png"
-    />
-    <link
-      rel="icon"
-      type="image/png"
-      sizes="16x16"
-      href="./favicon/favicon-16x16.png"
-    />
-    <link rel="manifest" href="./favicon/site.webmanifest" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <style>
-      :root {
-        color-scheme: dark;
-        --bg: #020617;
-        --bg-alt: #020617;
-        --accent: #38bdf8;
-        --accent-soft: rgba(56, 189, 248, 0.2);
-        --text-main: #e5e7eb;
-        --text-muted: #9ca3af;
-        --card-bg: rgba(15, 23, 42, 0.96);
-        --border-subtle: rgba(148, 163, 184, 0.35);
-        --radius-lg: 18px;
-        --shadow-lg: 0 30px 80px rgba(15, 23, 42, 0.95);
-        --transition: 220ms cubic-bezier(0.22, 0.61, 0.36, 1);
-      }
-
-      *,
-      *::before,
-      *::after {
-        box-sizing: border-box;
-      }
-
-      html,
-      body {
-        margin: 0;
-        padding: 0;
-        height: 100%;
-      }
-
-      body {
-        font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text",
-          "Segoe UI", sans-serif;
-        background: radial-gradient(circle at top, #020617 0, #000 65%);
-        color: var(--text-main);
-        -webkit-font-smoothing: antialiased;
-      }
-
-      main {
+      .http-lab-page {
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+          sans-serif;
         min-height: 100vh;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 3rem 1.5rem;
+        background: #0f172a;
+        color: #e5e7eb;
+        padding: 32px 16px;
       }
 
-      .frame {
-        position: relative;
-        width: 100%;
-        max-width: 1120px;
-        min-height: min(560px, 80vh);
-        border-radius: 28px;
-        overflow: hidden;
-        background: radial-gradient(
-            circle at top left,
-            rgba(56, 189, 248, 0.12),
-            transparent 55%
-          ),
-          radial-gradient(
-            circle at bottom right,
-            rgba(129, 140, 248, 0.14),
-            transparent 55%
-          ),
-          radial-gradient(circle at top, #020617 0, #020617 45%, #000 100%);
-        border: 1px solid rgba(148, 163, 184, 0.35);
-        box-shadow: 0 40px 120px rgba(15, 23, 42, 0.9);
+      .http-lab-hero,
+      .http-lab-section {
+        max-width: 960px;
+        margin: 0 auto 40px auto;
       }
 
-      .frame-inner {
-        position: relative;
-        z-index: 1;
-        display: grid;
-        grid-template-columns: minmax(0, 3fr) minmax(0, 2.6fr);
-        gap: 2.25rem;
-        padding: 2.4rem 2.7rem;
+      .http-lab-label {
+        font-size: 0.85rem;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: #818cf8;
+        margin-bottom: 8px;
       }
 
-      @media (max-width: 900px) {
-        .frame-inner {
-          grid-template-columns: minmax(0, 1fr);
-          padding: 2rem 1.6rem;
-        }
+      .http-lab-title {
+        font-size: clamp(2rem, 3vw, 2.8rem);
+        font-weight: 700;
+        margin-bottom: 12px;
       }
 
-      .badge-row {
+      .http-lab-subtitle {
+        font-size: 1rem;
+        line-height: 1.6;
+        max-width: 720px;
+        color: #cbd5f5;
+        margin-bottom: 20px;
+      }
+
+      .http-lab-button {
         display: inline-flex;
         align-items: center;
-        gap: 0.5rem;
-        padding: 0.25rem 0.65rem;
+        justify-content: center;
+        padding: 10px 20px;
         border-radius: 999px;
-        background: rgba(15, 23, 42, 0.8);
-        border: 1px solid rgba(148, 163, 184, 0.45);
-        margin-bottom: 1.1rem;
+        background: #4f46e5;
+        color: #e5e7eb;
+        font-weight: 500;
+        text-decoration: none;
+        transition: transform 0.15s ease, box-shadow 0.15s ease,
+          background 0.15s ease;
+        box-shadow: 0 10px 25px rgba(79, 70, 229, 0.35);
       }
 
-      .badge-dot {
-        width: 8px;
-        height: 8px;
-        border-radius: 999px;
-        background: radial-gradient(circle at 30% 20%, #e0f2fe, #38bdf8);
-        box-shadow: 0 0 12px rgba(56, 189, 248, 0.8);
+      .http-lab-button:hover {
+        background: #6366f1;
+        transform: translateY(-1px);
+        box-shadow: 0 16px 35px rgba(79, 70, 229, 0.55);
       }
 
-      .badge-text {
-        font-size: 0.75rem;
-        letter-spacing: 0.16em;
-        text-transform: uppercase;
-        color: var(--text-muted);
+      .http-lab-section-title {
+        font-size: 1.25rem;
+        font-weight: 600;
+        margin-bottom: 12px;
       }
 
-      .title {
-        font-size: clamp(1.9rem, 3.1vw, 2.4rem);
-        letter-spacing: 0.04em;
-        margin: 0 0 0.9rem;
-      }
-
-      .subtitle {
-        margin: 0 0 1.7rem;
-        max-width: 32rem;
+      .http-lab-text {
         font-size: 0.98rem;
         line-height: 1.7;
-        color: var(--text-muted);
+        color: #e5e7eb;
+        margin-top: 12px;
       }
 
-      .pill-row {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 0.5rem;
-        margin-bottom: 2rem;
-      }
-
-      .pill {
+      .http-lab-code {
+        background: #020617;
+        color: #e5e7eb;
+        border-radius: 8px;
+        padding: 14px 16px;
         font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
           "Liberation Mono", "Courier New", monospace;
-        font-size: 0.75rem;
-        padding: 0.2rem 0.6rem;
-        border-radius: 999px;
-        border: 1px solid rgba(148, 163, 184, 0.4);
-        background: rgba(15, 23, 42, 0.8);
-        color: var(--text-muted);
+        font-size: 0.85rem;
+        line-height: 1.6;
+        overflow-x: auto;
+        margin-top: 8px;
       }
 
-      .cta-row {
+      .http-lab-code code {
+        white-space: pre;
+      }
+
+      .http-lab-flow {
         display: flex;
+        align-items: stretch;
+        justify-content: space-between;
+        gap: 12px;
+        margin: 16px 0;
         flex-wrap: wrap;
-        gap: 0.75rem;
-        align-items: center;
       }
 
-      .btn-primary {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        padding: 0.65rem 1.4rem;
-        border-radius: 999px;
-        background: radial-gradient(circle at 20% 0%, #e0f2fe, #38bdf8);
-        color: #0b1120;
+      .http-lab-flow-step {
+        flex: 1 1 180px;
+        min-width: 0;
+        background: #020617;
+        border-radius: 10px;
+        padding: 12px 14px;
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+      }
+
+      .http-lab-flow-title {
         font-size: 0.9rem;
         font-weight: 600;
-        text-decoration: none;
-        box-shadow: 0 12px 30px rgba(56, 189, 248, 0.4);
-        border: none;
-        cursor: pointer;
-        transition:
-          transform var(--transition),
-          box-shadow var(--transition),
-          filter var(--transition);
+        color: #c7d2fe;
       }
 
-      .btn-primary:hover {
-        transform: translateY(-1px);
-        box-shadow: 0 18px 40px rgba(56, 189, 248, 0.55);
-        filter: brightness(1.03);
+      .http-lab-flow-text {
+        font-size: 0.85rem;
+        line-height: 1.5;
+        color: #e5e7eb;
       }
 
-      .btn-primary:active {
-        transform: translateY(0);
-        box-shadow: 0 8px 22px rgba(56, 189, 248, 0.4);
-        filter: brightness(0.98);
+      .http-lab-flow-arrow {
+        align-self: center;
+        font-size: 1.5rem;
+        color: #818cf8;
       }
 
-      .cta-note {
-        font-size: 0.8rem;
-        color: var(--text-muted);
-      }
-
-      .hint {
-        margin-top: 1.3rem;
-        font-size: 0.78rem;
-        color: var(--text-muted);
-        max-width: 22rem;
-      }
-
-      .preview-card {
-        position: relative;
-        border-radius: 22px;
-        overflow: hidden;
-        background: radial-gradient(
-            circle at top,
-            rgba(15, 23, 42, 0.6),
-            transparent 55%
-          ),
-          linear-gradient(145deg, rgba(15, 23, 42, 1), #020617);
-        border: 1px solid rgba(148, 163, 184, 0.38);
-        box-shadow: var(--shadow-lg);
-        isolation: isolate;
-      }
-
-      .preview-header {
-        display: flex;
+      .http-lab-pill {
+        display: inline-flex;
         align-items: center;
-        gap: 0.5rem;
-        padding: 0.6rem 0.9rem;
-        border-bottom: 1px solid rgba(30, 64, 175, 0.7);
-        background: radial-gradient(
-          circle at top left,
-          rgba(59, 130, 246, 0.3),
-          rgba(15, 23, 42, 0.95)
-        );
-      }
-
-      .preview-dots {
-        display: flex;
-        gap: 0.25rem;
-      }
-
-      .preview-dot {
-        width: 8px;
-        height: 8px;
+        padding: 2px 7px;
         border-radius: 999px;
-      }
-
-      .preview-dot.red {
-        background: #f97373;
-      }
-
-      .preview-dot.yellow {
-        background: #facc15;
-      }
-
-      .preview-dot.green {
-        background: #4ade80;
-      }
-
-      .preview-title {
-        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
-          monospace;
+        background: rgba(129, 140, 248, 0.18);
+        color: #c7d2fe;
         font-size: 0.78rem;
-        color: #e5e7eb;
-        opacity: 0.85;
       }
 
-      .preview-body {
-        padding: 1.1rem 1.1rem 1rem;
-      }
-
-      .preview-grid {
-        display: grid;
-        grid-template-columns: minmax(0, 1.15fr) minmax(0, 1.2fr);
-        gap: 1rem;
-      }
-
-      @media (max-width: 900px) {
-        .preview-grid {
-          grid-template-columns: minmax(0, 1fr);
+      @media (max-width: 640px) {
+        .http-lab-page {
+          padding: 24px 14px;
         }
-      }
 
-      .preview-request {
-        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
-          monospace;
-        font-size: 0.78rem;
-        color: #e5e7eb;
-        background: radial-gradient(
-          circle at top left,
-          rgba(15, 23, 42, 0.9),
-          rgba(15, 23, 42, 1)
-        );
-        border-radius: 12px;
-        border: 1px solid rgba(30, 64, 175, 0.7);
-        padding: 0.75rem 0.8rem;
-        min-height: 120px;
-      }
+        .http-lab-hero,
+        .http-lab-section {
+          margin-bottom: 28px;
+        }
 
-      .preview-request-line.muted {
-        color: #64748b;
-      }
+        .http-lab-flow {
+          flex-direction: column;
+        }
 
-      .preview-request-line.highlight {
-        color: #22d3ee;
-      }
-
-      .preview-diagram {
-        position: relative;
-        border-radius: 12px;
-        border: 1px solid rgba(148, 163, 184, 0.4);
-        background: radial-gradient(
-          circle at top,
-          rgba(15, 23, 42, 0.9),
-          rgba(15, 23, 42, 1)
-        );
-        padding: 0.8rem 0.9rem 0.9rem;
-        font-size: 0.78rem;
-      }
-
-      .preview-diagram-title {
-        font-size: 0.76rem;
-        text-transform: uppercase;
-        letter-spacing: 0.12em;
-        color: #9ca3af;
-        margin-bottom: 0.6rem;
-      }
-
-      .preview-diagram-grid {
-        display: grid;
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-        gap: 0.4rem;
-        font-size: 0.75rem;
-      }
-
-      .preview-node {
-        padding: 0.4rem 0.5rem;
-        border-radius: 0.375rem;
-        text-align: center;
-        background: rgba(15, 23, 42, 0.95);
-        border: 1px solid rgba(55, 65, 81, 0.9);
-        color: #e5e7eb;
-      }
-
-      .preview-node.muted {
-        opacity: 0.7;
-      }
-
-      .preview-diagram-arrow {
-        margin-top: 0.5rem;
-        font-size: 0.72rem;
-        color: #9ca3af;
-      }
-
-      canvas.preview-bg {
-        position: absolute;
-        inset: 0;
-        width: 100%;
-        height: 100%;
-        z-index: 0;
-        opacity: 0.7;
-      }
-
-      @media (prefers-reduced-motion: reduce) {
-        canvas.preview-bg {
-          display: none;
+        .http-lab-flow-arrow {
+          transform: rotate(90deg);
         }
       }
     </style>
   </head>
 
   <body>
-    <main>
-      <div class="frame">
-        <canvas class="preview-bg"></canvas>
+    <main class="http-lab-page">
+      <header class="http-lab-hero">
+        <p class="http-lab-label">HTTP LAB · DEMO</p>
+        <h1 class="http-lab-title">HTTP Request Handling Anomalies Lab</h1>
+        <p class="http-lab-subtitle">
+          Учебный лендинг с интерактивными демо по аномалиям обработки
+          HTTP‑запросов, включая обход маршрутизации первого запроса
+          (first‑request routing bypass) и другие нетривиальные кейсы.
+        </p>
+        <a
+          class="http-lab-button"
+          href="https://buhtig-sudo-azar.github.io/http-request-handling-anomalies/"
+        >
+          Открыть лабораторию
+        </a>
+      </header>
 
-        <div class="frame-inner">
-          <section>
-            <div class="badge-row">
-              <div class="badge-dot"></div>
-              <div class="badge-text">HTTP LAB · DEMO</div>
+      <section class="http-lab-section">
+        <h2 class="http-lab-section-title">Базовый HTTP‑запрос</h2>
+        <pre class="http-lab-code"><code>GET /intranet HTTP/1.1
+Host: example.com / intranet.example
+X-Forwarded-Host: intranet.example
+single TLS channel</code></pre>
+        <p class="http-lab-text">
+          Этот пример иллюстрирует ситуацию, когда один и тот же TLS‑канал
+          используется для разных значений Host, что может приводить
+          к неожиданным маршрутам и уязвимостям.
+        </p>
+      </section>
+
+      <section class="http-lab-section">
+        <h2 class="http-lab-section-title">Для чего нужна лаборатория</h2>
+        <p class="http-lab-text">
+          Демки помогают разобрать аномалии маршрутизации, заголовков и
+          балансировщиков. Используйте лабораторию как песочницу для
+          исследования поведения прокси, балансировщиков и бэкендов при
+          нестандартных HTTP‑последовательностях.
+        </p>
+      </section>
+
+      <section class="http-lab-section">
+        <h2 class="http-lab-section-title">Пример цепочки запросов</h2>
+        <pre class="http-lab-code"><code>curl -k https://example.com/intranet
+
+GET /intranet HTTP/1.1
+Host: example.com
+X-Forwarded-Host: intranet.example
+X-Original-Host: example.com
+
+# first request: external host
+# routing bypass: internal host</code></pre>
+        <p class="http-lab-text">
+          Логика прокси и балансировщика может зависеть от первого запроса
+          в соединении, а последующие запросы с другими заголовками Host
+          приводят к обходу ожидаемой маршрутизации.
+        </p>
+      </section>
+
+      <section class="http-lab-section">
+        <h2 class="http-lab-section-title">Маршрут одного TLS‑соединения</h2>
+        <div class="http-lab-flow">
+          <div class="http-lab-flow-step">
+            <div class="http-lab-flow-title">Клиент</div>
+            <div class="http-lab-flow-text">браузер</div>
+          </div>
+          <div class="http-lab-flow-arrow">→</div>
+          <div class="http-lab-flow-step">
+            <div class="http-lab-flow-title">Прокси / балансировщик</div>
+            <div class="http-lab-flow-text">
+              проверка только первого запроса,<br />
+              пример: <span class="http-lab-pill">example.com</span>
             </div>
-
-            <h1 class="title">HTTP Request Handling Anomalies Lab</h1>
-
-            <p class="subtitle">
-              Учебный лендинг с интерактивными демо по аномалиям обработки
-              HTTP-запросов, включая обход маршрутизации первого запроса
-              (first-request routing bypass) и другие нетривиальные кейсы.
-            </p>
-
-            <div class="pill-row">
-              <span class="pill">GET /intranet HTTP/1.1</span>
-              <span class="pill">Host: example.com / intranet.example</span>
-              <span class="pill">X-Forwarded-Host</span>
-              <span class="pill">single TLS channel</span>
+          </div>
+          <div class="http-lab-flow-arrow">→</div>
+          <div class="http-lab-flow-step">
+            <div class="http-lab-flow-title">Бэкенд</div>
+            <div class="http-lab-flow-text">
+              внутренний хост:
+              <span class="http-lab-pill">intranet.example</span>
             </div>
-
-            <div class="cta-row">
-              <a
-                class="btn-primary"
-                href="/http-request-handling-anomalies/"
-              >
-                Открыть лабораторию
-              </a>
-              <span class="cta-note">
-                Демки для разбора аномалий маршрутизации, заголовков и
-                балансировщиков.
-              </span>
-            </div>
-
-            <p class="hint">
-              Используйте эту лабораторию как песочницу для исследования
-              поведения прокси, балансировщиков и бэкендов при нестандартных
-              HTTP‑последовательностях.
-            </p>
-          </section>
-
-          <section class="preview-card">
-            <header class="preview-header">
-              <div class="preview-dots">
-                <span class="preview-dot red"></span>
-                <span class="preview-dot yellow"></span>
-                <span class="preview-dot green"></span>
-              </div>
-              <div class="preview-title">
-                curl -k https://example.com/intranet
-              </div>
-            </header>
-
-            <div class="preview-body">
-              <div class="preview-grid">
-                <div class="preview-request">
-                  <div class="preview-request-line">GET /intranet HTTP/1.1</div>
-                  <div class="preview-request-line">Host: example.com</div>
-                  <div class="preview-request-line muted">
-                    X-Forwarded-Host: intranet.example
-                  </div>
-                  <div class="preview-request-line muted">
-                    X-Original-Host: example.com
-                  </div>
-                  <div class="preview-request-line highlight">
-                    # first request: external host
-                  </div>
-                  <div class="preview-request-line highlight">
-                    # routing bypass: internal host
-                  </div>
-                </div>
-
-                <div class="preview-diagram">
-                  <div class="preview-diagram-title">
-                    Маршрут одного TLS‑соединения
-                  </div>
-                  <div class="preview-diagram-grid">
-                    <div class="preview-node">Клиент</div>
-                    <div class="preview-node">Прокси / балансировщик</div>
-                    <div class="preview-node">Бэкенд</div>
-                    <div class="preview-node muted">браузер</div>
-                    <div class="preview-node muted">
-                      проверка только<br />первого запроса
-                    </div>
-                    <div class="preview-node muted">
-                      example.com<br />/ intranet.example
-                    </div>
-                  </div>
-                  <div class="preview-diagram-arrow">
-                    Один TLS‑канал, разные значения Host — и разные последствия
-                    для безопасности.
-                  </div>
-                </div>
-              </div>
-            </div>
-          </section>
+          </div>
         </div>
-      </div>
+        <p class="http-lab-text">
+          Одно TLS‑соединение, но разные значения Host могут приводить к разным
+          маршрутам и различным последствиям для безопасности.
+        </p>
+      </section>
     </main>
-
-    <script>
-      (function () {
-        const canvas = document.querySelector("canvas.preview-bg");
-        if (!canvas) return;
-        const ctx = canvas.getContext("2d");
-
-        const nodes = [];
-        const edges = [];
-
-        function resize() {
-          const rect = canvas.parentElement.getBoundingClientRect();
-          canvas.width = rect.width * window.devicePixelRatio;
-          canvas.height = rect.height * window.devicePixelRatio;
-          ctx.setTransform(window.devicePixelRatio, 0, 0, window.devicePixelRatio, 0, 0);
-          initGraph();
-        }
-
-        function initGraph() {
-          nodes.length = 0;
-          edges.length = 0;
-          const cols = 16;
-          const rows = 9;
-          const paddingX = 40;
-          const paddingY = 40;
-          const width = canvas.width / window.devicePixelRatio;
-          const height = canvas.height / window.devicePixelRatio;
-          const dx = (width - paddingX * 2) / (cols - 1 || 1);
-          const dy = (height - paddingY * 2) / (rows - 1 || 1);
-
-          for (let y = 0; y < rows; y++) {
-            for (let x = 0; x < cols; x++) {
-              const jitterX = (Math.random() - 0.5) * 10;
-              const jitterY = (Math.random() - 0.5) * 10;
-              nodes.push({
-                x: paddingX + x * dx + jitterX,
-                y: paddingY + y * dy + jitterY,
-                vx: 0,
-                vy: 0,
-              });
-            }
-          }
-
-          for (let i = 0; i < nodes.length; i++) {
-            for (let j = i + 1; j < nodes.length; j++) {
-              if (Math.random() < 0.06) {
-                edges.push({ a: i, b: j, w: Math.random() * 0.6 + 0.2 });
-              }
-            }
-          }
-        }
-
-        function step() {
-          const t = performance.now() / 1000;
-          for (const node of nodes) {
-            const noiseX = Math.sin(node.y * 0.03 + t * 0.6) * 0.2;
-            const noiseY = Math.cos(node.x * 0.03 + t * 0.6) * 0.2;
-            node.vx = noiseX;
-            node.vy = noiseY;
-            node.x += node.vx;
-            node.y += node.vy;
-          }
-        }
-
-        function draw() {
-          ctx.clearRect(0, 0, canvas.width, canvas.height);
-          ctx.save();
-          ctx.setTransform(window.devicePixelRatio, 0, 0, window.devicePixelRatio, 0, 0);
-
-          ctx.lineWidth = 0.7;
-          for (const edge of edges) {
-            const a = nodes[edge.a];
-            const b = nodes[edge.b];
-            const grad = ctx.createLinearGradient(a.x, a.y, b.x, b.y);
-            grad.addColorStop(0, "rgba(56,189,248,0.18)");
-            grad.addColorStop(1, "rgba(129,140,248,0.08)");
-            ctx.strokeStyle = grad;
-            ctx.beginPath();
-            ctx.moveTo(a.x, a.y);
-            ctx.lineTo(b.x, b.y);
-            ctx.stroke();
-          }
-
-          ctx.fillStyle = "rgba(15,23,42,0.9)";
-          for (const node of nodes) {
-            ctx.beginPath();
-            ctx.arc(node.x, node.y, 1.1, 0, Math.PI * 2);
-            ctx.fill();
-          }
-
-          ctx.restore();
-        }
-
-        function loop() {
-          step();
-          draw();
-          requestAnimationFrame(loop);
-        }
-
-        window.addEventListener("resize", resize);
-        resize();
-        loop();
-      })();
-    </script>
   </body>
 </html>
